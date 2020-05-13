@@ -15,9 +15,9 @@ The German government has asked SAP and Deutsche Telekom to develop the Corona-W
 
 We'd like to thank all the partners who have been involved in this enormous project from the beginning. The project would not be where it is today without all the exploration and great work that had already been done around the [PEPP-PT](https://www.pepp-pt.org/) approach by partners on a European and national level. We will build on top of some of these components and appreciate how everyone is dedicated to making this new approach successful.
 
-## Our pledge to data privacy
+## Data Privacy
 
-We hereby fully commit to the principles outlined in the _Individual Data Rights for Exposure Notification_ as outlined on [exposurenotification.org](https://exposurenotification.org/).
+In this project we are strictly observing the principles of the General Data Protection Regulation (GDPR) to protect the users’ privacy. We are processing necessary data only - exclusively for the purpose to let users know if they have come into close contact with other infected users, without revealing each other's identity. The compliance with these regulations is safeguarded by several procedures, e.g. by implementing technical and organizational measures adhering diligently to the high standards of the GDPR. Of course, the app will provide users with a comprehensive privacy statement to be as transparent and clear as possible. As we are developing the app as an open source project, the community can review it. We appreciate your feedback!
 
 ## Code of Conduct
 
