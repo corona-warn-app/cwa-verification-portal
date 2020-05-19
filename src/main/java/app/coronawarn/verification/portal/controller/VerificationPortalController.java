@@ -40,6 +40,21 @@ import java.util.UUID;
 public class VerificationPortalController
 {
     /**
+     * The route to the TeleTAN portal web site
+     */
+    private static final String ROUTE_TELETAN = "/teletan";
+
+    /**
+     * The html Thymeleaf template for the TeleTAN portal web site
+     */
+    private static final String TEMPLATE_TELETAN = "teletan";
+
+    /**
+     * The Thymeleaf attribute used for displaying the teletan
+     */
+    private static final String ATTR_TELETAN = "teleTan";
+
+    /**
      * The logger.
      */
     private static final Logger LOG = LogManager.getLogger();
@@ -55,11 +70,11 @@ public class VerificationPortalController
      * @param model the thymeleaf model
      * @return the name of the HTML Thymeleaf template to be used for the HTML page
      */
-    @GetMapping("/teletan")
+    @GetMapping(ROUTE_TELETAN)
     public String home(Model model) {
         // try to get the teleTAN from the verification server
         String teleTAN = teleTANClient.result();
-        model.addAttribute("teleTan", teleTAN);
-        return "teletan";
+        model.addAttribute(ATTR_TELETAN, teleTAN);
+        return TEMPLATE_TELETAN;
     }
 }

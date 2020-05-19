@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>cwa-verification-portal</name>
-    <description>Basic verification portal project.</description>
+    <description>Verification portal project.</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
