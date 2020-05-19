@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Verification Portal</title>
+</head>
+<body ng-app>
+    <br>
+    <b><h1>V E R I F I C A T I O N - P O R T A L</h1></b>
+    <br>
+    <br>
+    <h2><p th:text="'TeleTAN: ' + ${teleTan}"></h2>
+    <br>
+    <br>
+    Bitte benutzen Sie den Button, um eine neue TeleTAN zu generieren:
+    <br><br>
+    <form action="teletan" method="get">
+        <input type="submit" value="Neue TeleTAN">
+    </form>
+ </body>
+</html>
