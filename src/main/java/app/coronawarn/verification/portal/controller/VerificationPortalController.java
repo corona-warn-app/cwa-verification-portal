@@ -73,7 +73,11 @@ public class VerificationPortalController
     @GetMapping(ROUTE_TELETAN)
     public String home(Model model) {
         // try to get the teleTAN from the verification server
-        String teleTAN = teleTANClient.result();
+        //TODO String teleTAN = teleTANClient.result();
+
+        //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
+        String teleTAN = UUID.randomUUID().toString();
+
         model.addAttribute(ATTR_TELETAN, teleTAN);
         return TEMPLATE_TELETAN;
     }
