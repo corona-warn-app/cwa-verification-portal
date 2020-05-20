@@ -1,0 +1,145 @@
+
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 84px;
+  width: 100%;
+  background: #E20074;
+}
+
+.header-logo {
+	position: fixed;
+	top: 24px;
+	left: 24px;
+}
+
+.header-text {
+	position: fixed;
+	top: 37px;
+	right: 20px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  height: 60px;
+  width: 100%;
+  border-top-style: solid;
+  border-width: 1px;
+  border-color: #757575;
+}
+
+.footer-font {
+	font-family: Telegrotesk Next Regular;
+	font-size: 18px;
+	color: #757575;
+}
+
+.footer-copyright {
+	position: fixed;
+	left: 24px;
+	bottom: 3px;
+}	
+
+.footer-imprint {
+	position: fixed;
+	right: 180px;
+	bottom: 3px;
+}
+
+.footer-dp {
+	position: fixed;
+	right: 24px;
+	bottom: 3px;
+}
+
+.footer-dp-logo {
+	position: fixed;
+	right: 145px;
+	bottom: 23px;
+}
+
+
+.c19-logo {
+	position: fixed;
+	top: 120px;
+	left: 50%;
+	width: 400px;
+	margin-left: -110px;
+	font-family: Telegrotesk Next Bold;
+	font-size: 21px;
+	color: #262626;
+}
+
+.content-tan {
+	position: fixed;
+	top: 230px;
+	left: 50%;
+	width: 400px;
+	margin-left: -200px;
+	text-align: center;
+	font-family: Telegrotesk Next Thin;
+	font-size: 48px;
+	color: #262626;
+
+}
+
+.content-text {
+	position: fixed;
+	top: 340px;
+	left: 50%;
+	width: 600px;
+	margin-left: -300px;
+	text-align: center;
+	font-family: Telegrotesk Next Regular;
+	font-size: 18px;
+	color: #262626;
+
+}
+
+.content-button {
+	position: fixed;
+	top: 370px;
+	left: 50%;
+	width: 500px;
+	height: 40px;
+	margin-left: -250px;
+	font-family: Telegrotesk Next Regular;
+	font-size: 18px;
+	color: #0F0F0F;
+	background: #E20074;
+	border: none;
+}
+
+.content-error {
+	position: fixed;
+	top: 340px;
+	left: 50%;
+	width: 600px;
+	margin-left: -300px;
+	text-align: center;
+	font-family: Telegrotesk Next Regular;
+	font-size: 18px;
+	color: #E20074;
+}
+	
+@font-face {
+  font-family: 'Telegrotesk Next Regular';
+  font-style: normal;
+  src: url('resources/telegrotesknext-regular.woff');
+}
+
+@font-face {
+  font-family: 'Telegrotesk Next Thin';
+  font-style: thin;
+  src: url('resources/telegrotesknext-thin.woff');
+}
+
+@font-face {
+  font-family: 'Telegrotesk Next Bold';
+  font-style: bold;
+  src: url('resources/telegrotesknext-bold.woff');
+}
+	
