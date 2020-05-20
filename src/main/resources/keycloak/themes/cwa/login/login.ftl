@@ -23,11 +23,20 @@
 			<td>Verification Portal</td>
 		</tr>
 	</table>
-	<div class="login-text">Bitte loggen Sie sich mit Ihrem Benutzernamen und Paswwort ein.</div>
-	<form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
-		<input class="login-user" type="text" placeholder="Username" name="username" required>   
-		<input class="login-password" type="password" placeholder="Passwort" name="password" required>
-        <input class="login-button" type="submit" value="Login">
-    </form>
+	<div class="login-text">Please enter your password.</div>
+	<table class="login-cwa-form">
+		<tr>
+			<td><div class="login-text">Bitte loggen Sie sich mit Ihrem Benutzernamen und Paswwort ein.</div></td>
+		</tr>
+		<tr>
+			<td>
+				<form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
+					<input class="login-user" type="text" placeholder="Username" name="username" required>
+					<input class="login-password" type="password" placeholder="Passwort" name="password" required>
+					<input class="login-button" type="submit" value="Login">
+				</form>
+			</td>
+		</tr>
+	</table>
  </body>
 </html>

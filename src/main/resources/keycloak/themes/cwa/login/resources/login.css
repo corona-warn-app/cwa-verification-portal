@@ -134,12 +134,23 @@
 @font-face {
   font-family: 'Telegrotesk Next Thin';
   font-style: thin;
-  src: url('resources/telegrotesknext-thin.woff');
+  src: url('telegrotesknext-thin.woff');
 }
 
 @font-face {
   font-family: 'Telegrotesk Next Bold';
   font-style: bold;
-  src: url('resources/telegrotesknext-bold.woff');
+  src: url('telegrotesknext-bold.woff');
+}
+
+.login-cwa-form {
+	position: fixed;
+	top: 200px;
+	left: 50%;
+	width: 400px;
+	margin-left: -160px;
+	font-family: Telegrotesk Next Bold;
+	font-size: 14px;
+	color: #262626;
 }
 	
