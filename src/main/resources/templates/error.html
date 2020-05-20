@@ -1,14 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Verification Portal</title>
-</head>
-<body ng-app>
-    <br>
-    <b><h1>V E R I F I C A T I O N - P O R T A L</h1></b>
-    <br>
-    <h2><p style="color:red" th:text="${message}"></h2>
-    <br>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" media="screen" href="teletan.css" />
+    <title>Verification Portal</title>	
+  </head>
+  <body>
+	<div class="header">
+		<img class="header-logo" src="telekom_web_logo.png">
+		<img class="header-text" src="life_is_for_sharing.png">
+	</div>
+	<div class="footer">
+		<p class="footer-font footer-copyright">© Telekom Deutschland GmbH</p>
+		<p class="footer-font footer-imprint">Imprint</p>
+		<img class="footer-dp-logo" src="data_protect.png">
+		<p class="footer-font footer-dp">Data Protection</p>
+	</div>
+	<table class="c19-logo">
+		<tr>
+			<td style="width: 1px;"><img src="c-19_logo.png"></td>
+			<td>Verification Portal</td>
+		</tr>
+	</table>
+	<div class="content-error" th:text="${message}" />
  </body>
 </html>

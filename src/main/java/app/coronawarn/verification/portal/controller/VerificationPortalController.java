@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -66,7 +67,7 @@ public class VerificationPortalController
     private TeleTANClient teleTANClient;
 
     /**
-     * The Web GUI page request showing the teletan.html web page with a newly cretaed TeleTAN
+     * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
      * @param model the thymeleaf model
      * @return the name of the HTML Thymeleaf template to be used for the HTML page
      */
@@ -76,7 +77,7 @@ public class VerificationPortalController
         //TODO String teleTAN = teleTANClient.result();
 
         //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
-        String teleTAN = UUID.randomUUID().toString();
+        String teleTAN = String.valueOf(Math.abs(new Random().nextInt()));
 
         model.addAttribute(ATTR_TELETAN, teleTAN);
         return TEMPLATE_TELETAN;
