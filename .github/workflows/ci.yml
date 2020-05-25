@@ -28,16 +28,17 @@ jobs:
     - run: mvn --batch-mode deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: |
-        mvn --batch-mode verify sonar:sonar \
-        -Dsonar.login=${SONAR_TOKEN} \
-        -Dsonar.host.url=${SONAR_URL} \
-        -Dsonar.organization=${GITHUB_REPOSITORY_OWNER} \
-        -Dsonar.projectKey=${GITHUB_REPOSITORY/\//_}
-      env:
-        SONAR_URL: https://sonarcloud.io
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # enable if project is public
+    # - run: |
+    #     mvn --batch-mode verify sonar:sonar \
+    #     -Dsonar.login=${SONAR_TOKEN} \
+    #     -Dsonar.host.url=${SONAR_URL} \
+    #     -Dsonar.organization=${GITHUB_REPOSITORY_OWNER} \
+    #     -Dsonar.projectKey=${GITHUB_REPOSITORY/\//_}
+    #   env:
+    #     SONAR_URL: https://sonarcloud.io
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v1
       with:
         name: target
