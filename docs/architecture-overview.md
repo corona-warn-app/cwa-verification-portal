@@ -4,7 +4,7 @@ by Alexander Stiefel (alexander.stiefel@t-systems.com)
 ##	Introduction
 This document describes the component Verification Portal for the System “Corona Warn App”. In the world of the Corona Warn App the Verification Portal allows hotline employees to generate teleTANs which are used by users of the mobile App to upload their diagnostic keys. A teleTAN is a proof that somebody was tested positive for SARS-CoV-2.
 
-This document links the overall system architecture with the software design of the Verification Portal , it links user stories with implementation inside the Verification Portal. 
+This document links the overall system architecture with the software design of the Verification Portal, it links user stories with implementation inside the Verification Portal. 
 
 This document is intended to be read by people who want to get insights how verification for hotline and health authorities works in detail, it is our guideline for implementation. This document is a mixture of software design and requirement specification, it may be splitted in future.
 
@@ -53,7 +53,61 @@ A teleTAN must not be shown after 10min.
 # Implemented Use Cases
 ## Referenced User Stories
 ##	Actors
+1. Hotline Employee
+Has technical role "c19hotline". Is an employee which mainly triggers the use case Create teleTAN. 
+2. Employee Health Authority
+Has technical role "c19healthauthority". Not implemented in the current release.
+3. Verifion Portal User Admin 
+Has technical role "verificationPortalAdmin". Administrator who executes user administation in the Verification IAM
+4. Hotline Trustee
+Has technical role "c19hotlineTrustee", but is not implemented in this component, is implemented in a manual eMail based flow. This actor approves the requests for user creation in the Verification IAM
+
+
 ## Use Cases
+### Use Case Initial Login
+content missing
+
+### Use Case Create teleTAN
+Actor: Hotline Employee or Employee Health Authority
+Precondition: user is logged in
+Steps:
+1. Trigger Button "Generate teleTAN"
+1. Request teleTAN from Verification Server
+    1. Authenticate to Verification Server using, Client Certificate, and JWT of user interacting
+1. Show teleTAN
+1. After 10min on no action reresh page with teleTAN removed from display
+
+Alternative Flow:
+If the Verification Server is not available or returns an error, an generic error message is shown. 
+
+### Use Case Login
+Actor: Hotline Employee or Employee Health Authority
+Precondition: user is not logged in
+Steps:
+1. User provides login and password
+2. User provides one time password via mobile App (OTP)
+3. User is logged in
+1. User is shown the page for teleTAN creation
+
+Result:
+The user is logged in.
+
+### Use Case Logout
+Actor: Hotline Employee or Employee Health Authority
+Precondition: user is logged in
+Steps:
+1. User hit logout button
+2. Session is terminated 
+
+Result:
+The user is logged out.
+
+### Use Case Change Password
+content missing
+### Use Case Change 2nd Factor Device
+content missing
+### Use Case Password forgotten
+content missing
 
 
 
