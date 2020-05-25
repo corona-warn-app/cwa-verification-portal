@@ -172,9 +172,9 @@
                     <excludes>target/**/*</excludes>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
+                    <failsOnError>false</failsOnError>
                     <violationSeverity>warning</violationSeverity>
-                    <failOnViolation>true</failOnViolation>
+                    <failOnViolation>false</failOnViolation>
                     <linkXRef>false</linkXRef>
                 </configuration>
                 <executions>
