@@ -39,7 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(properties = {"log4j.configurationFile=log4j2-test.xml"})
-@TestPropertySource("classpath:test.properties")
+@TestPropertySource("classpath:test.yml")
 public class VerificationPortalTests {
 
   static final Logger LOG = LogManager.getLogger();
