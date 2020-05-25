@@ -74,50 +74,11 @@ Has technical role "c19hotlineTrustee", but is not implemented in this component
 
 
 ## Use Cases
-### Use Case Initial Login
-implmeneted by IAM
 
-### Use Case Create teleTAN
-Actor: Hotline Employee or Employee Health Authority
-Precondition: user is logged in
-Steps:
-1. Trigger Button "Generate teleTAN"
-1. Request teleTAN from Verification Server
-    1. Authenticate to Verification Server using, Client Certificate, and JWT of user interacting
-1. Show teleTAN
-1. After 10min on no action reresh page with teleTAN removed from display
-
-Alternative Flow:
-If the Verification Server is not available or returns an error, an generic error message is shown. 
-
-### Use Case Login
-Implmeneted by IAM
-Actor: Hotline Employee or Employee Health Authority
-Precondition: user is not logged in
-Steps:
-1. User provides login and password
-2. User provides one time password via mobile App (OTP)
-3. User is logged in
-1. User is shown the page for teleTAN creation
-
-Result:
-The user is logged in.
-
-### Use Case Logout
-Implmeneted by IAM
-
-Actor: Hotline Employee or Employee Health Authority
-Precondition: user is logged in
-Steps:
-1. User hit logout button
-2. Session is terminated 
-
-Result:
-The user is logged out.
-
-### Use Case Change Password
-Implmeneted by IAM
-### Use Case Change 2nd Factor Device
-Implmeneted by IAM
-### Use Case Password forgotten
-Implmeneted by IAM
+List of use cases
+1. Use Case Create teleTAN
+1. Use Case Login
+1. Use Case Logout
+1. Use Case Change Password
+1. Use Case Change 2nd Factor Device
+1. Use Case Password forgotten
