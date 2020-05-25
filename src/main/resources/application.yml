@@ -8,11 +8,11 @@ keycloak:
   realm: cwa
   resource: verification-portal
   security-constraints:
-    -   authRoles:
-          - teletan_generator
-        securityCollections:
-          -   patterns:
-                - /*
+  - authRoles:
+    - teletan_generator
+    securityCollections:
+    - patterns:
+      - /*
 server:
   error:
     whitelabel:
