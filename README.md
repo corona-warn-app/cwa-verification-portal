@@ -21,12 +21,13 @@ The goal of this project is to develop the official Corona-Warn-App for Germany 
 
 ## About this component
 For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
-This component provides a simple user interface for the servicelines agents to generate the temporaly TAN. For security reasons it comes along with an wide spread IAM (**I**dentity**A**cess**M**anagement) which uses 2-Factor-Authentification for User Authentification
+This component provides a simple user interface for the servicelines agents to generate the temporaly TAN. For security reasons it comes along with an wide spread IAM (**I**dentity**A**cess**M**anagement) which uses 2-Factor-Authentification for User Authentification, which will be hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) in the corona-warn-app org.
 
 ## Development
 
 This component can be locally build in order to test the functionality of the interfaces and verify the concepts it is build upon. 
 There are two ways to build:
+
  - [Maven](https:///maven.apache.org) build - to run this component as spring application on your local machine
  - [Docker](https://www.docker.com) build - to run it as docker container build from the provided docker build [file](https://github.com/corona-warn-app/cwa-verification-server/blob/master/Dockerfile)
  ### Prerequisites
@@ -34,6 +35,43 @@ There are two ways to build:
  [Maven](https://apache.maven.org)  
  *(optional)*: [Docker](https://www.docker.com)  
 
+### Build
+ Whether you cloned or downloaded the 'zipped' sources you will either find the sources in the chosen checkout-directory or get a zip file with the source code, which you can expand to a folder of your choice.
+
+ In either case open a terminal pointing to the directory you put the sources in. The local build process is described afterwards depending on the way you choose.
+#### Maven based build
+For actively take part on the development this is the way you should choose.   
+Please check, whether following prerequisites are fulfilled
+- [Open JDK 11](https://openjdk.java.net) or a similar JDK 11 compatible VM  
+- [Maven](https://apache.maven.org)  
+
+is installed on your machine.  
+You can then open a terminal pointing to the root directory of the verification server and do the following:
+
+    mvn package
+    java -jar target/cwa-verification-portal-0.0.1-SNAPSHOT.jar  
+
+The verificationportal will start up and run locally on your machine available on port 8080.
+Please keep in mind, that you need another component [cwa-verification-iam] the get this running in a sensable manner.
+
+#### Docker based build  
+We recommend that you first check the prerequisites to ensure that  
+- [Docker](https://www.docker.com)  
+
+is installed on you machine  
+
+On the commandline do the following:
+```bash
+docker build -f|--file <path to dockerfile>  -t <imagename>  <path-to-verificationportalserver-root>
+docker run -p 127.0.0.1:8080:8080/tcp -it <imagename>
+```
+or simply  
+```bash
+docker build --pull --rm -f "Dockerfile" -t cwa-verificationportal "."
+docker run -p 127.0.0.1:8080:8080/tcp -it cwa-verificationportal
+```
+if you are in the root of the checked out repository.  
+The docker image will then run on your local machine on port 8080 assuming you configured docker for shared network mode.
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
