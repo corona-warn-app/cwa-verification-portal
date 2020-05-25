@@ -17,6 +17,7 @@ The goal of this project is to develop the official Corona-Warn-App for Germany 
 
 ## Status
 
+**TBD: Sonarcloud Shields**
 
 
 ## About this component
