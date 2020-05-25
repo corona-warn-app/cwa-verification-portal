@@ -27,14 +27,12 @@
 	
 	<!-- BEGIN page specific content  -->
 	<div class="text-big" style="top: 210px;">Anmeldung</div>
-	<div class="text-bold" style="top: 290px;">Hier können Sie für den Patienten die in der Corona Warn App benötigte TeleTAN anfordern.</div>
-	<div class="text" style="top: 340px;">Bitte melden Sie sich mit Ihrem Benutzernamen und Passwort an.
-											Halten Sie Ihr mobiles Endgerät bereit, auf dem Sie die
-											FreeOTP Authenticator App installiert haben.</div>
-	<form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
-		<input class="input" style="top: 420px;" type="text" placeholder="Benutzername" name="username" required>   
-		<input class="input" style="top: 485px;" type="password" placeholder="Passwort" name="password" required>
-        <input class="button" style="top: 560px;" type="submit" value="Anmelden">
+	<div class="text" style="top: 310px;">Bitte wählen Sie ein neues Passwort</div>
+	<form id="kc-passwd-update-form" action="${url.loginAction}" method="post">
+        <input type="text" name="username" value="${username}" autocomplete="username" readonly="readonly" style="display:none;"/>
+		<input class="input" style="top: 360px;" type="password" placeholder="Passwort" name="password-new" required>   
+		<input class="input" style="top: 425px;" type="password" placeholder="Passwort bestätigen" name="password-confirm" required>
+        <input class="button" style="top: 500px;" type="submit" value="Abschicken">
     </form>
 	<!-- END page specific content  -->
  </body>

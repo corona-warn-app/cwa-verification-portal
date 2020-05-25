@@ -20,7 +20,6 @@
  */
 package app.coronawarn.verification.portal.controller;
 
-
 import app.coronawarn.verification.portal.client.TeleTANClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Random;
 import java.util.UUID;
-
 
 /**
  * This class represents the WEB UI controller for the verification portal.
@@ -46,14 +44,24 @@ public class VerificationPortalController
     private static final String ROUTE_TELETAN = "/teletan";
 
     /**
+     * The route to the TeleTAN portal web site
+     */
+    private static final String ROUTE_INDEX = "/";
+
+    /**
      * The html Thymeleaf template for the TeleTAN portal web site
      */
     private static final String TEMPLATE_TELETAN = "teletan";
 
     /**
+     * The html Thymeleaf template for the TeleTAN portal web site
+     */
+    private static final String TEMPLATE_INDEX = "index";
+
+    /**
      * The Thymeleaf attribute used for displaying the teletan
      */
-    private static final String ATTR_TELETAN = "teleTan";
+    private static final String ATTR_TELETAN = "teleTAN";
 
     /**
      * The logger.
@@ -67,12 +75,22 @@ public class VerificationPortalController
     private TeleTANClient teleTANClient;
 
     /**
+     * The Web GUI page request showing the index.html web page without a teletan
+     * @param model the thymeleaf model
+     * @return the name of the HTML Thymeleaf template to be used for the HTML page
+     */
+    @GetMapping(ROUTE_INDEX)
+    public String index(Model model) {
+         return TEMPLATE_INDEX;
+    }
+
+    /**
      * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
      * @param model the thymeleaf model
      * @return the name of the HTML Thymeleaf template to be used for the HTML page
      */
     @GetMapping(ROUTE_TELETAN)
-    public String home(Model model) {
+    public String teletan(Model model) {
         // try to get the teleTAN from the verification server
         //TODO String teleTAN = teleTANClient.result();
 
@@ -80,6 +98,7 @@ public class VerificationPortalController
         String teleTAN = String.valueOf(Math.abs(new Random().nextInt()));
 
         model.addAttribute(ATTR_TELETAN, teleTAN);
+        LOG.debug("TeleTAN generated: " + teleTAN);
         return TEMPLATE_TELETAN;
     }
 }
