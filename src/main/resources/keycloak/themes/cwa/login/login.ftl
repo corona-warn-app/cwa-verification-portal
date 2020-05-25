@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" media="screen" href="${url.resourcesPath}/teletan.css" />
-    <title>Verification Portal</title>
+    <title>TeleTAN Portal</title>
 	<link rel="icon" href="${url.resourcesPath}/img/c-19_logo.png">
   </head>
   <body>

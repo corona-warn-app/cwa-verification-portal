@@ -1,0 +1,26 @@
+keycloak:
+  auth-server-url: http://localhost:8080/auth
+  principal-attribute: preferred_username
+  public-client: true
+  realm: cwa
+  resource: verification-portal
+  security-constraints:
+    -   authRoles:
+          - teletan_generator
+        securityCollections:
+          -   patterns:
+                - /*
+server:
+  error:
+    whitelabel:
+      enabled: false
+  port: 8090
+  servlet:
+    context-path: /cwa
+    session:
+      timeout: 14400s
+uri:
+  endpoint:
+    verification:
+      service:
+        teletan: http://verificationserver:9090/teletan
