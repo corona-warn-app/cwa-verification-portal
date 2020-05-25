@@ -39,7 +39,6 @@ jobs:
     - uses: actions/download-artifact@v1
       with:
         name: target
-        path: target
     - run: sudo apt-get install --yes --no-install-recommends libxml-xpath-perl
     - run: |
         VERSION=$(xpath -q -e "/project/version/text()" pom.xml)
@@ -47,5 +46,5 @@ jobs:
     - run: echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u jhagestedt --password-stdin
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: docker build . --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/app:${VERSION}
+    - run: docker build --file DockerfileCi --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/app:${VERSION} .
     - run: docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/app:${VERSION}
