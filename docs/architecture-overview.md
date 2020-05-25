@@ -39,8 +39,18 @@ The context is:
 # Software Design
 
 ## Technology Stack
+1. Spring Boot
+1. Docker images for deployment
+
 ## Security
+Security of the portal is implemented by
+1. tight integration with Verification IAM
+2. using two factor authentication
+1. manual process for onboarding new users
+
 ### Authentication
+Authentication is implemented by validating a JWT issues by te Verification IAM. Verification includes cryptographic validation of the signature.
+The public key of the IAM is dynamically obtained from the IAM. 
 
 # Security Requirements
 
@@ -65,7 +75,7 @@ Has technical role "c19hotlineTrustee", but is not implemented in this component
 
 ## Use Cases
 ### Use Case Initial Login
-content missing
+implmeneted by IAM
 
 ### Use Case Create teleTAN
 Actor: Hotline Employee or Employee Health Authority
@@ -81,6 +91,7 @@ Alternative Flow:
 If the Verification Server is not available or returns an error, an generic error message is shown. 
 
 ### Use Case Login
+Implmeneted by IAM
 Actor: Hotline Employee or Employee Health Authority
 Precondition: user is not logged in
 Steps:
@@ -93,6 +104,8 @@ Result:
 The user is logged in.
 
 ### Use Case Logout
+Implmeneted by IAM
+
 Actor: Hotline Employee or Employee Health Authority
 Precondition: user is logged in
 Steps:
@@ -103,12 +116,8 @@ Result:
 The user is logged out.
 
 ### Use Case Change Password
-content missing
+Implmeneted by IAM
 ### Use Case Change 2nd Factor Device
-content missing
+Implmeneted by IAM
 ### Use Case Password forgotten
-content missing
-
-
-
-
+Implmeneted by IAM
