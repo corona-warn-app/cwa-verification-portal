@@ -29,7 +29,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # will be uncommented as soon as sonar token is available
-    # - run: mvn --batch-mode verify sonar:sonar -Dsonar.login=${SONAR_TOKEN}
+    # - run: |
+    #   mvn --batch-mode verify sonar:sonar \
+    #     -Dsonar.login=${SONAR_TOKEN} \
+    #     -Dsonar.host.url=https://sonarcloud.io \
+    #     -Dsonar.organization=corona-warn-app \
+    #     -Dsonar.projectKey=corona-warn-app_cwa-verification-portal
     #   env:
     #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -53,5 +58,5 @@ jobs:
     - run: echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_ACTOR} --password-stdin
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - run: docker build --file DockerfileCi --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/cwa-verification-portal:${VERSION} .
+    - run: docker build --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/cwa-verification-portal:${VERSION} .
     - run: docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/cwa-verification-portal:${VERSION}
