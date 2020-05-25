@@ -145,7 +145,15 @@
 	border-color: #dddddd;
 }
 
-	
+.qr-code {
+	position: fixed;
+	left: 50%;
+	width: 180px;
+	margin-left: -90px;
+	height: auto;
+}
+
+
 @font-face {
   font-family: 'Telegrotesk Next Regular';
   font-style: normal;
