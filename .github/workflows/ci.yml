@@ -28,6 +28,11 @@ jobs:
     - run: mvn --batch-mode deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # will be uncommented as soon as sonar token is available
+    # - run: mvn --batch-mode verify sonar:sonar -Dsonar.login=${SONAR_TOKEN}
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v1
       with:
         name: target
