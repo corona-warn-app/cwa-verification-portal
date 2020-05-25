@@ -29,4 +29,32 @@ The context is:
     - System which trusts the Verification Portal and ultimatly generates the teleTAN
 
 
+##	Core Entities
+|Entitiy|	Definition|	
+| ------------- |:-------------:|
+|teleTAN|	Is a subtype of TAN with reduced length and life time. This TAN is handed over via phone and contains only uppercase letters and numbers, excluding 0,O and I,1. Length of teleTAN is 7 characters. The lifetime of a teleTAN is 1h. This entity is managed by Verification Server	|
+|SARS-CoV-2 Test|	A SARS-CoV-2 Test aggregates several probes donated by a single person to verified whether they proof an infection with the SARS-CoV-2 virus or not. A SARS-CoV-2 Test can have multiple states, “positive”, “negative”, “unknow”, “erroneous”	|
+
+
+# Software Design
+
+## Technology Stack
+## Security
+### Authentication
+
+# Security Requirements
+
+1. Session Timeout
+The session timout is 4 hours.
+
+1. Display timeout for teleTAN
+A teleTAN must not be shown after 10min. 
+
+# Implemented Use Cases
+## Referenced User Stories
+##	Actors
+## Use Cases
+
+
+
 
