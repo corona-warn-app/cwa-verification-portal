@@ -1,23 +1,38 @@
-# Corona-Warn-App
-## About this project
-We are developing the official COVID-19 exposure notification app for Germany, called "Corona-Warn-App". This project has the goal to develop a tracing app based on technology with a decentralized approach -  heavily inspired by the [DP-3T](https://github.com/DP-3T/documents) (Decentralized Privacy-Preserving Proximity Tracing) and [TCN](https://tcn-coalition.org/) protocols and based on the [Privacy-Preserving Contact Tracing specifications](https://www.apple.com/covid19/contacttracing/) by Apple and Google. Like DP-3T and the TCN Protocol, the apps and backend infrastructure will be entirely open source - licensed under the [Apache 2.0 license](LICENSE)! The apps (for iOS and Android) will collect anonymous data from nearby mobile phones using Bluetooth technology. The data will be stored locally on each device preventing access and control over tracing data by authorities or anyone else. We will meet the applicable data protection standards and guarantee a high level of IT security. By doing so, we are addressing people's privacy concerns and contributing to a significant increase in the adoption of the apps.
+# Corona-Warn-App Verification Portal
+<p align="center">
+    <a href="https://github.com/corona-warn-app/cwa-verification-portal/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/corona-warn-app/cwa-portal-server?style=flat"></a>
+    <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server?style=flat"></a>
+    <a href="https://github.com/corona-warn-app/cwa-verification-portal/blob/master/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
+</p>
+<p align="center">
+  <a href="#development">Development</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#support-and-feedback">Support</a> •
+  <a href="#how-to-contribute">Contribute</a> •
+  <a href="#contributors">Contributors</a> •
+  <a href="#repositories">Repositories</a> •
+  <a href="#licensing">Licensing</a>
+</p>
+The goal of this project is to develop the official Corona-Warn-App for Germany based on the exposure notification API from [Apple](https://www.apple.com/covid19/contacttracing/) and [Google](https://www.google.com/covid19/exposurenotifications/). The apps (for both iOS and Android) use Bluetooth technology to exchange anonymous encrypted data with other mobile phones (on which the app is also installed) in the vicinity of an app user's phone. The data is stored locally on each user's device, preventing authorities or other parties from accessing or controlling the data. This repository contains the **verification service** for the Corona-Warn-App. This implementation is still a **work in progress**, and the code it contains is currently alpha-quality code.  
+
+## Status
+
+
 
 ## About this component
-To Be Expanded:
+For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
+This component provides a simple user interface for the servicelines agents to generate the temporaly TAN. For security reasons it comes along with an wide spread IAM (**I**dentity**A**cess**M**anagement) which uses 2-Factor-Authentification for User Authentification
 
-Additional component in the context of the verification process
+## Development
 
-## Who we are
-
-The German government has asked SAP and Deutsche Telekom to develop the Corona-Warn-App for Germany as open source software. Deutsche Telekom is providing the network and mobile technology and will operate and run the backend for the app in a safe, scalable and stable manner. SAP is responsible for the app development, its framework and the underlying platform. Therefore, development teams of SAP and Deutsche Telekom are contributing to this project. At the same time our commitment to open source means that we are enabling -in fact encouraging- all interested parties to contribute and become part of its developer community.
-
-## Credits
-
-We'd like to thank all the partners who have been involved in this enormous project from the beginning. The project would not be where it is today without all the exploration and great work that had already been done around the [PEPP-PT](https://www.pepp-pt.org/) approach by partners on a European and national level. We will build on top of some of these components and appreciate how everyone is dedicated to making this new approach successful.
-
-## Data Privacy
-
-In this project we are strictly observing the principles of the General Data Protection Regulation (GDPR) to protect the users’ privacy. We are processing necessary data only - exclusively for the purpose to let users know if they have come into close contact with other infected users, without revealing each other's identity. The compliance with these regulations is safeguarded by several procedures, e.g. by implementing technical and organizational measures adhering diligently to the high standards of the GDPR. Of course, the app will provide users with a comprehensive privacy statement to be as transparent and clear as possible. As we are developing the app as an open source project, the community can review it. We appreciate your feedback!
+This component can be locally build in order to test the functionality of the interfaces and verify the concepts it is build upon. 
+There are two ways to build:
+ - [Maven](https:///maven.apache.org) build - to run this component as spring application on your local machine
+ - [Docker](https://www.docker.com) build - to run it as docker container build from the provided docker build [file](https://github.com/corona-warn-app/cwa-verification-server/blob/master/Dockerfile)
+ ### Prerequisites
+ [Open JDK 11](https://openjdk.java.net)  
+ [Maven](https://apache.maven.org)  
+ *(optional)*: [Docker](https://www.docker.com)  
 
 ## Code of Conduct
 
@@ -29,23 +44,49 @@ We are building this application for Germany. We want to be as open and transpar
 
 Consequently, all content will be made available primarily in English. We also ask all interested people to use English as language to create issues, in their code (comments, documentation etc.) and when you send requests to us. The application itself, documentation and all end-user facing content will - of course - be made available in German (and probably other languages as well). We also try to make some developer documentation available in German, but please understand that focussing on the _Lingua Franca_ of the global developer community makes the development of this application as efficient as possible.
 
-## Our documentation
+## Documentation
 
-This repository contains the developer documentation and related content.
+Documents describing this component and its underlying process can be found under the [documentation subdir](docs)
 
-### Project Scope
-- [Corona-Warn-App - Project Scope (PDF)](#)
+## Support and Feedback
+The following channels are available for discussions, feedback, and support requests:
+
+| Type                     | Channel                                                |
+| ------------------------ | ------------------------------------------------------ |
+| **General Discussion**   | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server/question.svg?style=flat-square"></a> </a>   |
+| **Concept Feedback**    | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server/architecture.svg?style=flat-square"></a>  |
+| **Verification Server Issue**    | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server?style=flat"></a>  |
+| **Other Requests**    | <a href="mailto:opensource@telekom.de" title="Email CWA Team"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a> 
+
+## How to contribute
+
+Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute, our team setup, the project structure and additional details which you need to know to work with us.
+
+## Contributors
+
+The German government has asked SAP AG and Deutsche Telekom AG to develop the Corona-Warn-App for Germany as open source software. Deutsche Telekom is providing the network and mobile technology and will operate and run the backend for the app in a safe, scalable and stable manner. SAP is responsible for the app development, its framework and the underlying platform. Therefore, development teams of SAP and Deutsche Telekom are contributing to this project. At the same time our commitment to open source means that we are enabling -in fact encouraging- all interested parties to contribute and become part of its developer community.
+
+## Repositories
+
+The following public repositories are currently available for the Corona-Warn-App:
+
+| Repository          | Description                                                           |
+| ------------------- | --------------------------------------------------------------------- |
+| [cwa-documentation] | Project overview, general documentation, and white papers             |
+| [cwa-server]        | Backend implementation for the Apple/Google exposure notification API |
+| [cwa-verification-server] | Backend implementation of the verification process|
+| [cwa-verification-portal] | Portal for the Hotline to manually verify COVID-19 infected people|
+[cwa-documentation]: https://github.com/corona-warn-app/cwa-documentation
+[cwa-server]: https://github.com/corona-warn-app/cwa-server
+[cwa-verification-server]: https://github.com/corona-warn-app/cwa-verification-server
+[cwa-verification-portal]: https://github.com/corona-warn-app/cwa-verification-portal
 
 ## Licensing
 
-Copyright (c) 2020 Deutsche Telekom AG and SAP SE or an SAP affiliate company.
+Copyright (c) 2020 Deutsche Telekom AG.
 
 Licensed under the **Apache License, Version 2.0** (the "License"); you may not use this file except in compliance with the License.
 
 You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the [LICENSE](./LICENSE) for the specific language governing permissions and limitations under the License.
-
-## How to contribute
-
-Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute, our team setup, the project structure and additional details which you need to know to work with us.
