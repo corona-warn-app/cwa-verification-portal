@@ -11,6 +11,17 @@
     <name>cwa-verification-portal</name>
     <description>CWA Verification portal project.</description>
 
+    <url>https://www.coronawarn.app/</url>
+    <ciManagement>
+        <url>https://github.com/corona-warn-app/cwa-verification-portal/actions?query=workflow%3Aci</url>
+    </ciManagement>
+    <issueManagement>
+        <url>https://github.com/corona-warn-app/cwa-verification-portal/issues</url>
+    </issueManagement>
+    <scm>
+        <url>https://github.com/corona-warn-app/cwa-verification-portal</url>
+    </scm>
+
     <properties>
         <!-- java -->
         <java.version>11</java.version>
@@ -28,7 +39,7 @@
         <!-- plugins -->
         <plugin.checkstyle.version>3.1.1</plugin.checkstyle.version>
         <plugin.sonar.version>3.6.1.1688</plugin.sonar.version>
-        <plugin.jacoco.version>0.8.4</plugin.jacoco.version>
+        <plugin.jacoco.version>0.8.5</plugin.jacoco.version>
         <!-- sonar -->
         <sonar.organization>corona-warn-app</sonar.organization>
         <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
