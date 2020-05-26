@@ -27,17 +27,11 @@
 
 <!-- BEGIN page specific content  -->
 <div class="text-big" style="top: 210px;">Anmeldung</div>
-<div class="text" style="top: 290px;">1. Um ihr Benutzerkonto zu aktivieren, öffnen Sie bitte ihre FreeOTP App und
-  scannen Sie den unten angezeigten QR-Code
+<div class="text" style="top: 320px;">Öffnen Sie bitte ihre FreeOTP App und geben Sie das von der App erzeugte Einmal-Passwort für den Benutzer ein
 </div>
-<img class="qr-code" style="position: fixed; left: 50%; width: 180px; margin-left: -90px; height: auto; top: 345px;"
-     src="data:image/png;base64, ${totp.totpSecretQrCode}">
-<div class="text" style="top: 550px;">2. Geben Sie das von der App erzeugte Einmal-Passwort ein</div>
-<form id="kc-totp-settings-form" action="${url.loginAction}" method="post">
-  <input class="input" style="top: 585px;" type="password" placeholder="Einmal-Passwort" name="totp" autocomplete="off"
-         required>
-  <input type="hidden" name="totpSecret" value="${totp.totpSecret}"/>
-  <input class="button" style="top: 650px;" type="submit" value="Abschicken">
+<form id="kc-otp-login-form" action="${url.loginAction}" method="post">
+  <input class="input" style="top: 435px;" placeholder="Einmal-Passwort" name="otp" autocomplete="off" type="text" autofocus/>
+  <input class="button" style="top: 500px;" type="submit" name="login" value="Abschicken">
 </form>
 <!-- END page specific content  -->
 </body>
