@@ -8,23 +8,16 @@ keycloak:
   public-client: true
   realm: cwa
   resource: verification-portal
-  security-constraints:
-    - authRoles:
-        - teletan_generator
-      securityCollections:
-        - patterns:
-            - /*
 
 server:
   error:
     whitelabel:
       enabled: false
-  port: 8081
+  port: 8080
   servlet:
     context-path: /cwa
     session:
       timeout: 14400s
-
 
 cwa-verification-server:
   url: http://localhost:8082

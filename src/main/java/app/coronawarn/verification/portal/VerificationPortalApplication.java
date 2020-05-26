@@ -1,9 +1,9 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
+ * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
  * License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License.
@@ -18,6 +18,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal;
 
 import org.springframework.boot.SpringApplication;
@@ -25,11 +26,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
- * The Spring Boot application class
+ * The Spring Boot application class.
  */
 @SpringBootApplication
 @EnableFeignClients
 public class VerificationPortalApplication {
+
   public static void main(String[] args) {
     SpringApplication.run(VerificationPortalApplication.class, args);
   }

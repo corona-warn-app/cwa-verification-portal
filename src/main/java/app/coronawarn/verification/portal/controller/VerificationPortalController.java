@@ -1,9 +1,9 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
+ * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
  * License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License.
@@ -22,66 +22,59 @@
 package app.coronawarn.verification.portal.controller;
 
 
-import app.coronawarn.verification.portal.client.TeleTanClientSI;
 import app.coronawarn.verification.portal.client.TeleTan;
-
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import app.coronawarn.verification.portal.client.TeleTanClientSI;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.Random;
-import java.util.UUID;
-
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class represents the WEB UI controller for the verification portal.
  * It implements a very simple HTML interface with one submit button to get and show a newly generated TeleTAN
  */
+@Slf4j
 @Controller
 public class VerificationPortalController {
 
   /**
    * The route to the TeleTAN portal web site.
    */
-  private static final String ROUTE_TELETAN = "/teletan";
+  public static final String ROUTE_TELETAN = "/teletan";
 
   /**
-   * The route to the TeleTAN portal web site
+   * The route to log out from the portal web site
+   */
+  private static final String ROUTE_LOGOUT = "/logout";
+
+  /**
+   * The route to the TeleTAN portal web site.
    */
   private static final String ROUTE_INDEX = "/";
 
   /**
-   * The html Thymeleaf template for the TeleTAN portal web site
+   * The html Thymeleaf template for the TeleTAN portal web site.
    */
   private static final String TEMPLATE_TELETAN = "teletan";
 
   /**
-   * The html Thymeleaf template for the TeleTAN portal web site
+   * The html Thymeleaf template for the TeleTAN portal web site.
    */
   private static final String TEMPLATE_INDEX = "index";
 
   /**
-   * The Thymeleaf attribute used for displaying the teletan
+   * The Thymeleaf attribute used for displaying the teletan.
    */
   private static final String ATTR_TELETAN = "teleTAN";
-
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOG = LogManager.getLogger();
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
    */
   @Autowired
   private TeleTanClientSI teleTanClient;
-
 
   /**
    * The Web GUI page request showing the index.html web page without a teletan
@@ -115,5 +108,20 @@ public class VerificationPortalController {
     }
     return TEMPLATE_TELETAN;
   }
-
+  
+  /**
+   * The Get request to log out from the portal web site
+   *
+   * @param request the http request object
+   * @return the redirect path after the logout
+   */
+  @GetMapping(ROUTE_LOGOUT)
+  public String logout(HttpServletRequest request) {
+    try {
+      request.logout();
+    } catch (ServletException e) {
+      e.printStackTrace();
+    }
+    return "redirect:" + ROUTE_TELETAN;
+  }
 }
