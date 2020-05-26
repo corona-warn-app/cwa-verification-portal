@@ -1,9 +1,13 @@
-# Corona-Warn-App Verification Portal
+<h1 align="center">
+    Corona-Warn-App Verification Portal
+</h1>
+
 <p align="center">
-    <a href="https://github.com/corona-warn-app/cwa-verification-portal/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/corona-warn-app/cwa-portal-server?style=flat"></a>
-    <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server?style=flat"></a>
+    <a href="https://github.com/corona-warn-app/cwa-verification-portal/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/corona-warn-app/cwa-verification-portal?style=flat"></a>
+    <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal?style=flat"></a>
     <a href="https://github.com/corona-warn-app/cwa-verification-portal/blob/master/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
 </p>
+
 <p align="center">
   <a href="#development">Development</a> •
   <a href="#documentation">Documentation</a> •
@@ -13,12 +17,14 @@
   <a href="#repositories">Repositories</a> •
   <a href="#licensing">Licensing</a>
 </p>
-The goal of this project is to develop the official Corona-Warn-App for Germany based on the exposure notification API from [Apple](https://www.apple.com/covid19/contacttracing/) and [Google](https://www.google.com/covid19/exposurenotifications/). The apps (for both iOS and Android) use Bluetooth technology to exchange anonymous encrypted data with other mobile phones (on which the app is also installed) in the vicinity of an app user's phone. The data is stored locally on each user's device, preventing authorities or other parties from accessing or controlling the data. This repository contains the **verification service** for the Corona-Warn-App. This implementation is still a **work in progress**, and the code it contains is currently alpha-quality code.  
+
+The goal of this project is to develop the official Corona-Warn-App for Germany based on the exposure notification API from [Apple](https://www.apple.com/covid19/contacttracing/) and [Google](https://www.google.com/covid19/exposurenotifications/). The apps (for both iOS and Android) use Bluetooth technology to exchange anonymous encrypted data with other mobile phones (on which the app is also installed) in the vicinity of an app user's phone. The data is stored locally on each user's device, preventing authorities or other parties from accessing or controlling the data. This repository contains the **verification portal** for the Corona-Warn-App. This implementation is still a **work in progress**, and the code it contains is currently alpha-quality code.
 
 ## Status
-
-**TBD: Sonarcloud Shields**
-
+![ci](https://github.com/corona-warn-app/cwa-verification-portal/workflows/ci/badge.svg)
+[![quality gate](https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-verification-portal&metric=alert_status)](https://sonarcloud.io/dashboard?id=corona-warn-app_cwa-verification-portal)
+[![coverage](https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-verification-portal&metric=coverage)](https://sonarcloud.io/dashboard?id=corona-warn-app_cwa-verification-portal)
+[![bugs](https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-verification-portal&metric=bugs)](https://sonarcloud.io/dashboard?id=corona-warn-app_cwa-verification-portal)
 
 ## About this component
 For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
@@ -85,21 +91,21 @@ Consequently, all content will be made available primarily in English. We also a
 
 ## Documentation
 
-Documents describing this component and its underlying process can be found under the [documentation subdir](docs)
+The full documentation for the Corona-Warn-App can be found in the [cwa-documentation](https://github.com/corona-warn-app/cwa-documentation) repository. The documentation repository contains technical documents, architecture information, and white papers related to this implementation.
 
 ## Support and Feedback
 The following channels are available for discussions, feedback, and support requests:
 
 | Type                     | Channel                                                |
 | ------------------------ | ------------------------------------------------------ |
-| **General Discussion**   | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server/question.svg?style=flat-square"></a> </a>   |
-| **Concept Feedback**    | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server/architecture.svg?style=flat-square"></a>  |
-| **Verification Server Issue**    | <a href="https://github.com/corona-warn-app/cwa-verification-server/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-server?style=flat"></a>  |
-| **Other Requests**    | <a href="mailto:opensource@telekom.de" title="Email CWA Team"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a> 
+| **General Discussion**   | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal/question.svg?style=flat-square"></a> </a>   |
+| **Concept Feedback**    | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal/architecture.svg?style=flat-square"></a>  |
+| **Verification Portal Issue**    | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal?style=flat"></a>  |
+| **Other Requests**    | <a href="mailto:opensource@telekom.de" title="Email CWA Team"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
-## How to contribute
+## How to Contribute
 
-Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute, our team setup, the project structure and additional details which you need to know to work with us.
+Contribution and feedback is encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](./CONTRIBUTING.md). By participating in this project, you agree to abide by its [Code of Conduct](./CODE_OF_CONDUCT.md) at all times.
 
 ## Contributors
 
@@ -114,11 +120,12 @@ The following public repositories are currently available for the Corona-Warn-Ap
 | [cwa-documentation] | Project overview, general documentation, and white papers             |
 | [cwa-server]        | Backend implementation for the Apple/Google exposure notification API |
 | [cwa-verification-server] | Backend implementation of the verification process|
-| [cwa-verification-portal] | Portal for the Hotline to manually verify COVID-19 infected people|
-[cwa-documentation]: (https://github.com/corona-warn-app/cwa-documentation)
-[cwa-server]: (https://github.com/corona-warn-app/cwa-server)
-[cwa-verification-server]: (https://github.com/corona-warn-app/cwa-verification-server)
-[cwa-verification-portal]: (https://github.com/corona-warn-app/cwa-verification-portal)
+| [cwa-verification-portal] | The portal to interact with the verification server |
+
+[cwa-documentation]: https://github.com/corona-warn-app/cwa-documentation
+[cwa-server]: https://github.com/corona-warn-app/cwa-server
+[cwa-verification-server]: https://github.com/corona-warn-app/cwa-verification-server
+[cwa-verification-portal]: https://github.com/corona-warn-app/cwa-verification-Portal
 
 ## Licensing
 
