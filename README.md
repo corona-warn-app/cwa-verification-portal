@@ -115,10 +115,10 @@ The following public repositories are currently available for the Corona-Warn-Ap
 | [cwa-server]        | Backend implementation for the Apple/Google exposure notification API |
 | [cwa-verification-server] | Backend implementation of the verification process|
 | [cwa-verification-portal] | Portal for the Hotline to manually verify COVID-19 infected people|
-[cwa-documentation]: https://github.com/corona-warn-app/cwa-documentation
-[cwa-server]: https://github.com/corona-warn-app/cwa-server
-[cwa-verification-server]: https://github.com/corona-warn-app/cwa-verification-server
-[cwa-verification-portal]: https://github.com/corona-warn-app/cwa-verification-portal
+[cwa-documentation]: (https://github.com/corona-warn-app/cwa-documentation)
+[cwa-server]: (https://github.com/corona-warn-app/cwa-server)
+[cwa-verification-server]: (https://github.com/corona-warn-app/cwa-verification-server)
+[cwa-verification-portal]: (https://github.com/corona-warn-app/cwa-verification-portal)
 
 ## Licensing
 
