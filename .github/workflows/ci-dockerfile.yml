@@ -1,4 +1,4 @@
-name: ci-dockerlint
+name: ci-dockerfile
 on:
   push:
     branches:
