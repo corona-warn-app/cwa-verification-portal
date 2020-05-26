@@ -77,10 +77,7 @@ public class VerificationPortalErrorController implements ErrorController {
             }
         }
         return TEMPLATE_ERROR;
-
     }
-    return TEMPLATE_ERROR;
-  }
 
 
     /**

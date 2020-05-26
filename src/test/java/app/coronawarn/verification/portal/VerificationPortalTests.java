@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @TestPropertySource("classpath:test.yml")
 public class VerificationPortalTests {
 
-  static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LogManager.getLogger();
 
   @Autowired
   private MockMvc mockMvc;
