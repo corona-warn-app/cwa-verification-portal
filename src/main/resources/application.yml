@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: cwa-verification-portal
@@ -10,11 +9,11 @@ keycloak:
   realm: cwa
   resource: verification-portal
   security-constraints:
-    -   authRoles:
-          - teletan_generator
-        securityCollections:
-          -   patterns:
-                - /*
+  - authRoles:
+    - teletan_generator
+    securityCollections:
+    - patterns:
+      - /*
 
 server:
   error:
@@ -25,7 +24,6 @@ server:
     context-path: /cwa
     session:
       timeout: 14400s
-
 
 cwa-verification-server:
   url: http://localhost:8082
