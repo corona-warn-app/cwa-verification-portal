@@ -25,6 +25,8 @@ package app.coronawarn.verification.portal.controller;
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.client.TeleTanClientSI;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,9 +68,10 @@ public class VerificationPortalController {
   private static final String TEMPLATE_INDEX = "index";
 
   /**
-   * The Thymeleaf attribute used for displaying the teletan.
+   * The Thymeleaf attributes used for displaying the teletan and the current user
    */
   private static final String ATTR_TELETAN = "teleTAN";
+  private static final String ATTR_USER = "username";
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
@@ -90,21 +93,26 @@ public class VerificationPortalController {
   /**
    * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
    *
+   * @param request the http request object
    * @param model the thymeleaf model
    * @return the name of the HTML Thymeleaf template to be used for the HTML page
    */
   @GetMapping(ROUTE_TELETAN)
-  public String home(Model model) {
+  public String home(HttpServletRequest request, Model model) {
+
+    // get the current security token
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request.getUserPrincipal();
+
     // try to get the teleTan from the verification server
     TeleTan teleTan = teleTanClient.createTeleTan();
 
-    //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
     //String teleTan = String.valueOf(Math.abs(new Random().nextInt()));
     if (model == null) {
       //TODO fix by proper implementation of unit test
       return teleTan.getValue();
     } else {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue());
+      model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
     }
     return TEMPLATE_TELETAN;
   }
@@ -122,6 +130,6 @@ public class VerificationPortalController {
     } catch (ServletException e) {
       e.printStackTrace();
     }
-    return "redirect:" + ROUTE_TELETAN;
+    return "redirect:" + ROUTE_INDEX;
   }
 }

@@ -40,6 +40,8 @@ public class VerificationPortalErrorController implements ErrorController {
    */
   private static final String ERROR_404 = "Die aufgerufene Seite konnte nicht gefunden werden";
   private static final String ERROR_500 = "Es kann keine TeleTAN aufgrund eines internen Fehlers generiert werden.";
+  private static final String ERROR_403 = "Der Benutzer kann nicht authentifiziert werden.";
+  private static final String ERROR = "Es kann keine TeleTAN aufgrund eines internen Fehlers generiert werden.";
 
   /**
    * The internal route to the portal error web site.
@@ -73,6 +75,10 @@ public class VerificationPortalErrorController implements ErrorController {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_404);
       } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_500);
+      } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
+        model.addAttribute(ATTR_ERROR_MSG, ERROR_403);
+      } else {
+        model.addAttribute(ATTR_ERROR_MSG, ERROR);
       }
     }
     return TEMPLATE_ERROR;
