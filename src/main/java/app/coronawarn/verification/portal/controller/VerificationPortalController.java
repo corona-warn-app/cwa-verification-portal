@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class represents the WEB UI controller for the verification portal.
@@ -41,7 +43,12 @@ public class VerificationPortalController {
   /**
    * The route to the TeleTAN portal web site.
    */
-  private static final String ROUTE_TELETAN = "/teletan";
+  public static final String ROUTE_TELETAN = "/teletan";
+
+  /**
+   * The route to log out from the portal web site
+   */
+  private static final String ROUTE_LOGOUT = "/logout";
 
   /**
    * The route to the TeleTAN portal web site.
@@ -101,5 +108,20 @@ public class VerificationPortalController {
     }
     return TEMPLATE_TELETAN;
   }
-
+  
+  /**
+   * The Get request to log out from the portal web site
+   *
+   * @param request the http request object
+   * @return the redirect path after the logout
+   */
+  @GetMapping(ROUTE_LOGOUT)
+  public String logout(HttpServletRequest request) {
+    try {
+      request.logout();
+    } catch (ServletException e) {
+      e.printStackTrace();
+    }
+    return "redirect:" + ROUTE_TELETAN;
+  }
 }

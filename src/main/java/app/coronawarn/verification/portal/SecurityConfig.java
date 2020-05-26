@@ -21,6 +21,7 @@
 
 package app.coronawarn.verification.portal;
 
+import app.coronawarn.verification.portal.controller.VerificationPortalController;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -41,6 +42,8 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+
+  private static final String ROLE_TELETAN_GENERATOR = "teletan_generator";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -63,6 +66,9 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.authorizeRequests();
+    http.authorizeRequests()
+            .antMatchers(VerificationPortalController.ROUTE_TELETAN)
+            .hasRole(ROLE_TELETAN_GENERATOR)
+            .anyRequest().authenticated();
   }
 }
