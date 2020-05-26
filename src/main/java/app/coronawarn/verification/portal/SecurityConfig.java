@@ -43,7 +43,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  private static final String ROLE_TELETAN_GENERATOR = "teletan_generator";
+  private static final String ROLE_TELETAN_GENERATOR = "c19hotline";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
