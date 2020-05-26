@@ -1,10 +1,9 @@
-
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
+ * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
  * License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License.
@@ -19,6 +18,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal;
 
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -42,27 +42,27 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-        auth.authenticationProvider(keycloakAuthenticationProvider);
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+    keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+    auth.authenticationProvider(keycloakAuthenticationProvider);
+  }
 
-    @Bean
-    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
-    }
+  @Bean
+  public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
+    return new KeycloakSpringBootConfigResolver();
+  }
 
-    @Bean
-    @Override
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-    }
+  @Bean
+  @Override
+  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+    return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.authorizeRequests();
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    super.configure(http);
+    http.authorizeRequests();
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
@@ -21,15 +21,12 @@
 
 package app.coronawarn.verification.portal.client;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * This class represents the tele transaction number (Tele TAN).
- *
- * @author T-Systems International GmbH
  */
 @Data
 @NoArgsConstructor
