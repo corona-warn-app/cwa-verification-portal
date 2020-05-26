@@ -81,3 +81,6 @@ List of use cases
 1. Use Case Change Password
 1. Use Case Change 2nd Factor Device
 1. Use Case Password forgotten
+
+# Data Model
+This component has no data to persist.
