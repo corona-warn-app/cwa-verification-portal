@@ -1,9 +1,9 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
+ * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
  * License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License.
@@ -17,10 +17,12 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
- *
- * This package contains all common classes for the cwa verification service.
- *
- * @author T-Systems International GmbH
  */
+
 package app.coronawarn.verification.portal.client;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(name = "cwa-verification-server", url = "${cwa-verification-server.url}", primary = false)
+public interface VerificationServerFeignClient extends TeleTanClientSI {
+}

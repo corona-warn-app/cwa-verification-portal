@@ -19,20 +19,16 @@
  * under the License.
  */
 
-package app.coronawarn.verification.portal;
+package app.coronawarn.verification.portal.client;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * The Spring Boot application class.
- */
-@SpringBootApplication
-@EnableFeignClients
-public class VerificationPortalApplication {
+public interface TeleTanClientSI {
 
-  public static void main(String[] args) {
-    SpringApplication.run(VerificationPortalApplication.class, args);
-  }
+  @RequestMapping(value = "${cwa-verification-server.path.teletan}", method = RequestMethod.POST, produces = {
+    MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
+  TeleTan createTeleTan();
+
 }

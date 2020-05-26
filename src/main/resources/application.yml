@@ -1,12 +1,14 @@
 spring:
   application:
     name: cwa-verification-portal
+
 keycloak:
   auth-server-url: http://localhost:8080/auth
   principal-attribute: preferred_username
   public-client: true
   realm: cwa
   resource: verification-portal
+
 server:
   error:
     whitelabel:
@@ -14,8 +16,11 @@ server:
   port: 8080
   servlet:
     context-path: /cwa
-uri:
-  endpoint:
-    verification:
-      service:
-        teletan: http://verificationserver:9090/teletan
+    session:
+      timeout: 14400s
+
+cwa-verification-server:
+  url: http://localhost:8082
+  path:
+    teletan: /version/v1/tan/teletan
+

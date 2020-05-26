@@ -1,12 +1,12 @@
 /*
  * Corona-Warn-App / cwa-verification-portal
  *
- * (C) 2020, YOUR_NAME, YOUR_COMPANY
+ * (C) 2020, T-Systems International GmbH
  *
  * Deutsche Telekom AG and all other contributors /
- * copyright owners license this file to you under the Apache 
- * License, Version 2.0 (the "License"); you may not use this 
- * file except in compliance with the License. 
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,3 +18,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package app.coronawarn.verification.portal.client;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * This class represents the tele transaction number (Tele TAN).
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TeleTan {
+
+  private String value;
+
+}

@@ -1,9 +1,9 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
+ * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
  * License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License.
@@ -18,10 +18,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -29,26 +32,34 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import app.coronawarn.verification.portal.controller.VerificationPortalController;
 
 /**
  * This is the test class for the verification portal application.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@Slf4j
+@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(properties = {"log4j.configurationFile=log4j2-test.xml"})
-@TestPropertySource("classpath:test.yml")
+@SpringBootTest
+@ContextConfiguration(classes = VerificationPortalApplication.class)
 public class VerificationPortalTests {
 
-  static final Logger LOG = LogManager.getLogger();
+  private static final String ROUTE_TELETAN = "/teletan";
 
   @Autowired
   private MockMvc mockMvc;
 
-//    @MockBean
-//    private VerificationAppSessionService appSessionService;
+  @Autowired
+  private VerificationPortalController verificationPortalController;
 
   @BeforeEach
   void setUp() {
@@ -61,13 +72,9 @@ public class VerificationPortalTests {
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  public void callGenerateTAN() throws Exception {
-    LOG.info("VerficationAppTests callGenerateTAN()");
-
-    prepareAppSessionTestData();
-
+  public void createTeletanTest() throws Exception {
+    String home = verificationPortalController.home(null);
+    Assert.assertEquals("1abc56N", home);
   }
 
-  private void prepareAppSessionTestData() {
-  }
 }
