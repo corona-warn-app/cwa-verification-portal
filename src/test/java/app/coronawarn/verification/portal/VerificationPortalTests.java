@@ -48,9 +48,12 @@ import app.coronawarn.verification.portal.controller.VerificationPortalControlle
 @TestPropertySource("classpath:test.yml")
 public class VerificationPortalTests {
 
+
+  private static final Logger LOG = LogManager.getLogger();
+
   private static final String ROUTE_TELETAN = "/teletan";
 
-  static final Logger LOG = LogManager.getLogger();
+
 
   @Autowired
   private MockMvc mockMvc;
