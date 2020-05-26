@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Primary
 @Slf4j
 @Qualifier("teleTanClient")
-public class TeleTanMockClient implements TeleTanClientSI{
+public class TeleTanMockClient implements TeleTanClientSI {
 
   @Override
   public TeleTan createTeleTan() {

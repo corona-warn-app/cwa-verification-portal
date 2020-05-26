@@ -5,11 +5,11 @@ keycloak:
   realm: cwa
   resource: login-cwa
   security-constraints:
-  - authRoles:
-    - user
-    securityCollections:
-    - patterns:
-      - /teletan/*
+    - authRoles:
+        - user
+      securityCollections:
+        - patterns:
+            - /teletan/*
   ssl-required: external
 server:
   port: 8080

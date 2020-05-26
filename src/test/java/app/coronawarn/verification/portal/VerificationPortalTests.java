@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +53,6 @@ public class VerificationPortalTests {
   private static final Logger LOG = LogManager.getLogger();
 
   private static final String ROUTE_TELETAN = "/teletan";
-
 
 
   @Autowired

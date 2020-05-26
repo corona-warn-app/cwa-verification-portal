@@ -9,5 +9,4 @@ public interface TeleTanClientSI {
   @RequestMapping(value = "${cwa-verification-server.path.teletan}", method = RequestMethod.POST, produces = {
     MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
   TeleTan createTeleTan();
-
 }

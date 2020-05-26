@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -43,32 +44,31 @@ import java.util.UUID;
  */
 @Controller
 public class VerificationPortalController {
+
   /**
    * The route to the TeleTAN portal web site.
    */
   private static final String ROUTE_TELETAN = "/teletan";
 
+  /**
+   * The route to the TeleTAN portal web site
+   */
+  private static final String ROUTE_INDEX = "/";
 
-    /**
-     * The route to the TeleTAN portal web site
-     */
-    private static final String ROUTE_INDEX = "/";
+  /**
+   * The html Thymeleaf template for the TeleTAN portal web site
+   */
+  private static final String TEMPLATE_TELETAN = "teletan";
 
-    /**
-     * The html Thymeleaf template for the TeleTAN portal web site
-     */
-    private static final String TEMPLATE_TELETAN = "teletan";
+  /**
+   * The html Thymeleaf template for the TeleTAN portal web site
+   */
+  private static final String TEMPLATE_INDEX = "index";
 
-    /**
-     * The html Thymeleaf template for the TeleTAN portal web site
-     */
-    private static final String TEMPLATE_INDEX = "index";
-
-    /**
-     * The Thymeleaf attribute used for displaying the teletan
-     */
-    private static final String ATTR_TELETAN = "teleTAN";
-
+  /**
+   * The Thymeleaf attribute used for displaying the teletan
+   */
+  private static final String ATTR_TELETAN = "teleTAN";
 
 
   /**
@@ -83,22 +83,23 @@ public class VerificationPortalController {
   private TeleTanClientSI teleTanClient;
 
 
+  /**
+   * The Web GUI page request showing the index.html web page without a teletan
+   *
+   * @param model the thymeleaf model
+   * @return the name of the HTML Thymeleaf template to be used for the HTML page
+   */
+  @GetMapping(ROUTE_INDEX)
+  public String index(Model model) {
+    return TEMPLATE_INDEX;
+  }
 
-    /**
-     * The Web GUI page request showing the index.html web page without a teletan
-     * @param model the thymeleaf model
-     * @return the name of the HTML Thymeleaf template to be used for the HTML page
-     */
-    @GetMapping(ROUTE_INDEX)
-    public String index(Model model) {
-         return TEMPLATE_INDEX;
-    }
-
-    /**
-     * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
-     * @param model the thymeleaf model
-     * @return the name of the HTML Thymeleaf template to be used for the HTML page
-     */
+  /**
+   * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
+   *
+   * @param model the thymeleaf model
+   * @return the name of the HTML Thymeleaf template to be used for the HTML page
+   */
   @GetMapping(ROUTE_TELETAN)
   public String home(Model model) {
     // try to get the teleTan from the verification server
@@ -106,10 +107,10 @@ public class VerificationPortalController {
 
     //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
     //String teleTan = String.valueOf(Math.abs(new Random().nextInt()));
-    if (model == null){
+    if (model == null) {
       //TODO fix by proper implementation of unit test
       return teleTan.getValue();
-    }else{
+    } else {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue());
     }
     return TEMPLATE_TELETAN;
