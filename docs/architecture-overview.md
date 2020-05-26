@@ -49,8 +49,7 @@ Security of the portal is implemented by
 1. manual process for onboarding new users
 
 ### Authentication
-Authentication is implemented by validating a JWT issues by te Verification IAM. Verification includes cryptographic validation of the signature.
-The public key of the IAM is dynamically obtained from the IAM. 
+Authentication is based on the [OpenID specifications](https://openid.net/developers/specs/), which works on top of the OAuth 2.0 (RFC 6749) framework. OpenID uses Json Web Tokens (JWT) which are signed by the IAM to provide integrity and authenticity.
 
 # Security Requirements
 
