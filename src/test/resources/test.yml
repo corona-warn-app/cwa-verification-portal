@@ -15,7 +15,7 @@ server:
   port: 8080
   servlet:
     context-path: /cwa
-uri:
-  endpoint:
-    verification:
-      service: http://verificationserver:8080/testresult
+cwa-verification-server:
+  url: http://localhost:8082
+  path:
+    teletan: /version/v1/tan/teletan

@@ -18,12 +18,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal.controller;
 
-import app.coronawarn.verification.portal.client.TeleTANClient;
-import java.util.Random;
+
+import app.coronawarn.verification.portal.client.TeleTanClientSI;
+import app.coronawarn.verification.portal.client.TeleTan;
+
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,9 +44,10 @@ import java.util.UUID;
 @Controller
 public class VerificationPortalController {
   /**
-   * The route to the TeleTAN portal web site
+   * The route to the TeleTAN portal web site.
    */
   private static final String ROUTE_TELETAN = "/teletan";
+
 
     /**
      * The route to the TeleTAN portal web site
@@ -64,16 +70,18 @@ public class VerificationPortalController {
     private static final String ATTR_TELETAN = "teleTAN";
 
 
+
   /**
    * The logger.
    */
   private static final Logger LOG = LogManager.getLogger();
 
   /**
-   * The REST client interface for getting the TeleTAN from verificationserver
+   * The REST client interface for getting the TeleTAN from verificationserver.
    */
   @Autowired
-  private TeleTANClient teleTANClient;
+  private TeleTanClientSI teleTanClient;
+
 
 
     /**
@@ -91,18 +99,20 @@ public class VerificationPortalController {
      * @param model the thymeleaf model
      * @return the name of the HTML Thymeleaf template to be used for the HTML page
      */
-    @GetMapping(ROUTE_TELETAN)
-    public String teletan(Model model) {
-        // try to get the teleTAN from the verification server
-        //TODO String teleTAN = teleTANClient.result();
-
+  @GetMapping(ROUTE_TELETAN)
+  public String home(Model model) {
+    // try to get the teleTan from the verification server
+    TeleTan teleTan = teleTanClient.createTeleTan();
 
     //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
-    String teleTAN = String.valueOf(Math.abs(new Random().nextInt()));
-
-        model.addAttribute(ATTR_TELETAN, teleTAN);
-        LOG.debug("TeleTAN generated: " + teleTAN);
-        return TEMPLATE_TELETAN;
+    //String teleTan = String.valueOf(Math.abs(new Random().nextInt()));
+    if (model == null){
+      //TODO fix by proper implementation of unit test
+      return teleTan.getValue();
+    }else{
+      model.addAttribute(ATTR_TELETAN, teleTan.getValue());
     }
+    return TEMPLATE_TELETAN;
+  }
 
 }

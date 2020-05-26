@@ -25,8 +25,10 @@ server:
     context-path: /cwa
     session:
       timeout: 14400s
-uri:
-  endpoint:
-    verification:
-      service:
-        teletan: http://verificationserver:9090/teletan
+
+
+cwa-verification-server:
+  url: http://localhost:8082
+  path:
+    teletan: /version/v1/tan/teletan
+
