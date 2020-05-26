@@ -8,17 +8,6 @@ keycloak:
   public-client: true
   realm: cwa
   resource: verification-portal
-  security-constraints:
-    - authRoles:
-        - c19hotline
-      securityCollections:
-        - patterns:
-            - /*
-    - authRoles:
-        - c19hotline
-      securityCollections:
-        - patterns:
-            - /*
 
 server:
   error:
