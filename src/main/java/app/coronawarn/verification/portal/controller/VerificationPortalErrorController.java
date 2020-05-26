@@ -20,12 +20,13 @@
  */
 package app.coronawarn.verification.portal.controller;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,7 +77,11 @@ public class VerificationPortalErrorController implements ErrorController {
             }
         }
         return TEMPLATE_ERROR;
+
     }
+    return TEMPLATE_ERROR;
+  }
+
 
     /**
      * get the path for the custom error page
@@ -86,4 +91,5 @@ public class VerificationPortalErrorController implements ErrorController {
     public String getErrorPath() {
         return ROUTE_ERROR;
     }
+
 }
