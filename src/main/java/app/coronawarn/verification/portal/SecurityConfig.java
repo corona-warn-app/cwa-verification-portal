@@ -43,7 +43,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  private static final String ROLE_TELETAN_GENERATOR = "c19hotline";
+  private static final String ROLE_C19HOTLINE = "c19hotline";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -68,7 +68,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     super.configure(http);
     http.authorizeRequests()
       .antMatchers(VerificationPortalController.ROUTE_TELETAN)
-      .hasRole(ROLE_TELETAN_GENERATOR)
+      .hasRole(ROLE_C19HOTLINE)
       .anyRequest().authenticated();
   }
 }
