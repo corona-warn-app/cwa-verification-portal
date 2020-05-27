@@ -27,18 +27,22 @@
 
 <!-- BEGIN page specific content  -->
 <div class="text-big" style="top: 210px;">Anmeldung</div>
-<div class="text" style="top: 290px;">1. Um ihr Benutzerkonto zu aktivieren, öffnen Sie bitte ihre FreeOTP App und
+<div class="text" style="top: 280px;">1. Um ihr Benutzerkonto zu aktivieren, öffnen Sie bitte ihre FreeOTP App und
   scannen Sie den unten angezeigten QR-Code
 </div>
-<img class="qr-code" style="position: fixed; left: 50%; width: 180px; margin-left: -90px; height: auto; top: 345px;"
+<img class="qr-code" style="position: fixed; left: 50%; width: 180px; margin-left: -90px; height: auto; top: 335px;"
      src="data:image/png;base64, ${totp.totpSecretQrCode}">
-<div class="text" style="top: 550px;">2. Geben Sie das von der App erzeugte Einmal-Passwort ein</div>
+<div class="text" style="top: 540px;">2. Geben Sie das von der App erzeugte Einmal-Passwort ein</div>
 <form id="kc-totp-settings-form" action="${url.loginAction}" method="post">
-  <input class="input" style="top: 585px;" type="text" placeholder="Einmal-Passwort" name="totp" autocomplete="off"
+  <input class="input" style="top: 575px;" type="text" placeholder="Einmal-Passwort" name="totp" autocomplete="off"
          required>
   <input type="hidden" name="totpSecret" value="${totp.totpSecret}"/>
-  <input class="button" style="top: 650px;" type="submit" value="Abschicken">
+  <input class="button" style="top: 635px;" type="submit" value="Abschicken">
 </form>
+<#if message?? && message?has_content>
+  <div class="error" style="top: 695px">Das von Ihnen eingegebene Einmal-Passwort ist nicht korrekt.<br>Bitte korrigieren Sie Ihre Eingabe.</div>
+</#if>
+
 <!-- END page specific content  -->
 </body>
 </html>
