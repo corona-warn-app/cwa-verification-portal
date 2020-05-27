@@ -34,7 +34,7 @@
      src="data:image/png;base64, ${totp.totpSecretQrCode}">
 <div class="text" style="top: 550px;">2. Geben Sie das von der App erzeugte Einmal-Passwort ein</div>
 <form id="kc-totp-settings-form" action="${url.loginAction}" method="post">
-  <input class="input" style="top: 585px;" type="password" placeholder="Einmal-Passwort" name="totp" autocomplete="off"
+  <input class="input" style="top: 585px;" type="text" placeholder="Einmal-Passwort" name="totp" autocomplete="off"
          required>
   <input type="hidden" name="totpSecret" value="${totp.totpSecret}"/>
   <input class="button" style="top: 650px;" type="submit" value="Abschicken">
