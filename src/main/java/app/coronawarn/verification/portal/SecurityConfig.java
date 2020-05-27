@@ -67,8 +67,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
     http.authorizeRequests()
-            .antMatchers(VerificationPortalController.ROUTE_TELETAN)
-            .hasRole(ROLE_TELETAN_GENERATOR)
-            .anyRequest().authenticated();
+      .antMatchers(VerificationPortalController.ROUTE_TELETAN)
+      .hasRole(ROLE_TELETAN_GENERATOR)
+      .anyRequest().authenticated();
   }
 }
