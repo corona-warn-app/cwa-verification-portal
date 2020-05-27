@@ -59,8 +59,14 @@ The session timout is 4 hours.
 1. Display timeout for teleTAN
 A teleTAN must not be shown after 10min. 
 
+1. All server to server communications must be authenticated with client certificates
+
+1. Implement network connectivity between Verification Portal and Verification Server as special OTC route
+
 # Implemented Use Cases
 ## Referenced User Stories
+will be defailed in later versions of this document
+
 ##	Actors
 1. Hotline Employee
 Has technical role "c19hotline". Is an employee which mainly triggers the use case Create teleTAN. 
