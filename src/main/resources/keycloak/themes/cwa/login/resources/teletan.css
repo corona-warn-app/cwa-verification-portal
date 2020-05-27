@@ -145,6 +145,33 @@
 	border-color: #dddddd;
 }
 
+.user {
+	position: fixed;
+ 	right: 40px;
+	top: 100px;
+ 	font-family: Telegrotesk Next Regular;
+ 	font-size: 18px;
+ 	color: #262626;	
+}
+
+.button-logout {
+	position: fixed;
+ 	right: 40px;
+	top: 150px;
+	visibility: hidden;
+ 	font-family: Telegrotesk Next Regular;
+ 	font-size: 18px;
+ 	color: #262626;	
+	border-width: 1px;
+	border-radius: 4px;
+	border-color: #dddddd;
+	background-color: #ffffff;
+}
+
+.show {
+	visibility: visible;
+}
+
 .qr-code {
 	position: fixed;
 	left: 50%;
@@ -152,7 +179,6 @@
 	margin-left: -90px;
 	height: auto;
 }
-
 
 @font-face {
   font-family: 'Telegrotesk Next Regular';
@@ -171,4 +197,5 @@
   font-style: bold;
   src: url('telegrotesknext-bold.woff');
 }
-	
+
+

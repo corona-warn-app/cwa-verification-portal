@@ -9,6 +9,7 @@ keycloak:
   realm: cwa
   resource: verification-portal
 
+
 server:
   error:
     whitelabel:

@@ -23,6 +23,8 @@ package app.coronawarn.verification.portal.controller;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -80,6 +82,10 @@ public class VerificationPortalErrorController implements ErrorController {
       } else {
         model.addAttribute(ATTR_ERROR_MSG, ERROR);
       }
+    }
+    HttpSession session = request.getSession();
+    if (session != null) {
+      session.removeAttribute(VerificationPortalController.SESSION_ATTR_TELETAN);
     }
     return TEMPLATE_ERROR;
   }
