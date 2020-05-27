@@ -20,6 +20,18 @@ server:
     session:
       timeout: 14400s
 
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: ALWAYS
+      show-components: ALWAYS
+
 cwa-verification-server:
   url: http://localhost:8082
   path:
