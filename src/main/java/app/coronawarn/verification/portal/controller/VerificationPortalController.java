@@ -1,12 +1,12 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
- * copyright owners license this file to you under the Apache 
- * License, Version 2.0 (the "License"); you may not use this 
- * file except in compliance with the License. 
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,68 +18,144 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal.controller;
 
 
-import app.coronawarn.verification.portal.client.TeleTANClient;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import app.coronawarn.verification.portal.client.TeleTan;
+import app.coronawarn.verification.portal.client.TeleTanClientSI;
+import lombok.extern.slf4j.Slf4j;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.Random;
-import java.util.UUID;
-
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * This class represents the WEB UI controller for the verification portal.
  * It implements a very simple HTML interface with one submit button to get and show a newly generated TeleTAN
  */
+@Slf4j
 @Controller
-public class VerificationPortalController
-{
-    /**
-     * The route to the TeleTAN portal web site
-     */
-    private static final String ROUTE_TELETAN = "/teletan";
+public class VerificationPortalController {
 
-    /**
-     * The html Thymeleaf template for the TeleTAN portal web site
-     */
-    private static final String TEMPLATE_TELETAN = "teletan";
+  /**
+   * Session attribute showing that the index template has been shown already at least once in the current session
+   * (means that now the teletan template should be shown instead of the index template)
+   */
+  static final String SESSION_ATTR_TELETAN = "teletan";
 
-    /**
-     * The Thymeleaf attribute used for displaying the teletan
-     */
-    private static final String ATTR_TELETAN = "teleTan";
+  /**
+   * The route to the TeleTAN portal web site.
+   */
+  public static final String ROUTE_INDEX = "/index";
 
-    /**
-     * The logger.
-     */
-    private static final Logger LOG = LogManager.getLogger();
+  /**
+   * The route to the TeleTAN portal web site.
+   */
+  public static final String ROUTE_TELETAN = "/teletan";
 
-    /**
-     * The REST client interface for getting the TeleTAN from verificationserver
-     */
-    @Autowired
-    private TeleTANClient teleTANClient;
+  /**
+   * The route to log out from the portal web site
+   */
+  private static final String ROUTE_LOGOUT = "/logout";
 
-    /**
-     * The Web GUI page request showing the teletan.html web page with a newly created TeleTAN
-     * @param model the thymeleaf model
-     * @return the name of the HTML Thymeleaf template to be used for the HTML page
-     */
-    @GetMapping(ROUTE_TELETAN)
-    public String home(Model model) {
-        // try to get the teleTAN from the verification server
-        //TODO String teleTAN = teleTANClient.result();
+  /**
+   * The html Thymeleaf template for the TeleTAN portal web site.
+   */
+  private static final String TEMPLATE_TELETAN = "teletan";
 
-        //TODO generate dummy TeleTAN until the TeleTAN service will be available (or stubbed)
-        String teleTAN = String.valueOf(Math.abs(new Random().nextInt()));
+  /**
+   * The html Thymeleaf template for the TeleTAN portal web site.
+   */
+  private static final String TEMPLATE_INDEX = "index";
 
-        model.addAttribute(ATTR_TELETAN, teleTAN);
-        return TEMPLATE_TELETAN;
+  /**
+   * The Thymeleaf attributes used for displaying the teletan and the current user
+   */
+  private static final String ATTR_TELETAN = "teleTAN";
+  private static final String ATTR_USER = "userName";
+
+  /**
+   * The REST client interface for getting the TeleTAN from verificationserver.
+   */
+  @Autowired
+  private TeleTanClientSI teleTanClient;
+
+  /**
+   * The Web GUI page request showing the index.html web page without a teletan
+   *
+   * @param request the http request object
+   * @param model the thymeleaf model
+   * @return the name of the Thymeleaf template to be used for the HTML page
+   */
+  @GetMapping(ROUTE_INDEX)
+  public String index(HttpServletRequest request, Model model) {
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
+    model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
+
+    HttpSession session = request.getSession();
+    if (session != null) {
+      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
     }
+    return TEMPLATE_INDEX;
+  }
+
+  /**
+   * The Web GUI page request showing the index.html or teletan.html web page
+   * The index.html is shown when the session was newly create (directly after login)
+   * other wise the teletan page with
+   *
+   * @param request the http request object
+   * @param model the thymeleaf model
+   * @return the name of the Thymeleaf template to be used for the HTML page
+   */
+  @GetMapping(ROUTE_TELETAN)
+  public String home(HttpServletRequest request, Model model) {
+
+    TeleTan teleTan = new TeleTan("123456789");
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
+
+    String template = TEMPLATE_INDEX;
+    HttpSession session = request.getSession();
+    if (session != null) {
+      if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
+        // get a new teleTAN and switch to the TEMPLATE_TELETAN
+        teleTan = teleTanClient.createTeleTan();
+        template = TEMPLATE_TELETAN;
+      }
+      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
+    }
+
+    if (model == null) {
+      //TODO fix by proper implementation of unit test
+      return teleTan.getValue();
+    } else {
+      // set thymeleaf attributes (teleTAN and user name)
+      model.addAttribute(ATTR_TELETAN, teleTan.getValue());
+      model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
+    }
+
+    return template;
+  }
+  
+  /**
+   * The Get request to log out from the portal web site
+   *
+   * @param request the http request object
+   * @return the redirect path after the logout
+   */
+  @GetMapping(ROUTE_LOGOUT)
+  public String logout(HttpServletRequest request) {
+    try {
+      request.logout();
+    } catch (ServletException e) {
+      log.error("Logout failed", e);
+    }
+    return "redirect:" + TEMPLATE_TELETAN;
+  }
 }

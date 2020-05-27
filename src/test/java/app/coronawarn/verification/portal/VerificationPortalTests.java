@@ -1,12 +1,12 @@
 /*
- * Corona-Warn-App / cwa-verification
+ * Corona-Warn-App / cwa-verification-portal
  *
  * (C) 2020, T-Systems International GmbH
  *
- * Deutsche Telekom AG, SAP AG and all other contributors /
- * copyright owners license this file to you under the Apache 
- * License, Version 2.0 (the "License"); you may not use this 
- * file except in compliance with the License. 
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,72 +18,63 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import app.coronawarn.verification.portal.controller.VerificationPortalController;
+
 /**
- *
  * This is the test class for the verification portal application.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@Slf4j
+@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(properties = {"log4j.configurationFile=log4j2-test.xml"})
-@TestPropertySource("classpath:test.properties")
+@SpringBootTest
+@ContextConfiguration(classes = VerificationPortalApplication.class)
 public class VerificationPortalTests {
 
-    static final Logger LOG = LogManager.getLogger();
+  private static final String ROUTE_TELETAN = "/teletan";
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-//    @MockBean
-//    private VerificationAppSessionService appSessionService;
+  @Autowired
+  private VerificationPortalController verificationPortalController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.initMocks(this);
+  }
 
-    /**
-     * Test generateTAN.
-     *
-     * @throws Exception if the test cannot be performed.
-     */
-    @Test
-    public void callGenerateTAN() throws Exception {
-        LOG.info("VerficationAppTests callGenerateTAN()");
+  /**
+   * Test generateTAN.
+   *
+   * @throws Exception if the test cannot be performed.
+   */
+  @Test
+  public void createTeletanTest() throws Exception {
+    //String home = verificationPortalController.home(null);
+    //Assert.assertEquals("1abc56N", home);
+  }
 
-        prepareAppSessionTestData();
-
-    }
-
-    private void prepareAppSessionTestData() {
-    }
- }
+}

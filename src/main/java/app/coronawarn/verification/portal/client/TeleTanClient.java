@@ -19,20 +19,22 @@
  * under the License.
  */
 
-package app.coronawarn.verification.portal;
+package app.coronawarn.verification.portal.client;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
-/**
- * The Spring Boot application class.
- */
-@SpringBootApplication
-@EnableFeignClients
-public class VerificationPortalApplication {
+@Service
+@Qualifier("teleTanClient")
+public class TeleTanClient implements TeleTanClientSI {
 
-  public static void main(String[] args) {
-    SpringApplication.run(VerificationPortalApplication.class, args);
+  @Autowired
+  private VerificationServerFeignClient feignClient;
+
+  @Override
+  public TeleTan createTeleTan() {
+    return feignClient.createTeleTan();
   }
+
 }

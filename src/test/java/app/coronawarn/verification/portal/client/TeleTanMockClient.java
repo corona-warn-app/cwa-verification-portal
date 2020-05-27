@@ -19,20 +19,24 @@
  * under the License.
  */
 
-package app.coronawarn.verification.portal;
+package app.coronawarn.verification.portal.client;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
-/**
- * The Spring Boot application class.
- */
-@SpringBootApplication
-@EnableFeignClients
-public class VerificationPortalApplication {
+import lombok.extern.slf4j.Slf4j;
 
-  public static void main(String[] args) {
-    SpringApplication.run(VerificationPortalApplication.class, args);
+@Service
+@Primary
+@Slf4j
+@Qualifier("teleTanClient")
+public class TeleTanMockClient implements TeleTanClientSI {
+
+  @Override
+  public TeleTan createTeleTan() {
+    log.debug("Calling TeleTanMockClient - onSettingChanged");
+    return new TeleTan("1abc56N");
   }
+
 }
