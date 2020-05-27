@@ -30,9 +30,12 @@
 <div class="text" style="top: 320px;">Öffnen Sie bitte ihre FreeOTP App und geben Sie das von der App erzeugte Einmal-Passwort für den Benutzer ein
 </div>
 <form id="kc-otp-login-form" action="${url.loginAction}" method="post">
-  <input class="input" style="top: 435px;" placeholder="Einmal-Passwort" name="otp" autocomplete="off" type="text" autofocus/>
-  <input class="button" style="top: 500px;" type="submit" name="login" value="Abschicken">
+  <input class="input" style="top: 430px;" placeholder="Einmal-Passwort" name="otp" autocomplete="off" type="text" autofocus/>
+  <input class="button" style="top: 490px;" type="submit" name="login" value="Abschicken">
 </form>
+<#if message?? && message?has_content>
+  <div class="error" style="top: 550px">Das von Ihnen eingegebene Einmal-Passwort ist nicht korrekt.<br>Bitte korrigieren Sie Ihre Eingabe.</div>
+</#if>
 <!-- END page specific content  -->
 </body>
 </html>

@@ -36,9 +36,13 @@
 </div>
 <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
   <input class="input" style="top: 420px;" type="text" placeholder="Benutzername" name="username" required>
-  <input class="input" style="top: 485px;" type="password" placeholder="Passwort" name="password" required>
-  <input class="button" style="top: 560px;" type="submit" value="Anmelden">
+  <input class="input" style="top: 480px;" type="password" placeholder="Passwort" name="password" required>
+  <input class="button" style="top: 540px;" type="submit" value="Anmelden">
 </form>
+
+<#if message?? && message?has_content>
+  <div class="error" style="top: 600px">Sie haben einen falschen Benutzernamen und/oder ein falsches Passwort eingegeben. Bitte versuchen sie es erneut oder wenden Sie sich an Ihren Administrator.</div>
+</#if>
 <!-- END page specific content  -->
 </body>
 </html>

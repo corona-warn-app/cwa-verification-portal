@@ -31,11 +31,23 @@
 <form id="kc-passwd-update-form" action="${url.loginAction}" method="post">
   <input type="text" name="username" value="${username}" autocomplete="username" readonly="readonly"
          style="display:none;"/>
-  <input class="input" style="top: 360px;" type="password" placeholder="Passwort" name="password-new" required>
-  <input class="input" style="top: 425px;" type="password" placeholder="Passwort bestätigen" name="password-confirm"
+  <input class="input" style="top: 360px;" type="password" id="pw1" placeholder="Passwort" name="password-new" required>
+  <input class="input" style="top: 420px;" type="password" id="pw2" placeholder="Passwort bestätigen" name="password-confirm"
          required>
-  <input class="button" style="top: 500px;" type="submit" value="Abschicken">
+  <input class="button" style="top: 480px;" type="submit" value="Abschicken">
 </form>
+<#if message?? && message?has_content>
+  <div class="error" style="top: 540px">Die eingegebenen Passwörter stimmen nicht überein oder entsprechen nicht den Sicherheitsrichtlinien. 
+    <span style="font-family: Telegrotesk Next Regular;">
+		<br><br>Ihr Password muss mindestens 8 Zeichen lang sein und aus mindestens drei der folgenden Zeichenkategorien bestehen:<br>
+		<br>&nbsp;&nbsp; • Kleinbuchstaben
+		<br>&nbsp;&nbsp; • Grosbuchstaben
+		<br>&nbsp;&nbsp; • Ziffern
+		<br>&nbsp;&nbsp; • Sonderzeichen
+	</span>
+	<br><br>Bitte korrigieren Sie Ihre Eingabe.
+  </div>
+</#if>
 <!-- END page specific content  -->
 </body>
 </html>
