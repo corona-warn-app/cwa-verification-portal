@@ -27,12 +27,21 @@ The goal of this project is to develop the official Corona-Warn-App for Germany 
 [![bugs](https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-verification-portal&metric=bugs)](https://sonarcloud.io/dashboard?id=corona-warn-app_cwa-verification-portal)
 
 ## About this component
-For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
-This component provides a simple user interface for the servicelines agents to generate the temporaly TAN. For security reasons it comes along with an wide spread IAM (**I**dentity**A**cess**M**anagement) which uses 2-Factor-Authentification for User Authentification, which will be hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) in the corona-warn-app org.
+
+In the world of the Corona Warn App the Verification Portal allows hotline employees to generate teleTANs which are used by users of the mobile App to upload their diagnostic keys. The parts of the verification component cooperate in the following manner:
+
+- The Verification Server of the Corona Warn App (repository: cwa-verification-server) helps validating whether upload requests from the mobile App are valid or not.
+- The Verification Portal of the Corona Warn App (repository: cwa-verification-portal) allows hotline employees to generate teleTANs which are used by users of the mobile App to upload their diagnostic keys.
+- The Verification Identity and Access of the Corona Warn App (repository: cwa-verification-iam) ensures that only authorized health personnel get access to the Verification Portal.
+- The Testresult Server of the Corona Warn App (repository: cwa-testresult-server) receives the results from laboratories and delivers these results to the app via the verification-server
+
+In other words: For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
+
+This component provides a simple user interface for the servicelines agents to generate the temporary TAN. For security reasons it cooperates with an IAM component (**I**dentity**A**cess**M**anagement) using a 2-Factor-Authentification. As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
 
 ## Development
 
-This component can be locally build in order to test the functionality of the interfaces and verify the concepts it is build upon. 
+This component can be locally build in order to test the functionality of the interfaces and verify the concepts it is build upon.
 There are two ways to build:
 
  - [Maven](https:///maven.apache.org) build - to run this component as spring application on your local machine
@@ -98,8 +107,8 @@ The following channels are available for discussions, feedback, and support requ
 
 | Type                     | Channel                                                |
 | ------------------------ | ------------------------------------------------------ |
-| **General Discussion**   | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal/question.svg?style=flat-square"></a> </a>   |
-| **Concept Feedback**    | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal/architecture.svg?style=flat-square"></a>  |
+| **General Discussion**   | <a href="https://github.com/corona-warn-app/cwa-documentation/issues/new/choose" title="General Discussion"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-documentation/question.svg?style=flat-square"></a> </a>   |
+| **Concept Feedback**    | <a href="https://github.com/corona-warn-app/cwa-documentation/issues/new/choose" title="Open Concept Feedback"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-documentation/architecture.svg?style=flat-square"></a>  |
 | **Verification Portal Issue**    | <a href="https://github.com/corona-warn-app/cwa-verification-portal/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-verification-portal?style=flat"></a>  |
 | **Other Requests**    | <a href="mailto:opensource@telekom.de" title="Email CWA Team"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
 
