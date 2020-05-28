@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" media="screen" href="${url.resourcesPath}/teletan.css"/>
+  <link rel="stylesheet" type="text/css" href="${url.resourcesPath}/teletan.css"/>
   <title>TeleTAN Portal</title>
   <link rel="icon" href="${url.resourcesPath}/img/c-19_logo.png">
 </head>
@@ -36,8 +36,8 @@
          required>
   <input class="button" style="top: 480px;" type="submit" value="Abschicken">
 </form>
-<#if message?? && message?has_content>
-  <div class="error" style="top: 540px">Die eingegebenen Passwörter stimmen nicht überein oder entsprechen nicht den Sicherheitsrichtlinien. 
+<#if message?? && message.type = 'error'>
+  <div class="error" style="top: 540px;">Die eingegebenen Passwörter stimmen nicht überein oder entsprechen nicht den Sicherheitsrichtlinien.
     <span style="font-family: Telegrotesk Next Regular;">
 		<br><br>Ihr Password muss mindestens 8 Zeichen lang sein und aus mindestens drei der folgenden Zeichenkategorien bestehen:<br>
 		<br>&nbsp;&nbsp; • Kleinbuchstaben

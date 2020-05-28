@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" media="screen" href="${url.resourcesPath}/teletan.css"/>
+  <link rel="stylesheet" type="text/css" href="${url.resourcesPath}/teletan.css"/>
   <title>TeleTAN Portal</title>
   <link rel="icon" href="${url.resourcesPath}/img/c-19_logo.png">
 </head>
@@ -33,8 +33,8 @@
   <input class="input" style="top: 430px;" placeholder="Einmal-Passwort" name="otp" autocomplete="off" type="text" autofocus/>
   <input class="button" style="top: 490px;" type="submit" name="login" value="Abschicken">
 </form>
-<#if message?? && message?has_content>
-  <div class="error" style="top: 550px">Das von Ihnen eingegebene Einmal-Passwort ist nicht korrekt.<br>Bitte korrigieren Sie Ihre Eingabe.</div>
+<#if message?? && message.type = 'error'>
+  <div class="error" style="top: 550px;">Das von Ihnen eingegebene Einmal-Passwort ist nicht korrekt.<br>Bitte korrigieren Sie Ihre Eingabe.</div>
 </#if>
 <!-- END page specific content  -->
 </body>
