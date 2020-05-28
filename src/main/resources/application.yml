@@ -21,16 +21,15 @@ server:
       timeout: 14400s
 
 management:
-  server:
-    port: 8091
-  endpoints:
-    web:
-      exposure:
-        include: health
   endpoint:
+    info:
+      enabled: true
     health:
-      show-details: ALWAYS
-      show-components: ALWAYS
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
 
 cwa-verification-server:
   url: http://localhost:8082

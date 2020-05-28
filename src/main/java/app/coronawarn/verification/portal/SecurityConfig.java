@@ -45,7 +45,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   private static final String ROLE_C19HOTLINE = "c19hotline";
-  private static final String ACTUATOR_ROUTE = "/actuator/**";
+  private static final String ACTUATOR_ROUTE = "/management/**";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
