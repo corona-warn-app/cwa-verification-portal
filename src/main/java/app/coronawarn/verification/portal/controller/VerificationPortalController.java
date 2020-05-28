@@ -96,7 +96,10 @@ public class VerificationPortalController {
   @GetMapping(ROUTE_INDEX)
   public String index(HttpServletRequest request, Model model) {
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
-    model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
+
+    if (model != null) {
+      model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
+    }
 
     HttpSession session = request.getSession();
     if (session != null) {
@@ -117,30 +120,26 @@ public class VerificationPortalController {
   @GetMapping(ROUTE_TELETAN)
   public String home(HttpServletRequest request, Model model) {
 
-    TeleTan teleTan = new TeleTan("123456789");
-    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
+      TeleTan teleTan = new TeleTan("123456789");
+      KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request.getUserPrincipal();
 
-    String template = TEMPLATE_INDEX;
-    HttpSession session = request.getSession();
-    if (session != null) {
-      if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
-        // get a new teleTAN and switch to the TEMPLATE_TELETAN
-        teleTan = teleTanClient.createTeleTan();
-        template = TEMPLATE_TELETAN;
+      String template = TEMPLATE_INDEX;
+      HttpSession session = request.getSession();
+      if (session != null) {
+        if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
+          // get a new teleTAN and switch to the TEMPLATE_TELETAN
+          teleTan = teleTanClient.createTeleTan();
+          template = TEMPLATE_TELETAN;
+        }
+        session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
       }
-      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
-    }
 
-    if (model == null) {
-      //TODO fix by proper implementation of unit test
-      return teleTan.getValue();
-    } else {
-      // set thymeleaf attributes (teleTAN and user name)
-      model.addAttribute(ATTR_TELETAN, teleTan.getValue());
-      model.addAttribute(ATTR_USER, ((KeycloakPrincipal)principal.getPrincipal()).getName());
-    }
-
-    return template;
+      if (model != null) {
+        // set thymeleaf attributes (teleTAN and user name)
+        model.addAttribute(ATTR_TELETAN, teleTan.getValue());
+        model.addAttribute(ATTR_USER, ((KeycloakPrincipal) principal.getPrincipal()).getName());
+      }
+      return template;
   }
   
   /**
