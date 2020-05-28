@@ -35,7 +35,9 @@ In the world of the Corona Warn App the Verification Portal allows hotline emplo
 - The Verification Identity and Access of the Corona Warn App (repository: cwa-verification-iam) ensures that only authorized health personnel get access to the Verification Portal.
 - The Testresult Server of the Corona Warn App (repository: cwa-testresult-server) receives the results from laboratories and delivers these results to the app via the verification-server
 
-In other words: For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber. This component provides a simple user interface for the servicelines agents to generate the temporaly TAN. For security reasons it comes along with an wide spread IAM (**I**dentity**A**cess**M**anagement) which uses 2-Factor-Authentification for User Authentification, which will be hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) in the corona-warn-app org.
+In other words: For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
+
+This component provides a simple user interface for the servicelines agents to generate the temporary TAN. For security reasons it cooperates with an IAM component (**I**dentity**A**cess**M**anagement) using a 2-Factor-Authentification. As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
 
 ## Development
 
