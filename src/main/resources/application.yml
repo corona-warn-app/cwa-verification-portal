@@ -20,6 +20,17 @@ server:
     session:
       timeout: 14400s
 
+management:
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
+
 cwa-verification-server:
   url: http://localhost:8082
   path:
