@@ -41,7 +41,7 @@ This component provides a simple user interface for the service agents to genera
 
 ## Development
 
-This component can be build locally in order to test the functionality of the interfaces and verify the concepts it is build upon.
+This component can be built locally in order to test the functionality of the interfaces and verify the concepts it is build upon.
 There are two ways to build:
 
  - [Maven](https:///maven.apache.org) build - to run this component as spring application on your local machine
