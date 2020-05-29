@@ -148,7 +148,6 @@ public class VerificationPortalController {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
     }
-    session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
 
     if (model != null) {
       // set thymeleaf attributes (teleTAN and user name)
