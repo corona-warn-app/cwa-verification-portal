@@ -26,9 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Controller handling errors.
@@ -65,7 +66,7 @@ public class VerificationPortalErrorController implements ErrorController {
    * @param model   the thymleaf model to be filled with the error text
    * @return the error template name
    */
-  @RequestMapping(ROUTE_ERROR)
+  @GetMapping(value = ROUTE_ERROR, produces = MediaType.TEXT_HTML_VALUE)
   public String handleError(HttpServletRequest request, Model model) {
     Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
     if (status != null) {
