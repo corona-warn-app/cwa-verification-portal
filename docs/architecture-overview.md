@@ -16,7 +16,7 @@ The primary scope of the component is to create a proof certificate (teleTAN) wh
 
 
 ##	Context
-The Verification Portal is part of the Portal Server. The Portal Server consists of this component and the Verification IAM. 
+The Verification Portal is part of the Portal Server. The Portal Server consists of this component and the Verification IAM and is a logical grouping of services and not a "Server" in the traditional sense. 
 
 The context is:
 - Verification Portal 
