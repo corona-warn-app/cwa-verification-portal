@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" type="text/css" href="teletan.css"/>
+  <title>TeleTAN Portal</title>
+  <link rel="icon" href="c-19_logo.png"/>
+</head>
+<body>
+<div class="header">
+  <img class="header-logo" src="telekom_web_logo.png"/>
+  <img class="header-text" src="life_is_for_sharing.png"/>
+</div>
+<div class="footer">
+  <p class="footer-font footer-copyright">© Telekom Deutschland GmbH</p>
+  <p class="footer-font footer-imprint">Impressum</p>
+  <img class="footer-dp-logo" src="data_protect.png"/>
+  <p class="footer-font footer-dp">Datenschutz</p>
+</div>
+<table class="c19-logo">
+  <tr>
+    <td style="width: 1px;"><img src="c-19_logo.png"/></td>
+    <td>TeleTAN Portal</td>
+  </tr>
+</table>
+
+<!-- BEGIN page specific content  -->
+<div class="text-big" style="top: 210px;">TeleTAN erzeugen</div>
+<div class="text" style="top: 300px;">Erzeugen Sie eine neue TeleTAN für einen Patienten.</div>
+<form action="teletan" method="get">
+  <input class="button" style="top: 360px;" type="submit" value="Eine TeleTAN erzeugen"/>
+</form>
+
+<!-- Current user and logout popup -->
+<table class="user" onclick="showUserPopup()">
+  <tr>
+    <td><img  src="user.png"/></td>
+    <td style="padding-left: 10px;" th:text="${userName}"/>
+  </tr>
+</table>
+<form action="logout" method="get">
+	<button class="button-logout" id="logout">Abmelden</button>
+</form>
+<script>
+function showUserPopup() {
+  var popup = document.getElementById("logout");
+  popup.classList.toggle("show");
+}
+</script>
+
+<!-- END page specific content  -->
+</body>
+</html>
