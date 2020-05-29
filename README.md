@@ -28,20 +28,20 @@ The goal of this project is to develop the official Corona-Warn-App for Germany 
 
 ## About this component
 
-In the world of the Corona Warn App the Verification Portal allows hotline employees to generate teleTANs which are used by users of the mobile App to upload their diagnostic keys. The parts of the verification component cooperate in the following manner:
+In the world of the Corona Warn App the Verification Portal allows hotline employees to generate teleTANs which are used by users of the mobile app to upload their diagnostic keys. The parts of the verification component cooperate in the following manner:
 
-- The Verification Server of the Corona Warn App (repository: cwa-verification-server) helps validating whether upload requests from the mobile App are valid or not.
-- The Verification Portal of the Corona Warn App (repository: cwa-verification-portal) allows hotline employees to generate teleTANs which are used by users of the mobile App to upload their diagnostic keys.
+- The Verification Server of the Corona Warn App (repository: cwa-verification-server) helps validating whether upload requests from the mobile app are valid or not.
+- The Verification Portal of the Corona Warn App (repository: cwa-verification-portal) allows hotline employees to generate teleTANs which are used by users of the mobile app to upload their diagnostic keys.
 - The Verification Identity and Access of the Corona Warn App (repository: cwa-verification-iam) ensures that only authorized health personnel get access to the Verification Portal.
-- The Test Result Server of the Corona Warn App (repository: cwa-testresult-server) receives the results from laboratories and delivers these results to the app via the verification-server
+- The Test Result Server of the Corona Warn App (repository: cwa-testresult-server) receives the results from laboratories and delivers these results to the app via the verification-server.
 
-In other words: For all People who are willing to join the tracing process, but have not been tested by one of the participating labors there will be a serviceline one can call to get a temporaly transactionnumber (TAN) to join the process. The agents at the serviceline will tell the caller some questions to verify his status and then provide one with the transactionnumber.
+In other words: For all People who are willing to join the tracing process, but have not been tested by one of the participating laboratories, there will be a service hotline one can call to get a temporary Transaction Authentication Number (TAN) to join the process. The agents at the service hotline will ask the caller some questions to verify his status and then provide one with a TAN.
 
-This component provides a simple user interface for the servicelines agents to generate the temporary TAN. For security reasons it cooperates with an IAM component (**I**dentity**A**cess**M**anagement) using a 2-Factor-Authentification. As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
+This component provides a simple user interface for the service agents to generate the temporary TAN. For security reasons it cooperates with an IAM component (**I**dentity**A**cess**M**anagement) using a 2-Factor-Authentification. As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
 
 ## Development
 
-This component can be locally build in order to test the functionality of the interfaces and verify the concepts it is build upon.
+This component can be build locally in order to test the functionality of the interfaces and verify the concepts it is build upon.
 There are two ways to build:
 
  - [Maven](https:///maven.apache.org) build - to run this component as spring application on your local machine
@@ -74,9 +74,9 @@ Please keep in mind, that you need another component [cwa-verification-iam] the 
 We recommend that you first check the prerequisites to ensure that  
 - [Docker](https://www.docker.com)  
 
-is installed on you machine  
+is installed on your machine.
 
-On the commandline do the following:
+On the command line do the following:
 ```bash
 docker build -f|--file <path to dockerfile>  -t <imagename>  <path-to-verificationportalserver-root>
 docker run -p 127.0.0.1:8080:8080/tcp -it <imagename>
