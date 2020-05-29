@@ -96,11 +96,12 @@ public class VerificationPortalController {
    */
   @GetMapping(ROUTE_INDEX)
   public String index(HttpServletRequest request, Model model) {
-    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
+      .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
     if (model != null) {
-      model.addAttribute(ATTR_USER, user.replace("<","").replace(">",""));
+      model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
     }
 
     HttpSession session = request.getSession();
@@ -122,29 +123,29 @@ public class VerificationPortalController {
   @GetMapping(ROUTE_TELETAN)
   public String home(HttpServletRequest request, Model model) {
 
-      TeleTan teleTan = new TeleTan("123456789");
-      KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request.getUserPrincipal();
-      String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
+    TeleTan teleTan = new TeleTan("123456789");
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
+      .getUserPrincipal();
+    String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
-      // initially the TEMPLATE_INDEX is used (without showing teh teleTAN)
-      String template = TEMPLATE_INDEX;
-      HttpSession session = request.getSession();
-      if (session != null) {
-        if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
-          // get a new teleTAN and switch to the TEMPLATE_TELETAN
-          teleTan = teleTanClient.createTeleTan();
-          template = TEMPLATE_TELETAN;
-        }
-        session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
+    // initially the TEMPLATE_INDEX is used (without showing teh teleTAN)
+    String template = TEMPLATE_INDEX;
+    HttpSession session = request.getSession();
+    if (session != null) {
+      if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
+        // get a new teleTAN and switch to the TEMPLATE_TELETAN
+        teleTan = teleTanClient.createTeleTan();
+        template = TEMPLATE_TELETAN;
       }
+      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
+    }
 
-
-      if (model != null) {
-        // set thymeleaf attributes (teleTAN and user name)
-        model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<","").replace(">",""));
-        model.addAttribute(ATTR_USER, user.replace("<","").replace(">",""));
-      }
-      return template;
+    if (model != null) {
+      // set thymeleaf attributes (teleTAN and user name)
+      model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+    }
+    return template;
   }
 
   /**
