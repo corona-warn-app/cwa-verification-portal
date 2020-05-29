@@ -96,11 +96,12 @@ public class VerificationPortalController {
    */
   @GetMapping(ROUTE_INDEX)
   public String index(HttpServletRequest request, Model model) {
-    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken)request.getUserPrincipal();
+    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
+      .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
     if (model != null) {
-      model.addAttribute(ATTR_USER, user.replace("<","").replace(">",""));
+      model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
     }
 
     HttpSession session = request.getSession();
@@ -147,7 +148,14 @@ public class VerificationPortalController {
         model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<","").replace(">",""));
         model.addAttribute(ATTR_USER, user.replace("<","").replace(">",""));
       }
-      return template;
+      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
+
+    if (model != null) {
+      // set thymeleaf attributes (teleTAN and user name)
+      model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+    }
+    return template;
   }
 
   /**
