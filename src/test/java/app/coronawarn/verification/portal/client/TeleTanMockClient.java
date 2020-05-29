@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TeleTanMockClient implements TeleTanClientSI {
 
   @Override
-  public TeleTan createTeleTan() {
+  public TeleTan createTeleTan(String token) {
     log.debug("Calling TeleTanMockClient - onSettingChanged");
     return new TeleTan("1abc56N");
   }

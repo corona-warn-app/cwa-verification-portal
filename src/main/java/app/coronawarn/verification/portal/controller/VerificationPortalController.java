@@ -53,7 +53,7 @@ public class VerificationPortalController {
   /**
    * The route to the TeleTAN portal web site.
    */
-  public static final String ROUTE_INDEX = "/index";
+  private static final String ROUTE_INDEX = "/index";
 
   /**
    * The route to the TeleTAN portal web site.
@@ -88,7 +88,7 @@ public class VerificationPortalController {
   private TeleTanClientSI teleTanClient;
 
   /**
-   * The Web GUI page request showing the index.html web page without a teletan.
+   * The Web GUI page request showing the index.html web page without a teleTan.
    *
    * @param request the http request object
    * @param model   the thymeleaf model
@@ -112,15 +112,15 @@ public class VerificationPortalController {
 
   /**
    * The Web GUI page request showing the index.html or teletan.html web page The index.html is
-   * shown when the session was newly create (directly after login) other wise the teletan page
-   * with.
+   * shown when the session was newly created (directly after login) otherwise the teletan page
+   * with retrived teleTan is to be displayed.
    *
    * @param request the http request object
-   * @param model   the thymeleaf model
+   * @param model the thymeleaf model
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
   @GetMapping(ROUTE_TELETAN)
-  public String home(HttpServletRequest request, Model model) {
+  public String teletan(HttpServletRequest request, Model model) {
 
       TeleTan teleTan = new TeleTan("123456789");
       KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request.getUserPrincipal();
@@ -131,16 +131,17 @@ public class VerificationPortalController {
       HttpSession session = request.getSession();
       if (session != null) {
         if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
-          // get a new teleTAN and switch to the TEMPLATE_TELETAN
-          teleTan = teleTanClient.createTeleTan();
+           // get a new teleTan and switch to the TEMPLATE_TELETAN
+          String token = principal.getAccount().getKeycloakSecurityContext().getTokenString();
+          teleTan = teleTanClient.createTeleTan(token);
+          log.debug("TeleTan sucessfully retrived for user: " + user);
           template = TEMPLATE_TELETAN;
         }
         session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
       }
 
-
       if (model != null) {
-        // set thymeleaf attributes (teleTAN and user name)
+        // set thymeleaf attributes (teleTan and user name)
         model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<","").replace(">",""));
         model.addAttribute(ATTR_USER, user.replace("<","").replace(">",""));
       }
