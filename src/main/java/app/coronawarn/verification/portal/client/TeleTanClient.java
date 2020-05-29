@@ -33,8 +33,8 @@ public class TeleTanClient implements TeleTanClientSI {
   private VerificationServerFeignClient feignClient;
 
   @Override
-  public TeleTan createTeleTan() {
-    return feignClient.createTeleTan();
+  public TeleTan createTeleTan(String token) {
+    return feignClient.createTeleTan(token);
   }
 
 }
