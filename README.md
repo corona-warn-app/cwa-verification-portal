@@ -48,7 +48,7 @@ There are two ways to build:
  - [Docker](https://www.docker.com) build - to run it as docker container build from the provided docker build [file](https://github.com/corona-warn-app/cwa-verification-server/blob/master/Dockerfile)
  ### Prerequisites
  [Open JDK 11](https://openjdk.java.net)  
- [Maven](https://apache.maven.org)  
+ [Maven](https://maven.apache.org)
  *(optional)*: [Docker](https://www.docker.com)  
 
 ### Build
@@ -59,7 +59,7 @@ There are two ways to build:
 For actively take part on the development this is the way you should choose.   
 Please check, whether following prerequisites are fulfilled
 - [Open JDK 11](https://openjdk.java.net) or a similar JDK 11 compatible VM  
-- [Maven](https://apache.maven.org)  
+- [Maven](https://maven.apache.org)
 
 is installed on your machine.  
 You can then open a terminal pointing to the root directory of the verification server and do the following:
