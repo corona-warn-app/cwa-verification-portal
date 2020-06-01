@@ -37,7 +37,7 @@ In the world of the Corona Warn App the Verification Portal allows hotline emplo
 
 In other words: For all People who are willing to join the tracing process and have a positive test result, there will be a service hotline one can call to get a temporary Transaction Authentication Number (TAN) to join the process. The agents at the service hotline will ask the caller some questions to verify his status and then provide one with a TAN. This serves as an interim solution until all laboratories have enabled the QR-code process and as a second option for users who did not choose to receive the test result through the app.
 
-This component provides a simple user interface for the service agents to generate the temporary TAN. For security reasons it cooperates with an IAM component (**I**dentity**A**cess**M**anagement) using a 2-Factor-Authentification. As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
+This component provides a simple user interface for the service agents to generate the temporary TeleTAN. For security reasons it cooperates with an **I**dentity and **A**ccess **M**anagement (IAM) component using OpenID Connect standard protocols with additional 2-Factor-Authentication (2FA) based on [one-time passwords (OTP)](https://freeotp.github.io/). As mentioned above, the IAM component is hosted in another [project](https://github.com/corona-warn-app/cwa-verification-iam) of the corona-warn-app org.
 
 ## Development
 
