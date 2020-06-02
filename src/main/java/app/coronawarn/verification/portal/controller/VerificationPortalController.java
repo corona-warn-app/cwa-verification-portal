@@ -53,7 +53,7 @@ public class VerificationPortalController {
   /**
    * The route(s) to the TeleTAN portal start web site.
    */
-  private static final String ROUTE_INDEX= "/";
+  private static final String ROUTE_INDEX = "/";
   private static final String ROUTE_CWA = "/cwa";
   private static final String ROUTE_START = "/cwa/start";
 
@@ -88,7 +88,7 @@ public class VerificationPortalController {
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
 
- /**
+  /**
    * The REST client interface for getting the TeleTAN from verificationserver.
    */
   @Autowired
