@@ -16,7 +16,7 @@ server:
       enabled: false
   port: 8081
   servlet:
-    context-path: /cwa
+    context-path: /
     session:
       timeout: 14400s
 

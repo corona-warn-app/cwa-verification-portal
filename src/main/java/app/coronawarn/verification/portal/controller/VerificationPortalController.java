@@ -51,19 +51,21 @@ public class VerificationPortalController {
   static final String SESSION_ATTR_TELETAN = "teletan";
 
   /**
-   * The route to the TeleTAN portal web site.
+   * The route(s) to the TeleTAN portal start web site.
    */
-  private static final String ROUTE_INDEX = "/index";
+  private static final String ROUTE_INDEX= "/";
+  private static final String ROUTE_CWA = "/cwa";
+  private static final String ROUTE_START = "/cwa/start";
 
   /**
-   * The route to the TeleTAN portal web site.
+   * The route to the TeleTAN portal teletan web site.
    */
-  public static final String ROUTE_TELETAN = "/teletan";
+  public static final String ROUTE_TELETAN = "/cwa/teletan";
 
   /**
    * The route to log out from the portal web site.
    */
-  private static final String ROUTE_LOGOUT = "/logout";
+  private static final String ROUTE_LOGOUT = "/cwa/logout";
 
   /**
    * The html Thymeleaf template for the TeleTAN portal web site.
@@ -71,7 +73,12 @@ public class VerificationPortalController {
   private static final String TEMPLATE_TELETAN = "teletan";
 
   /**
-   * The html Thymeleaf template for the TeleTAN portal web site.
+   * The html Thymeleaf template for the TeleTAN portal start web site.
+   */
+  private static final String TEMPLATE_START = "start";
+
+  /**
+   * The html Thymeleaf template for the TeleTAN portal index site.
    */
   private static final String TEMPLATE_INDEX = "index";
 
@@ -81,21 +88,32 @@ public class VerificationPortalController {
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
 
-  /**
+ /**
    * The REST client interface for getting the TeleTAN from verificationserver.
    */
   @Autowired
   private TeleTanClientSI teleTanClient;
 
   /**
-   * The Web GUI page request showing the index.html web page without a teleTan.
+   * The Web GUI page request showing the index.html web page
+   *
+   * @return the name of the Thymeleaf template to be used for the HTML page
+   */
+  @GetMapping({ROUTE_INDEX, ROUTE_CWA})
+  public String index() {
+    return TEMPLATE_INDEX;
+  }
+
+
+  /**
+   * The Web GUI page request showing the start.html web page without a teleTan.
    *
    * @param request the http request object
    * @param model   the thymeleaf model
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
-  @GetMapping(ROUTE_INDEX)
-  public String index(HttpServletRequest request, Model model) {
+  @GetMapping(ROUTE_START)
+  public String start(HttpServletRequest request, Model model) {
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
       .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
@@ -108,11 +126,11 @@ public class VerificationPortalController {
     if (session != null) {
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
     }
-    return TEMPLATE_INDEX;
+    return TEMPLATE_START;
   }
 
   /**
-   * The Web GUI page request showing the index.html or teletan.html web page The index.html is
+   * The Web GUI page request showing the start.html or teletan.html web page The start.html is
    * shown when the session was newly created (directly after login) otherwise the teletan page with
    * retrieved teleTan is to be displayed.
    *
@@ -129,7 +147,7 @@ public class VerificationPortalController {
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
     // initially the TEMPLATE_INDEX is used (without showing teh teleTAN)
-    String template = TEMPLATE_INDEX;
+    String template = TEMPLATE_START;
     HttpSession session = request.getSession();
     if (session != null) {
       if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
