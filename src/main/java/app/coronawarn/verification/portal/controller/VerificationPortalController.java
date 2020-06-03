@@ -155,7 +155,7 @@ public class VerificationPortalController {
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
         teleTan = teleTanClient.createTeleTan(token);
-        log.debug("TeleTan sucessfully retrieved for user: {}", user);
+        log.info("TeleTan sucessfully retrieved for user: {}", user);
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
