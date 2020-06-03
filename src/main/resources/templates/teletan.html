@@ -3,25 +3,25 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" type="text/css" href="teletan.css"/>
-  <meta http-equiv="refresh" content="600; URL=/cwa/index">
+  <link rel="stylesheet" type="text/css" href="/teletan.css"/>
+  <meta http-equiv="refresh" content="600; URL=/cwa/start">
   <title>TeleTAN Portal</title>
-  <link rel="icon" href="c-19_logo.png"/>
+  <link rel="icon" href="/c-19_logo.png"/>
 </head>
 <body>
 <div class="header">
-  <img class="header-logo" src="telekom_web_logo.png"/>
-  <img class="header-text" src="life_is_for_sharing.png"/>
+  <img class="header-logo" src="/telekom_web_logo.png"/>
+  <img class="header-text" src="/life_is_for_sharing.png"/>
 </div>
 <div class="footer">
   <p class="footer-font footer-copyright">© Telekom Deutschland GmbH</p>
   <p class="footer-font footer-imprint">Impressum</p>
-  <img class="footer-dp-logo" src="data_protect.png"/>
+  <img class="footer-dp-logo" src="/data_protect.png"/>
   <p class="footer-font footer-dp">Datenschutz</p>
 </div>
 <table class="c19-logo">
   <tr>
-    <td style="width: 1px;"><img src="c-19_logo.png"/></td>
+    <td style="width: 1px;"><img src="/c-19_logo.png"/></td>
     <td>TeleTAN Portal</td>
   </tr>
 </table>
@@ -31,18 +31,18 @@
 <div class="text-big" style="top: 210px;">Anzeige der TeleTAN</div>
 <div class="text" style="top: 300px;">Die neue TeleTAN lautet</div>
 <div class="text-bold" style="top: 340px;" th:text="${teleTAN}"/>
-<form action="teletan" method="get">
+<form action="/cwa/teletan" method="get">
   <input class="button" style="top: 410px;" type="submit" value="Eine weitere TeleTAN erzeugen"/>
 </form>
 
 <!-- Current user and logout popup -->
 <table class="user" onclick="showUserPopup()">
   <tr>
-    <td><img  src="user.png"/></td>
+    <td><img  src="/user.png"/></td>
     <td style="padding-left: 10px;" th:text="${userName}"/>
   </tr>
 </table>
-<form action="logout" method="get">
+<form action="/cwa/logout" method="get">
 	<button class="button-logout" id="logout">Abmelden</button>
 </form>
 <script>
