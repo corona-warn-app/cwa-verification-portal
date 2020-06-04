@@ -26,10 +26,29 @@
 </table>
 
 <!-- BEGIN page specific content  -->
-<div class="text-error" style="top: 300px;" th:text="${message}"/>
-<form action="/cwa/start" method="get">
-  <input class="button" style="top: 400px;" type="submit" value="Zurück"/>
+<div class="text-big" style="top: 210px;">TeleTAN erzeugen</div>
+<div class="text" style="top: 300px;">Erzeugen Sie eine neue TeleTAN für einen Patienten.</div>
+<form action="/cwa/teletan" method="get">
+  <input class="button" style="top: 360px;" type="submit" value="Eine TeleTAN erzeugen"/>
 </form>
+
+<!-- Current user and logout popup -->
+<table class="user" onclick="showUserPopup()">
+  <tr>
+    <td><img  src="/user.png"/></td>
+    <td style="padding-left: 10px;" th:text="${userName}"/>
+  </tr>
+</table>
+<form action="/cwa/logout" method="get">
+	<button class="button-logout" id="logout">Abmelden</button>
+</form>
+<script>
+function showUserPopup() {
+  var popup = document.getElementById("logout");
+  popup.classList.toggle("show");
+}
+</script>
+
 <!-- END page specific content  -->
 </body>
 </html>
