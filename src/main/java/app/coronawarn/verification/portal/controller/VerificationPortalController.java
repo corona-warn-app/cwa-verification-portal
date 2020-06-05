@@ -34,6 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * This class represents the WEB UI controller for the verification portal. It implements a very
@@ -112,7 +115,7 @@ public class VerificationPortalController {
    * @param model   the thymeleaf model
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
-  @GetMapping(ROUTE_START)
+  @RequestMapping(value = ROUTE_START, method = {RequestMethod.GET, RequestMethod.POST})
   public String start(HttpServletRequest request, Model model) {
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
       .getUserPrincipal();
@@ -138,7 +141,7 @@ public class VerificationPortalController {
    * @param model   the thymeleaf model
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
-  @GetMapping(ROUTE_TELETAN)
+  @RequestMapping(value = ROUTE_TELETAN, method = {RequestMethod.GET, RequestMethod.POST})
   public String teletan(HttpServletRequest request, Model model) {
 
     TeleTan teleTan = new TeleTan("123456789");
@@ -175,7 +178,7 @@ public class VerificationPortalController {
    * @param request the http request object
    * @return the redirect path after the logout
    */
-  @GetMapping(ROUTE_LOGOUT)
+  @PostMapping(ROUTE_LOGOUT)
   public String logout(HttpServletRequest request) {
     try {
       request.logout();
