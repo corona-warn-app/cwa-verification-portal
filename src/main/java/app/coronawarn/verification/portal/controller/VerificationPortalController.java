@@ -149,7 +149,7 @@ public class VerificationPortalController {
       .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
-    // initially the TEMPLATE_INDEX is used (without showing teh teleTAN)
+    // initially the TEMPLATE_INDEX is used (without showing the teleTAN)
     String template = TEMPLATE_START;
     HttpSession session = request.getSession();
     if (session != null) {
@@ -158,7 +158,7 @@ public class VerificationPortalController {
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
         teleTan = teleTanClient.createTeleTan(token);
-        log.info("TeleTan sucessfully retrieved for user: {}", user);
+        log.info("TeleTan successfully retrieved for user: {}", user);
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
