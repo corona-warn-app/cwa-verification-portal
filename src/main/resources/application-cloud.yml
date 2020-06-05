@@ -8,9 +8,6 @@ server:
     key-store-type: JKS
 
 cwa-verification-server:
-  url: http://localhost:8082
-  path:
-    teletan: /version/v1/tan/teletan
   ssl:
     one-way-authentication-enabled: false
     two-way-authentication-enabled: true
