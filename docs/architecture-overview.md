@@ -6,7 +6,7 @@ This document describes the component Verification Portal for the System “Coro
 
 This document links the overall system architecture with the software design of the Verification Portal, it links user stories with implementation inside the Verification Portal. 
 
-This document is intended to be read by people who want to get insights how verification for hotline and health authorities works in detail, it is our guideline for implementation. This document is a mixture of software design and requirement specification, it may be splitted in future.
+This document is intended to be read by people who want to get insights how verification for hotline and health authorities works in detail, it is our guideline for implementation. This document is a mixture of software design and requirement specification, it may be split in future.
 
 Please be aware that several aspects in this document are not final, certain important information is missing.
 
@@ -22,18 +22,18 @@ The context is:
 - Verification Portal 
     - a web portal allowing to generate teleTAN
 - Verification IAM
-    - a Idenitity and Access Management software, managing users, right, roles and implementing two factor authentication
+    - a Identity and Access Management software, managing users, right, roles and implementing two factor authentication
 - One Time Password Generator
     - used to provide the 2nd factor for authentication
 - Verification Server
-    - System which trusts the Verification Portal and ultimatly generates the teleTAN
+    - System which trusts the Verification Portal and ultimately generates the teleTAN
 
 
 ##	Core Entities
-|Entitiy|	Definition|	
+|Entity|	Definition|	
 | ------------- |:-------------:|
 |teleTAN|	Is a subtype of TAN with reduced length and life time. This TAN is handed over via phone and contains only uppercase letters and numbers, excluding 0,O and I,1. Length of teleTAN is 7 characters. The lifetime of a teleTAN is 1h. This entity is managed by Verification Server	|
-|SARS-CoV-2 Test|	A SARS-CoV-2 Test aggregates several probes donated by a single person to verified whether they proof an infection with the SARS-CoV-2 virus or not. A SARS-CoV-2 Test can have multiple states, “positive”, “negative”, “unknow”, “erroneous”	|
+|SARS-CoV-2 Test|	A SARS-CoV-2 Test aggregates several probes donated by a single person to verified whether they proof an infection with the SARS-CoV-2 virus or not. A SARS-CoV-2 Test can have multiple states, “positive”, “negative”, “unknown”, “erroneous”	|
 
 
 # Software Design
@@ -54,7 +54,7 @@ Authentication is based on the [OpenID specifications](https://openid.net/develo
 # Security Requirements
 
 1. Session Timeout
-The session timout is 4 hours.
+The session timeout is 4 hours.
 
 1. Display timeout for teleTAN
 A teleTAN must not be shown after 10min. 
@@ -65,7 +65,7 @@ A teleTAN must not be shown after 10min.
 
 # Implemented Use Cases
 ## Referenced User Stories
-will be defailed in later versions of this document
+Will be detailed in later versions of this document
 
 ##	Actors
 1. Hotline Employee
@@ -73,7 +73,7 @@ Has technical role "c19hotline". Is an employee which mainly triggers the use ca
 2. Employee Health Authority
 Has technical role "c19healthauthority". Not implemented in the current release.
 3. Verifion Portal User Admin 
-Has technical role "verificationPortalAdmin". Administrator who executes user administation in the Verification IAM
+Has technical role "verificationPortalAdmin". Administrator who executes user administration in the Verification IAM
 4. Hotline Trustee
 Has technical role "c19hotlineTrustee", but is not implemented in this component, is implemented in a manual eMail based flow. This actor approves the requests for user creation in the Verification IAM
 
