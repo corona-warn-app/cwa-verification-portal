@@ -73,7 +73,7 @@ Has technical role "c19hotline". Is an employee which mainly triggers the use ca
 2. Employee Health Authority
 Has technical role "c19healthauthority". Not implemented in the current release.
 3. Verifion Portal User Admin 
-Has technical role "verificationPortalAdmin". Administrator who executes user administation in the Verification IAM
+Has technical role "verificationPortalAdmin". Administrator who executes user administration in the Verification IAM
 4. Hotline Trustee
 Has technical role "c19hotlineTrustee", but is not implemented in this component, is implemented in a manual eMail based flow. This actor approves the requests for user creation in the Verification IAM
 
