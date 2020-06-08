@@ -31,8 +31,9 @@
 <div class="text-big" style="top: 210px;">Anzeige der TeleTAN</div>
 <div class="text" style="top: 300px;">Die neue TeleTAN lautet</div>
 <div class="text-bold" style="top: 340px;" th:text="${teleTAN}"/>
-<form action="/cwa/teletan" method="get">
+<form action="/cwa/teletan" method="post">
   <input class="button" style="top: 410px;" type="submit" value="Eine weitere TeleTAN erzeugen"/>
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </form>
 
 <!-- Current user and logout popup -->
@@ -42,8 +43,9 @@
     <td style="padding-left: 10px;" th:text="${userName}"/>
   </tr>
 </table>
-<form action="/cwa/logout" method="get">
+<form action="/cwa/logout" method="post">
 	<button class="button-logout" id="logout">Abmelden</button>
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </form>
 <script>
 function showUserPopup() {
