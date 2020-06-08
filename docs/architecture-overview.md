@@ -6,7 +6,7 @@ This document describes the component Verification Portal for the System “Coro
 
 This document links the overall system architecture with the software design of the Verification Portal, it links user stories with implementation inside the Verification Portal. 
 
-This document is intended to be read by people who want to get insights how verification for hotline and health authorities works in detail, it is our guideline for implementation. This document is a mixture of software design and requirement specification, it may be splitted in future.
+This document is intended to be read by people who want to get insights how verification for hotline and health authorities works in detail, it is our guideline for implementation. This document is a mixture of software design and requirement specification, it may be split in future.
 
 Please be aware that several aspects in this document are not final, certain important information is missing.
 
