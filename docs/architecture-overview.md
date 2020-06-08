@@ -26,7 +26,7 @@ The context is:
 - One Time Password Generator
     - used to provide the 2nd factor for authentication
 - Verification Server
-    - System which trusts the Verification Portal and ultimatly generates the teleTAN
+    - System which trusts the Verification Portal and ultimately generates the teleTAN
 
 
 ##	Core Entities
