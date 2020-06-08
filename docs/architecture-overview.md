@@ -65,7 +65,7 @@ A teleTAN must not be shown after 10min.
 
 # Implemented Use Cases
 ## Referenced User Stories
-will be defailed in later versions of this document
+Will be defailed in later versions of this document
 
 ##	Actors
 1. Hotline Employee
