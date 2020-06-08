@@ -54,7 +54,7 @@ Authentication is based on the [OpenID specifications](https://openid.net/develo
 # Security Requirements
 
 1. Session Timeout
-The session timout is 4 hours.
+The session timeout is 4 hours.
 
 1. Display timeout for teleTAN
 A teleTAN must not be shown after 10min. 
