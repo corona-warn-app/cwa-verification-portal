@@ -22,7 +22,7 @@ The context is:
 - Verification Portal 
     - a web portal allowing to generate teleTAN
 - Verification IAM
-    - a Idenitity and Access Management software, managing users, right, roles and implementing two factor authentication
+    - a Identity and Access Management software, managing users, right, roles and implementing two factor authentication
 - One Time Password Generator
     - used to provide the 2nd factor for authentication
 - Verification Server
