@@ -21,9 +21,8 @@
 
 package app.coronawarn.verification.portal.controller;
 
-
 import app.coronawarn.verification.portal.client.TeleTan;
-import app.coronawarn.verification.portal.client.TeleTanClientSI;
+import app.coronawarn.verification.portal.service.TeleTanService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -47,24 +46,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class VerificationPortalController {
 
   /**
+   * The route to the TeleTAN portal teletan web site.
+   */
+  public static final String ROUTE_TELETAN = "/cwa/teletan";
+  /**
    * Session attribute showing that the index template has been shown already at least once in the
    * current session (means that now the teletan template should be shown instead of the index
    * template).
    */
   static final String SESSION_ATTR_TELETAN = "teletan";
-
   /**
    * The route(s) to the TeleTAN portal start web site.
    */
   private static final String ROUTE_INDEX = "/";
   private static final String ROUTE_CWA = "/cwa";
   private static final String ROUTE_START = "/cwa/start";
-
-  /**
-   * The route to the TeleTAN portal teletan web site.
-   */
-  public static final String ROUTE_TELETAN = "/cwa/teletan";
-
   /**
    * The route to log out from the portal web site.
    */
@@ -95,7 +91,7 @@ public class VerificationPortalController {
    * The REST client interface for getting the TeleTAN from verificationserver.
    */
   @Autowired
-  private TeleTanClientSI teleTanClient;
+  private TeleTanService teleTanService;
 
   /**
    * The Web GUI page request showing the index.html web page
@@ -157,7 +153,7 @@ public class VerificationPortalController {
         // get a new teleTan and switch to the TEMPLATE_TELETAN
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
-        teleTan = teleTanClient.createTeleTan(token);
+        teleTan = teleTanService.createTeleTan(token);
         log.info("TeleTan successfully retrieved for user: {}", user);
         template = TEMPLATE_TELETAN;
       }
