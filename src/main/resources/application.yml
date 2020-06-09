@@ -2,13 +2,20 @@ spring:
   application:
     name: cwa-verification-portal
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
 keycloak:
   auth-server-url: http://localhost:8080/auth
   principal-attribute: preferred_username
   public-client: true
   realm: cwa
   resource: verification-portal
-
 
 server:
   error:
@@ -50,9 +57,12 @@ management:
 
 cwa-verification-server:
   url: http://localhost:8082
-  path:
-    teletan: /version/v1/tan/teletan
   ssl:
-    one-way-authentication-enabled: false
-    two-way-authentication-enabled: false
-
+    enabled: false
+    one-way: false
+    two-way: false
+    hostname-verify: false
+    key-store: classpath:keystore.jks
+    key-store-password: changeit
+    trust-store: classpath:truststore.jks
+    trust-store-password: changeit

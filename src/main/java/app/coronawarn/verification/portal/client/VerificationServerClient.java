@@ -21,22 +21,26 @@
 
 package app.coronawarn.verification.portal.client;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
-import lombok.extern.slf4j.Slf4j;
+@FeignClient(name = "cwa-verification-server",
+  url = "${cwa-verification-server.url}",
+  configuration = VerificationServerClientConfig.class)
+public interface VerificationServerClient {
 
-@Service
-@Primary
-@Slf4j
-@Qualifier("teleTanClient")
-public class TeleTanMockClient implements TeleTanClientSI {
-
-  @Override
-  public TeleTan createTeleTan(String token) {
-    log.debug("Calling TeleTanMockClient - onSettingChanged");
-    return new TeleTan("1abc56N");
-  }
+  /**
+   * Call the verification service to get teletan from token.
+   *
+   * @param token the token to request teletan
+   * @return the teletan
+   */
+  @PostMapping(value = "/version/v1/tan/teletan",
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  TeleTan createTeleTan(@RequestHeader("X-Auth-Token") String token);
 
 }
