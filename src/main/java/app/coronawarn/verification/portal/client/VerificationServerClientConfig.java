@@ -54,7 +54,10 @@ public class VerificationServerClientConfig {
           .build()
       );
     }
-    return new ApacheHttpClient(HttpClients.createDefault());
+    return new ApacheHttpClient(HttpClientBuilder
+      .create()
+      .setSSLHostnameVerifier(getSslHostnameVerifier())
+      .build());
   }
 
   private SSLContext getSslContext() {
