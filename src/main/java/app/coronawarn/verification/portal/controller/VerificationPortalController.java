@@ -23,6 +23,9 @@ package app.coronawarn.verification.portal.controller;
 
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.service.TeleTanService;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,6 +90,14 @@ public class VerificationPortalController {
    */
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
+  
+  private static final Map<String, LocalDateTime> rateLimitingUserMap = new ConcurrentHashMap<String, LocalDateTime>();
+  
+  @Value("${rateLimiting.enabled}")
+  private boolean rateLimitingEnabled;
+
+  @Value("${rateLimiting.minutes}")
+  private long rateLimitingMinutes;  
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
@@ -139,7 +151,6 @@ public class VerificationPortalController {
    */
   @RequestMapping(value = ROUTE_TELETAN, method = {RequestMethod.GET, RequestMethod.POST})
   public String teletan(HttpServletRequest request, Model model) {
-
     TeleTan teleTan = new TeleTan("123456789");
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
       .getUserPrincipal();
@@ -153,8 +164,13 @@ public class VerificationPortalController {
         // get a new teleTan and switch to the TEMPLATE_TELETAN
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
-        teleTan = teleTanService.createTeleTan(token);
-        log.info("TeleTan successfully retrieved for user: {}", user);
+        
+        if (rateLimitingEnabled) {
+          teleTan = checkLimitation(user, teleTan, token);
+        } else {
+          teleTan = teleTanService.createTeleTan(token);
+          log.info("TeleTan successfully retrieved for user: {}", user);
+        }
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
@@ -166,6 +182,25 @@ public class VerificationPortalController {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
     }
     return template;
+  }
+
+  private TeleTan checkLimitation(String user, TeleTan teleTan, String token) {
+    if (rateLimitingUserMap.containsKey(user)) {
+      if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(rateLimitingUserMap.get(user))) {
+        String time = rateLimitingMinutes > 1 ? " Minuten" : " Minute";
+        teleTan.setValue("Zeitlimitierung aktiv, bitte warten Sie " + rateLimitingMinutes + time);
+        log.info("TeleTan rate limiting is active for user: {}", user);
+      } else {
+        rateLimitingUserMap.replace(user, LocalDateTime.now());
+        teleTan = teleTanService.createTeleTan(token);
+        log.info("TeleTan successfully retrieved for user: {}", user);
+      }
+    } else {
+      rateLimitingUserMap.put(user, LocalDateTime.now());
+      teleTan = teleTanService.createTeleTan(token);
+      log.info("TeleTan successfully retrieved for user: {}", user);
+    }
+    return teleTan;
   }
 
   /**
