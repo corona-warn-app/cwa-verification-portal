@@ -97,7 +97,7 @@ public class VerificationPortalController {
   private boolean rateLimitingEnabled;
 
   @Value("${rateLimiting.minutes}")
-  private long rateLimitingMinutes;  
+  private long rateLimitingMinutes;
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
@@ -114,7 +114,6 @@ public class VerificationPortalController {
   public String index() {
     return TEMPLATE_INDEX;
   }
-
 
   /**
    * The Web GUI page request showing the start.html web page without a teleTan.
@@ -164,7 +163,6 @@ public class VerificationPortalController {
         // get a new teleTan and switch to the TEMPLATE_TELETAN
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
-        
         if (rateLimitingEnabled) {
           teleTan = checkRateLimitation(user, teleTan, token);
         } else {
@@ -175,7 +173,6 @@ public class VerificationPortalController {
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
     }
-
     if (model != null) {
       // set thymeleaf attributes (teleTAN and user name)
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
