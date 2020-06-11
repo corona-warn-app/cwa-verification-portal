@@ -12,9 +12,11 @@ public class TeleTanService {
 
   @Autowired
   private VerificationServerClient verificationServerClient;
+  
+  private static final String BEARER  = "Bearer ";
 
   public TeleTan createTeleTan(String token) {
-    return verificationServerClient.createTeleTan(token);
+    return verificationServerClient.createTeleTan(BEARER + token);
   }
 
 }
