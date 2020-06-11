@@ -181,6 +181,6 @@ public class VerificationPortalController {
     } catch (ServletException e) {
       log.error("Logout failed", e);
     }
-    return "redirect:" + TEMPLATE_TELETAN;
+    return "redirect:" + TEMPLATE_START;
   }
 }
