@@ -137,7 +137,7 @@ public class VerificationPortalController {
    * @param model   the thymeleaf model
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
-  @RequestMapping(value = ROUTE_TELETAN, method = {RequestMethod.GET, RequestMethod.POST})
+  @PostMapping(value = ROUTE_TELETAN)
   public String teletan(HttpServletRequest request, Model model) {
 
     TeleTan teleTan = new TeleTan("123456789");
@@ -181,6 +181,6 @@ public class VerificationPortalController {
     } catch (ServletException e) {
       log.error("Logout failed", e);
     }
-    return "redirect:" + TEMPLATE_TELETAN;
+    return "redirect:" + TEMPLATE_START;
   }
 }
