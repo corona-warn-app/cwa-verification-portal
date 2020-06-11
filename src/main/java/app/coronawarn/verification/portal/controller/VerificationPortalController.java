@@ -166,7 +166,7 @@ public class VerificationPortalController {
           .getTokenString();
         
         if (rateLimitingEnabled) {
-          teleTan = checkLimitation(user, teleTan, token);
+          teleTan = checkRateLimitation(user, teleTan, token);
         } else {
           teleTan = teleTanService.createTeleTan(token);
           log.info("TeleTan successfully retrieved for user: {}", user);
@@ -184,12 +184,10 @@ public class VerificationPortalController {
     return template;
   }
 
-  private TeleTan checkLimitation(String user, TeleTan teleTan, String token) {
+  private TeleTan checkRateLimitation(String user, TeleTan teleTan, String token) throws RateLimitationException {
     if (rateLimitingUserMap.containsKey(user)) {
       if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(rateLimitingUserMap.get(user))) {
-        String time = rateLimitingMinutes > 1 ? " Minuten" : " Minute";
-        teleTan.setValue("Zeitlimitierung aktiv, bitte warten Sie " + rateLimitingMinutes + time);
-        log.info("TeleTan rate limiting is active for user: {}", user);
+        throw new RateLimitationException("Too many requests in a given amount of time");
       } else {
         rateLimitingUserMap.replace(user, LocalDateTime.now());
         teleTan = teleTanService.createTeleTan(token);
