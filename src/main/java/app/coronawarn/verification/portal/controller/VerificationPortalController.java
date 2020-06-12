@@ -164,11 +164,10 @@ public class VerificationPortalController {
         String token = principal.getAccount().getKeycloakSecurityContext()
           .getTokenString();
         if (rateLimitingEnabled) {
-          teleTan = checkRateLimitation(user, teleTan, token);
-        } else {
-          teleTan = teleTanService.createTeleTan(token);
-          log.info("TeleTan successfully retrieved for user: {}", user);
-        }
+          checkRateLimitation(user);
+        } 
+        teleTan = teleTanService.createTeleTan(token);
+        log.info("TeleTan successfully retrieved for user: {}", user);
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
@@ -181,21 +180,16 @@ public class VerificationPortalController {
     return template;
   }
 
-  private TeleTan checkRateLimitation(String user, TeleTan teleTan, String token) throws RateLimitationException {
+  private void checkRateLimitation(String user) {
     if (rateLimitingUserMap.containsKey(user)) {
       if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(rateLimitingUserMap.get(user))) {
-        throw new RateLimitationException("Too many requests in a given amount of time");
+        throw new RateLimitationException("Too many requests by user: " + user + " in a given amount of time");
       } else {
         rateLimitingUserMap.replace(user, LocalDateTime.now());
-        teleTan = teleTanService.createTeleTan(token);
-        log.info("TeleTan successfully retrieved for user: {}", user);
       }
     } else {
       rateLimitingUserMap.put(user, LocalDateTime.now());
-      teleTan = teleTanService.createTeleTan(token);
-      log.info("TeleTan successfully retrieved for user: {}", user);
     }
-    return teleTan;
   }
 
   /**
