@@ -181,8 +181,9 @@ public class VerificationPortalController {
   }
 
   private void checkRateLimitation(String user) {
-    if (rateLimitingUserMap.containsKey(user)) {
-      if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(rateLimitingUserMap.get(user))) {
+    LocalDateTime usageTime = rateLimitingUserMap.get(user);
+    if (usageTime != null) {
+      if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(usageTime)) {
         throw new RateLimitationException("Too many requests by user: " + user + " in a given amount of time");
       } else {
         rateLimitingUserMap.replace(user, LocalDateTime.now());
