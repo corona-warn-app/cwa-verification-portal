@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TeleTanService {
 
-  @Autowired
-  private VerificationServerClient verificationServerClient;
+  private final VerificationServerClient verificationServerClient;
+
+  public TeleTanService(VerificationServerClient verificationServerClient) {
+    this.verificationServerClient = verificationServerClient;
+  }
 
   public TeleTan createTeleTan(String token) {
     return verificationServerClient.createTeleTan(token);
