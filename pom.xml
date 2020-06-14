@@ -42,6 +42,8 @@
     <plugin.jacoco.version>0.8.5</plugin.jacoco.version>
     <guava.version>29.0-jre</guava.version>
     <sonar.coverage.exclusions>
+      **/VerificationPortalApplication.java,  
+      **/SecurityConfig.java,
       **/client/*
     </sonar.coverage.exclusions>     
   </properties>

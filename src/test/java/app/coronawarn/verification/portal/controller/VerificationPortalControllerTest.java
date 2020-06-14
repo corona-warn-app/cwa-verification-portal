@@ -73,6 +73,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
   @Test
   @WithMockKeycloakAuth("Role_Test")
   public void testIndex() throws Exception {
+    log.info("process testIndex()");
     mockMvc.perform(get("/cwa"))
             .andExpect(status().isOk())
             .andExpect(view().name("index"));
@@ -89,12 +90,25 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
   @Test
   @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
   public void testStart() throws Exception {
-    log.info("process testStart()");
+    log.info("process testStart() RequestMethod.GET");
     mockMvc.perform(get("/cwa/start"))
             .andExpect(status().isOk())
             .andExpect(view().name("start"))
             .andExpect(model().attribute("userName", equalTo("tester")))
             .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+    
+    String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
+    HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
+    CsrfToken csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());    
+    
+    log.info("process testStart() RequestMethod.POST");
+    mockMvc.perform(post("/cwa/start")
+            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+            .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))        
+            .andExpect(status().isOk())
+            .andExpect(view().name("start"))
+            .andExpect(model().attribute("userName", equalTo("tester")))
+            .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));    
   }    
 
   /**
