@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,6 +87,13 @@ public class VerificationPortalController {
    */
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
+  private static final String ATTR_PW_RESET_URL = "pwResetUrl";
+
+  /**
+   * The Keycloak password reset URL.
+   */
+  @Value("${keycloak-pw.reset-url}")
+  private String pwResetUrl;
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
@@ -119,6 +127,7 @@ public class VerificationPortalController {
 
     if (model != null) {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
     }
 
     HttpSession session = request.getSession();
@@ -161,9 +170,9 @@ public class VerificationPortalController {
     }
 
     if (model != null) {
-      // set thymeleaf attributes (teleTAN and user name)
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
     }
     return template;
   }
