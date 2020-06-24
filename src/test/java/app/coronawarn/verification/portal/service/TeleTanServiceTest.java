@@ -19,55 +19,54 @@
  * under the License.
  */
 
-package app.coronawarn.verification.portal;
+package app.coronawarn.verification.portal.service;
 
-import app.coronawarn.verification.portal.controller.VerificationPortalController;
+import app.coronawarn.verification.portal.VerificationPortalApplication;
+import app.coronawarn.verification.portal.client.TeleTan;
+import app.coronawarn.verification.portal.client.VerificationServerClient;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.containsString;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * This is the test class for the verification portal application.
- */
 @Slf4j
 @RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
 @SpringBootTest
 @ContextConfiguration(classes = VerificationPortalApplication.class)
-public class VerificationPortalTests {
-
+public class TeleTanServiceTest
+{
+  public static final String TEST_TELE_TAN = "FE9A5MAK6C";
+  public static final String TEST_TOKEN = "0815";
+  
   @Autowired
-  private MockMvc mockMvc;
+  @InjectMocks
+  private TeleTanService teleTanService;
 
-  @Autowired
-  private VerificationPortalController verificationPortalController;
-
-  @BeforeEach
-  void setUp() {
+  @Mock
+  private VerificationServerClient clientMock;
+  
+  @Before
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
-  }
-
+  }  
+  
+  /**
+   * Test of createTeleTan method, of class TeleTanService.
+   */
   @Test
-  public void teletan() throws Exception {
-     assertThat(verificationPortalController).isNotNull();
-/*
-     mockMvc.perform(get("/"))
-             .andExpect(status().isOk())
-             .andExpect(content().string(containsString("URL=/cwa/start")));
- */
-   }
-
+  public void testCreateTeleTan() {
+    log.info("process testCreateTeleTan()");
+    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TEST_TOKEN);
+    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(TEST_TELE_TAN));
+  }
 }
