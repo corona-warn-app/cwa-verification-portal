@@ -66,7 +66,7 @@ public class TeleTanServiceTest
   @Test
   public void testCreateTeleTan() {
     log.info("process testCreateTeleTan()");
-    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TEST_TOKEN);
-    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(TEST_TELE_TAN));
+    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TeleTanService.TOKEN_PREFIX + TEST_TOKEN);
+    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(new TeleTan(TEST_TELE_TAN)));
   }
 }
