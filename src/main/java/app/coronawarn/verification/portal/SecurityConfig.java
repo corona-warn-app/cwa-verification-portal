@@ -22,6 +22,7 @@
 package app.coronawarn.verification.portal;
 
 import app.coronawarn.verification.portal.controller.VerificationPortalController;
+import java.util.concurrent.ConcurrentHashMap;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -38,7 +39,14 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.session.MapSessionRepository;
+import org.springframework.session.SessionRepository;
+import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
+
+@EnableSpringHttpSession
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
@@ -46,6 +54,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   private static final String ROLE_C19HOTLINE = "c19hotline";
   private static final String ACTUATOR_ROUTE = "/actuator/**";
+  private static final String SAMESITE_STRICT = "Strict";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -74,4 +83,18 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
       .hasRole(ROLE_C19HOTLINE)
       .anyRequest().authenticated();
   }
+
+  @Bean
+  public CookieSerializer defaultCookieSerializer() {
+    DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+    cookieSerializer.setSameSite(SAMESITE_STRICT);
+    cookieSerializer.setUseHttpOnlyCookie(true);
+    return cookieSerializer;
+  }
+
+  @Bean
+  public SessionRepository sessionRepository() {
+    return new MapSessionRepository(new ConcurrentHashMap<>());
+  }
+
 }
