@@ -24,6 +24,7 @@ package app.coronawarn.verification.portal.controller;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -37,12 +38,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class VerificationPortalErrorController implements ErrorController {
 
+  @Value("${rateLimiting.seconds}")
+  private long rateLimitingSeconds;
+
   /**
-   * Error messages for the common two problems 'Not Found' and 'Internal Error'.
+   * Error messages for the common problems like 'Not Found', 'Internal Error'
+   * 'Forbidden' and 'Too Many Requests'.
    */
   private static final String ERROR_404 = "Die aufgerufene Seite konnte nicht gefunden werden.";
   private static final String ERROR_403 = "Der Benutzer kann nicht authentifiziert werden.";
   private static final String ERROR = "Es kann keine TeleTAN aufgrund eines internen Fehlers generiert werden.";
+  private static final String SECONDS = " Sekunden.";
+  private static final String ERROR_429 = "Die Zeitlimitierung für TeleTAN Anfragen ist aktiv, bitte warten Sie ";
 
   /**
    * The internal route to the portal error web site.
@@ -63,7 +70,7 @@ public class VerificationPortalErrorController implements ErrorController {
    * The Web GUI page request showing an Error message.
    *
    * @param request the original request
-   * @param model   the thymleaf model to be filled with the error text
+   * @param model the thymleaf model to be filled with the error text
    * @return the error template name
    */
   @RequestMapping(value = ROUTE_ERROR, method = {RequestMethod.GET, RequestMethod.POST})
@@ -76,6 +83,8 @@ public class VerificationPortalErrorController implements ErrorController {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_404);
       } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_403);
+      } else if (statusCode == HttpStatus.TOO_MANY_REQUESTS.value()) {
+        model.addAttribute(ATTR_ERROR_MSG, ERROR_429 + rateLimitingSeconds + SECONDS);
       } else {
         model.addAttribute(ATTR_ERROR_MSG, ERROR);
       }
@@ -86,7 +95,6 @@ public class VerificationPortalErrorController implements ErrorController {
     }
     return TEMPLATE_ERROR;
   }
-
 
   /**
    * Get the path for the custom error page.
