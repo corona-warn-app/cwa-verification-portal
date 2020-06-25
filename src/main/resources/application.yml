@@ -66,3 +66,7 @@ cwa-verification-server:
     key-store-password: changeit
     trust-store: classpath:truststore.jks
     trust-store-password: changeit
+    
+rateLimiting:
+  enabled: true
+  seconds: 30
