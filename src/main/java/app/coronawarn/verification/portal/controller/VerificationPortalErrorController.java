@@ -38,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class VerificationPortalErrorController implements ErrorController {
 
-  @Value("${rateLimiting.minutes}")
-  private long rateLimitingMinutes;
+  @Value("${rateLimiting.seconds}")
+  private long rateLimitingSeconds;
 
   /**
    * Error messages for the common problems like 'Not Found', 'Internal Error'
@@ -48,8 +48,8 @@ public class VerificationPortalErrorController implements ErrorController {
   private static final String ERROR_404 = "Die aufgerufene Seite konnte nicht gefunden werden.";
   private static final String ERROR_403 = "Der Benutzer kann nicht authentifiziert werden.";
   private static final String ERROR = "Es kann keine TeleTAN aufgrund eines internen Fehlers generiert werden.";
-  private final String minutes = rateLimitingMinutes > 1 ? " Minuten." : " Minute.";
-  private static final String ERROR_429 = "Zeitlimitierung für TeleTAN Anfrage, bitte warten Sie ";
+  private static final String SECONDS = " Sekunden.";
+  private static final String ERROR_429 = "Die Zeitlimitierung für TeleTAN Anfragen ist aktiv, bitte warten Sie ";
 
   /**
    * The internal route to the portal error web site.
@@ -84,7 +84,7 @@ public class VerificationPortalErrorController implements ErrorController {
       } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_403);
       } else if (statusCode == HttpStatus.TOO_MANY_REQUESTS.value()) {
-        model.addAttribute(ATTR_ERROR_MSG, ERROR_429 + rateLimitingMinutes + minutes);
+        model.addAttribute(ATTR_ERROR_MSG, ERROR_429 + rateLimitingSeconds + SECONDS);
       } else {
         model.addAttribute(ATTR_ERROR_MSG, ERROR);
       }

@@ -28,16 +28,14 @@ import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingS
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -51,8 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @RunWith(SpringRunner.class)
 @WebMvcTest(VerificationPortalController.class)
+@TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
 @ContextConfiguration(classes = VerificationPortalController.class)
-@ComponentScan(basePackageClasses = {KeycloakSecurityComponents.class, KeycloakSpringBootConfigResolver.class})
 public class VerificationPortalControllerTest extends ServletUnitTestingSupport
 {
 
@@ -148,6 +146,12 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
             .andExpect(model().attribute("userName", equalTo("tester")))
             .andExpect(model().attribute("teleTAN", equalTo("123454321")))
             .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+    
+    // check rate limiting
+    mockMvc.perform(post("/cwa/teletan")
+            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+            .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+            .andExpect(status().isTooManyRequests());    
   }
 
   /**

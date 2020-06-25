@@ -69,4 +69,4 @@ cwa-verification-server:
     
 rateLimiting:
   enabled: true
-  minutes: 1
+  seconds: 30

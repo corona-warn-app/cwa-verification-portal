@@ -96,8 +96,8 @@ public class VerificationPortalController {
   @Value("${rateLimiting.enabled}")
   private boolean rateLimitingEnabled;
 
-  @Value("${rateLimiting.minutes}")
-  private long rateLimitingMinutes;
+  @Value("${rateLimiting.seconds}")
+  private long rateLimitingSeconds;
 
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
@@ -183,7 +183,7 @@ public class VerificationPortalController {
   private void checkRateLimitation(String user) {
     LocalDateTime usageTime = rateLimitingUserMap.get(user);
     if (usageTime != null) {
-      if (LocalDateTime.now().minusMinutes(rateLimitingMinutes).isBefore(usageTime)) {
+      if (LocalDateTime.now().minusSeconds(rateLimitingSeconds).isBefore(usageTime)) {
         throw new RateLimitationException("Too many requests by user: " + user + " in a given amount of time");
       } else {
         rateLimitingUserMap.replace(user, LocalDateTime.now());
