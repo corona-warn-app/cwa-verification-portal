@@ -21,28 +21,20 @@
 
 package app.coronawarn.verification.portal.service;
 
-import app.coronawarn.verification.portal.VerificationPortalApplication;
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.client.VerificationServerClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = VerificationPortalApplication.class)
 public class TeleTanServiceTest
 {
   public static final String TEST_TELE_TAN = "FE9A5MAK6C";
@@ -66,7 +58,7 @@ public class TeleTanServiceTest
   @Test
   public void testCreateTeleTan() {
     log.info("process testCreateTeleTan()");
-    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TEST_TOKEN);
-    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(TEST_TELE_TAN));
+    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TeleTanService.TOKEN_PREFIX + TEST_TOKEN);
+    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(new TeleTan(TEST_TELE_TAN)));
   }
 }
