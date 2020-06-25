@@ -22,7 +22,11 @@
 package app.coronawarn.verification.portal;
 
 import app.coronawarn.verification.portal.controller.VerificationPortalController;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -46,6 +50,7 @@ import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 
+@Slf4j
 @EnableSpringHttpSession
 @Configuration
 @EnableWebSecurity
@@ -55,6 +60,11 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   private static final String ROLE_C19HOTLINE = "c19hotline";
   private static final String ACTUATOR_ROUTE = "/actuator/**";
   private static final String SAMESITE_STRICT = "Strict";
+
+  private static final String SET_COOKIE_HEADER = "Set-Cookie";
+  private static final String COOKIE_HEADER = "Cookie";
+  private static final String OAUTH_TOKEN_REQUEST_STATE_COOKIE = "OAuth_Token_Request_State";
+  private static final String SESSION_COOKIE = "SESSION";
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -77,7 +87,10 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.authorizeRequests()
+    http
+      .headers().addHeaderWriter(this::modifyResponseSetCookieHeader)
+      .and()
+      .authorizeRequests()
       .mvcMatchers(HttpMethod.GET, ACTUATOR_ROUTE).permitAll()
       .antMatchers(VerificationPortalController.ROUTE_TELETAN)
       .hasRole(ROLE_C19HOTLINE)
@@ -87,6 +100,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Bean
   public CookieSerializer defaultCookieSerializer() {
     DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+    cookieSerializer.setCookieName(SESSION_COOKIE);
     cookieSerializer.setSameSite(SAMESITE_STRICT);
     cookieSerializer.setUseHttpOnlyCookie(true);
     return cookieSerializer;
@@ -95,6 +109,30 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   @Bean
   public SessionRepository sessionRepository() {
     return new MapSessionRepository(new ConcurrentHashMap<>());
+  }
+
+  private void modifyResponseSetCookieHeader(final HttpServletRequest request, final HttpServletResponse response) {
+    final Collection<String> setCookieValues = response.getHeaders(SET_COOKIE_HEADER);
+    for (String setCookie : setCookieValues) {
+      if (setCookie.contains(OAUTH_TOKEN_REQUEST_STATE_COOKIE) && requestContainsSessionCookie(request)) {
+        response.setHeader(SET_COOKIE_HEADER, addSameSiteStrict(setCookie));
+      } else {
+        log.warn("Request does not contain session cookie");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      }
+    }
+  }
+
+  private String addSameSiteStrict(String setCookie) {
+    return setCookie + "; SameSite=" + SAMESITE_STRICT;
+  }
+
+  private boolean requestContainsSessionCookie(final HttpServletRequest request) {
+    final String cookie = request.getHeader(COOKIE_HEADER);
+    if (cookie == null) {
+      return false;
+    }
+    return cookie.contains(SESSION_COOKIE);
   }
 
 }
