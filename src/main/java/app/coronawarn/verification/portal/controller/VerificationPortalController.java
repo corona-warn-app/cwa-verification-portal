@@ -102,8 +102,11 @@ public class VerificationPortalController {
   /**
    * The REST client interface for getting the TeleTAN from verificationserver.
    */
-  @Autowired
-  private TeleTanService teleTanService;
+  private final TeleTanService teleTanService;
+
+  public VerificationPortalController(TeleTanService teleTanService) {
+    this.teleTanService = teleTanService;
+  }
 
   /**
    * The Web GUI page request showing the index.html web page
