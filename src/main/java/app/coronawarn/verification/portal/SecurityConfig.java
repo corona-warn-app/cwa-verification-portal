@@ -59,8 +59,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   private static final String ROLE_C19HOTLINE = "c19hotline";
   private static final String ACTUATOR_ROUTE = "/actuator/**";
-  private static final String SAMESITE_STRICT = "Strict";
 
+  private static final String SAMESITE_LAX = "Lax";
   private static final String SET_COOKIE_HEADER = "Set-Cookie";
   private static final String COOKIE_HEADER = "Cookie";
   private static final String OAUTH_TOKEN_REQUEST_STATE_COOKIE = "OAuth_Token_Request_State";
@@ -101,7 +101,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   public CookieSerializer defaultCookieSerializer() {
     DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
     cookieSerializer.setCookieName(SESSION_COOKIE);
-    cookieSerializer.setSameSite(SAMESITE_STRICT);
+    cookieSerializer.setSameSite(SAMESITE_LAX);
     cookieSerializer.setUseHttpOnlyCookie(true);
     return cookieSerializer;
   }
@@ -124,7 +124,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   }
 
   private String addSameSiteStrict(String setCookie) {
-    return setCookie + "; SameSite=" + SAMESITE_STRICT;
+    return setCookie + "; SameSite=" + SAMESITE_LAX;
   }
 
   private boolean requestContainsSessionCookie(final HttpServletRequest request) {
