@@ -49,11 +49,11 @@ public class VerificationPortalApplication {
   @Bean
   @ConditionalOnProperty(value = "server.ssl.cipher.suites.order", havingValue = "true")
   public WebServerFactoryCustomizer<TomcatServletWebServerFactory> webServerFactoryCustomizer() {
-    return (factory) -> factory
-      .addConnectorCustomizers((connector) -> {
+    return factory -> factory
+      .addConnectorCustomizers(connector ->
         ((AbstractHttp11Protocol<?>) connector.getProtocolHandler())
-          .setUseServerCipherSuitesOrder(true);
-      });
+          .setUseServerCipherSuitesOrder(true)
+      );
   }
 
 }

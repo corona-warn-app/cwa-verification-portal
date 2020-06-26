@@ -1,5 +1,6 @@
 package app.coronawarn.verification.portal.client;
 
+import app.coronawarn.verification.portal.exception.VerificationPortalException;
 import feign.Client;
 import feign.httpclient.ApacheHttpClient;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.ResourceUtils;
 
 @Configuration
@@ -74,7 +76,7 @@ public class VerificationServerClientConfig {
       }
       return builder.build();
     } catch (IOException | GeneralSecurityException e) {
-      throw new RuntimeException(e);
+      throw new VerificationPortalException(HttpStatus.INTERNAL_SERVER_ERROR, "The SSL context could not be loaded.");
     }
   }
 
