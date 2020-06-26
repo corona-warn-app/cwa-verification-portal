@@ -171,19 +171,27 @@
  	color: #262626;	
 }
 
-.button-logout {
+.button-menu {
 	position: fixed;
  	right: 40px;
-	top: 150px;
-	width: 100px; 
 	visibility: hidden;
  	font-family: "Telegrotesk Next Regular";
  	font-size: 18px;
- 	color: #262626;	
+ 	color: #262626;
 	border-width: 1px;
 	border-radius: 4px;
 	border-color: #dddddd;
 	background-color: #ffffff;
+}
+
+.button-logout {
+	top: 150px;
+	width: 100px;
+}
+
+.button-pw-reset {
+	top: 180px;
+	width: 140px;
 }
 
 .show {

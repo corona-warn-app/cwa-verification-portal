@@ -90,6 +90,13 @@ public class VerificationPortalController {
    */
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
+  private static final String ATTR_PW_RESET_URL = "pwResetUrl";
+
+  /**
+   * The Keycloak password reset URL.
+   */
+  @Value("${keycloak-pw.reset-url}")
+  private String pwResetUrl;
   
   private static final Map<String, LocalDateTime> rateLimitingUserMap = new ConcurrentHashMap<String, LocalDateTime>();
   
@@ -133,6 +140,7 @@ public class VerificationPortalController {
 
     if (model != null) {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
     }
 
     HttpSession session = request.getSession();
@@ -176,9 +184,9 @@ public class VerificationPortalController {
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
     }
     if (model != null) {
-      // set thymeleaf attributes (teleTAN and user name)
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
+      model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
     }
     return template;
   }
