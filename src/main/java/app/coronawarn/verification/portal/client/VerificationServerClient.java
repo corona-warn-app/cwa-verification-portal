@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
   url = "${cwa-verification-server.url}",
   configuration = VerificationServerClientConfig.class)
 public interface VerificationServerClient {
+  
+  public static final String HEADER_NAME_AUTHORIZATION  = "Authorization";
 
   /**
    * Call the verification service to get teletan from token.
@@ -41,6 +43,6 @@ public interface VerificationServerClient {
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  TeleTan createTeleTan(@RequestHeader("X-Auth-Token") String token);
+  TeleTan createTeleTan(@RequestHeader(HEADER_NAME_AUTHORIZATION) String token);
 
 }
