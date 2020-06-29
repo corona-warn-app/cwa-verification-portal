@@ -70,3 +70,7 @@ cwa-verification-server:
 rateLimiting:
   enabled: true
   seconds: 30
+
+route:
+  host: localhost
+  port: 8081
