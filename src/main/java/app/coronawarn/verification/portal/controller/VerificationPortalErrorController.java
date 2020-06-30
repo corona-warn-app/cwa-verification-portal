@@ -50,6 +50,7 @@ public class VerificationPortalErrorController implements ErrorController {
   private static final String ERROR = "Es kann keine TeleTAN aufgrund eines internen Fehlers generiert werden.";
   private static final String SECONDS = " Sekunden.";
   private static final String ERROR_429 = "Die Zeitlimitierung für TeleTAN Anfragen ist aktiv, bitte warten Sie ";
+  private static final String RATE_LIMIT_SERVER_TEXT = "einen Moment.";
 
   /**
    * The internal route to the portal error web site.
@@ -67,10 +68,15 @@ public class VerificationPortalErrorController implements ErrorController {
   private static final String ATTR_ERROR_MSG = "message";
 
   /**
+   * The exceptions reason for 429 HTTP errors when server side rate limit is reached.
+   */
+  private static final String SERVER_RATE_LIMIT_ERROR_REASON = "ServerRateLimit";
+
+  /**
    * The Web GUI page request showing an Error message.
    *
    * @param request the original request
-   * @param model the thymleaf model to be filled with the error text
+   * @param model   the thymleaf model to be filled with the error text
    * @return the error template name
    */
   @RequestMapping(value = ROUTE_ERROR, method = {RequestMethod.GET, RequestMethod.POST})
@@ -83,6 +89,9 @@ public class VerificationPortalErrorController implements ErrorController {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_404);
       } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_403);
+      } else if (statusCode == HttpStatus.TOO_MANY_REQUESTS.value()
+        && request.getAttribute(RequestDispatcher.ERROR_MESSAGE).equals(SERVER_RATE_LIMIT_ERROR_REASON)) {
+        model.addAttribute(ATTR_ERROR_MSG, ERROR_429 + RATE_LIMIT_SERVER_TEXT);
       } else if (statusCode == HttpStatus.TOO_MANY_REQUESTS.value()) {
         model.addAttribute(ATTR_ERROR_MSG, ERROR_429 + rateLimitingSeconds + SECONDS);
       } else {

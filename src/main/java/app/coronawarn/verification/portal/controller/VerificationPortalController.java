@@ -23,6 +23,7 @@ package app.coronawarn.verification.portal.controller;
 
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.service.TeleTanService;
+import feign.FeignException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,8 +33,8 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,9 +98,9 @@ public class VerificationPortalController {
    */
   @Value("${keycloak-pw.reset-url}")
   private String pwResetUrl;
-  
+
   private static final Map<String, LocalDateTime> rateLimitingUserMap = new ConcurrentHashMap<String, LocalDateTime>();
-  
+
   @Value("${rateLimiting.enabled}")
   private boolean rateLimitingEnabled;
 
@@ -176,8 +177,18 @@ public class VerificationPortalController {
           .getTokenString();
         if (rateLimitingEnabled) {
           checkRateLimitation(user);
-        } 
-        teleTan = teleTanService.createTeleTan(token);
+        }
+
+        try {
+          teleTan = teleTanService.createTeleTan(token);
+        } catch (FeignException e) {
+          if (e.status() == HttpStatus.TOO_MANY_REQUESTS.value()) {
+            throw new ServerRateLimitationException("Too many requests. Please wait a moment.");
+          } else {
+            throw e;
+          }
+        }
+
         log.info("TeleTan successfully retrieved for user: {}", user);
         template = TEMPLATE_TELETAN;
       }
