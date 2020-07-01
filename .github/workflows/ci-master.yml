@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - master
+    - fix/host-header-validation
 jobs:
   build:
     runs-on: ubuntu-latest
