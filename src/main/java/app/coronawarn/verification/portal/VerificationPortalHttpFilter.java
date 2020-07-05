@@ -1,6 +1,7 @@
 package app.coronawarn.verification.portal;
 
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,11 +20,8 @@ public class VerificationPortalHttpFilter implements Filter {
 
   private static final String X_FORWARDED_HOST_HEADER = "X-Forwarded-Host";
 
-  @Value("${route.host}")
-  private String routeHost;
-
-  @Value("${route.port}")
-  private String routePort;
+  @Value("${host-header.whitelist}")
+  private List<String> validHostHeaders;
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -48,12 +46,8 @@ public class VerificationPortalHttpFilter implements Filter {
     if (xForwardedHost != null || host == null) {
       return false;
     } else {
-      return isHostEqualsToRoute(host);
+      return validHostHeaders.contains(host);
     }
-  }
-
-  private boolean isHostEqualsToRoute(final String host) {
-    return host.equals(routeHost) || host.equals(routeHost + ":" + routePort);
   }
 
 }

@@ -71,6 +71,5 @@ rateLimiting:
   enabled: true
   seconds: 30
 
-route:
-  host: localhost
-  port: 8081
+host-header:
+  whitelist: localhost:8081
