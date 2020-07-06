@@ -76,7 +76,7 @@ public class VerificationPortalErrorController implements ErrorController {
    * The Web GUI page request showing an Error message.
    *
    * @param request the original request
-   * @param model   the thymleaf model to be filled with the error text
+   * @param model the thymleaf model to be filled with the error text
    * @return the error template name
    */
   @RequestMapping(value = ROUTE_ERROR, method = {RequestMethod.GET, RequestMethod.POST})
