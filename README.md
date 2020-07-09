@@ -79,12 +79,12 @@ is installed on your machine.
 On the command line do the following:
 ```bash
 docker build -f|--file <path to dockerfile>  -t <imagename>  <path-to-verificationportalserver-root>
-docker run -p 127.0.0.1:8080:8080/tcp -it <imagename>
+docker run -p 127.0.0.1:8081:8081/tcp -it <imagename>
 ```
 or simply  
 ```bash
 docker build --pull --rm -f "Dockerfile" -t cwa-verificationportal "."
-docker run -p 127.0.0.1:8080:8080/tcp -it cwa-verificationportal
+docker run -p 127.0.0.1:8081:8081/tcp -it cwa-verificationportal
 ```
 if you are in the root of the checked out repository.  
 The docker image will then run on your local machine on port 8080 assuming you configured docker for shared network mode.
