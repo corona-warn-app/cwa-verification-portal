@@ -26,6 +26,9 @@ public class VerificationPortalHttpFilter implements Filter {
   @Value("${pod-ip}")
   private String podIp;
 
+  @Value("${pod-port}")
+  private String podPort;
+
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
     throws IOException, ServletException {
@@ -48,10 +51,12 @@ public class VerificationPortalHttpFilter implements Filter {
     final String xForwardedHost = request.getHeader(X_FORWARDED_HOST_HEADER);
     log.info("Host whitelist: " + validHostHeaders.toString());
     log.info("Verifying Host Header: " + host);
+    log.info("POD IP: " + podIp);
+    log.info("POD PORT: " + podPort);
     if (xForwardedHost != null || host == null) {
       return false;
     } else {
-      return validHostHeaders.contains(host) || podIp.equals(host);
+      return validHostHeaders.contains(host) || host.equals(podIp+":"+podPort);
     }
   }
 
