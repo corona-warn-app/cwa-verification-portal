@@ -23,6 +23,9 @@ public class VerificationPortalHttpFilter implements Filter {
   @Value("${host-header.whitelist}")
   private List<String> validHostHeaders;
 
+  @Value("${pod-ip}")
+  private String podIp;
+
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
     throws IOException, ServletException {
@@ -48,7 +51,7 @@ public class VerificationPortalHttpFilter implements Filter {
     if (xForwardedHost != null || host == null) {
       return false;
     } else {
-      return validHostHeaders.contains(host);
+      return validHostHeaders.contains(host) || podIp.equals(host);
     }
   }
 

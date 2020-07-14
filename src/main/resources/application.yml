@@ -73,3 +73,5 @@ rateLimiting:
 
 host-header:
   whitelist: localhost:8081
+
+pod-ip: 127.0.0.1
