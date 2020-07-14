@@ -56,7 +56,7 @@ public class VerificationPortalHttpFilter implements Filter {
     if (xForwardedHost != null || host == null) {
       return false;
     } else {
-      return validHostHeaders.contains(host) || host.equals(podIp+":"+podPort);
+      return validHostHeaders.contains(host) || host.equals(podIp + ":" + podPort);
     }
   }
 
