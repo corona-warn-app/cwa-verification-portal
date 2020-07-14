@@ -43,10 +43,10 @@
   </tr>
 </table>
 <form action="/cwa/logout" method="post">
-	<button class="button-logout" id="logout">Abmelden</button>
+	<button class="button-menu button-logout" id="logout">Abmelden</button>
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </form>
-
+<a th:href="${pwResetUrl}" target="_blank"><button class="button-menu button-pw-reset" id="password_reset">Passwort Ändern</button></a>
 <!-- END page specific content  -->
 </body>
 </html>

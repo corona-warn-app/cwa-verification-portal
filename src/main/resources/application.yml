@@ -17,6 +17,9 @@ keycloak:
   realm: cwa
   resource: verification-portal
 
+keycloak-pw:
+  reset-url: http://localhost:8080/auth/realms/cwa/account/password
+
 server:
   error:
     whitelabel:
