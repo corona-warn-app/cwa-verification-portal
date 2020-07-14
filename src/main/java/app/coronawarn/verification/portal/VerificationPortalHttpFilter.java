@@ -23,10 +23,10 @@ public class VerificationPortalHttpFilter implements Filter {
   @Value("${host-header.whitelist}")
   private List<String> validHostHeaders;
 
-  @Value("${pod-ip}")
+  @Value("${pod.ip}")
   private String podIp;
 
-  @Value("${pod-port}")
+  @Value("${pod.port}")
   private String podPort;
 
   @Override
@@ -49,10 +49,6 @@ public class VerificationPortalHttpFilter implements Filter {
   private boolean isHostHeaderValid(final HttpServletRequest request) {
     final String host = request.getHeader(HttpHeaders.HOST);
     final String xForwardedHost = request.getHeader(X_FORWARDED_HOST_HEADER);
-    log.info("Host whitelist: " + validHostHeaders.toString());
-    log.info("Verifying Host Header: " + host);
-    log.info("POD IP: " + podIp);
-    log.info("POD PORT: " + podPort);
     if (xForwardedHost != null || host == null) {
       return false;
     } else {

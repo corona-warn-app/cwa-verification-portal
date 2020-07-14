@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = VerificationPortalHttpFilter.class)
-@TestPropertySource(properties = {"host-header.whitelist=localhost,localhost:8081"})
+@TestPropertySource(properties = {"host-header.whitelist=localhost,localhost:8081", "pod.ip=127.0.0.1", "pod.port=8081"})
 @EnableConfigurationProperties
 public class VerificationPortalHttpFilterTest {
 
@@ -29,6 +29,10 @@ public class VerificationPortalHttpFilterTest {
 
   private static final String VALID_HOST = "localhost";
   private static final String VALID_HOST_PORT = "localhost:8081";
+
+  private static final String POD_HOST = "127.0.0.1";
+  private static final String POD_PORT = "8081";
+  private static final String INVALID_POD_PORT = "8085";
 
   @Autowired
   private VerificationPortalHttpFilter verificationPortalHttpFilter;
@@ -49,6 +53,24 @@ public class VerificationPortalHttpFilterTest {
     request.addHeader(HttpHeaders.HOST, VALID_HOST_PORT);
     verificationPortalHttpFilter.doFilter(request, response, new MockFilterChain());
     Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+  }
+
+  @Test
+  public void doFilterReturnsOkForValidPodIPAndHost() throws IOException, ServletException {
+    MockHttpServletResponse response = new MockHttpServletResponse();
+    MockHttpServletRequest request = new MockHttpServletRequest(new MockServletContext());
+    request.addHeader(HttpHeaders.HOST, POD_HOST + ":" + POD_PORT);
+    verificationPortalHttpFilter.doFilter(request, response, new MockFilterChain());
+    Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+  }
+
+  @Test
+  public void doFilterReturnsBadRequestForValidPodPort() throws IOException, ServletException {
+    MockHttpServletResponse response = new MockHttpServletResponse();
+    MockHttpServletRequest request = new MockHttpServletRequest(new MockServletContext());
+    request.addHeader(HttpHeaders.HOST, POD_HOST + ":" + INVALID_POD_PORT);
+    verificationPortalHttpFilter.doFilter(request, response, new MockFilterChain());
+    Assert.assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
   }
 
   @Test
