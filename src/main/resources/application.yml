@@ -73,3 +73,10 @@ cwa-verification-server:
 rateLimiting:
   enabled: true
   seconds: 30
+
+host-header:
+  whitelist: localhost:8081
+
+pod:
+  ip: 127.0.0.1
+  port: 8081
