@@ -31,10 +31,12 @@ import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -61,10 +63,11 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   private static final String ACTUATOR_ROUTE = "/actuator/**";
 
   private static final String SAMESITE_LAX = "Lax";
-  private static final String SET_COOKIE_HEADER = "Set-Cookie";
-  private static final String COOKIE_HEADER = "Cookie";
   private static final String OAUTH_TOKEN_REQUEST_STATE_COOKIE = "OAuth_Token_Request_State";
   private static final String SESSION_COOKIE = "SESSION";
+
+  @Autowired
+  private VerificationPortalHttpFilter verificationPortalHttpFilter;
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -88,7 +91,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
     http
-      .headers().addHeaderWriter(this::modifyResponseSetCookieHeader)
+      .addFilterBefore(verificationPortalHttpFilter, KeycloakAuthenticationProcessingFilter.class)
+      .headers().addHeaderWriter(this::addSameSiteToOAuthCookie)
       .and()
       .authorizeRequests()
       .mvcMatchers(HttpMethod.GET, ACTUATOR_ROUTE).permitAll()
@@ -111,28 +115,17 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     return new MapSessionRepository(new ConcurrentHashMap<>());
   }
 
-  private void modifyResponseSetCookieHeader(final HttpServletRequest request, final HttpServletResponse response) {
-    final Collection<String> setCookieValues = response.getHeaders(SET_COOKIE_HEADER);
+  private void addSameSiteToOAuthCookie(final HttpServletRequest request, final HttpServletResponse response) {
+    final Collection<String> setCookieValues = response.getHeaders(HttpHeaders.SET_COOKIE);
     for (String setCookie : setCookieValues) {
-      if (setCookie.contains(OAUTH_TOKEN_REQUEST_STATE_COOKIE) && requestContainsSessionCookie(request)) {
-        response.setHeader(SET_COOKIE_HEADER, addSameSiteStrict(setCookie));
-      } else {
-        log.warn("Request does not contain session cookie");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      if (setCookie.contains(OAUTH_TOKEN_REQUEST_STATE_COOKIE)) {
+        response.setHeader(HttpHeaders.SET_COOKIE, addSameSiteStrict(setCookie));
       }
     }
   }
 
   private String addSameSiteStrict(String setCookie) {
     return setCookie + "; SameSite=" + SAMESITE_LAX;
-  }
-
-  private boolean requestContainsSessionCookie(final HttpServletRequest request) {
-    final String cookie = request.getHeader(COOKIE_HEADER);
-    if (cookie == null) {
-      return false;
-    }
-    return cookie.contains(SESSION_COOKIE);
   }
 
 }
