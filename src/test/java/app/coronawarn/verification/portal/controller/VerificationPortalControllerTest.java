@@ -25,9 +25,17 @@ import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
+import feign.FeignException;
+import feign.Request;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
+import static org.hamcrest.Matchers.equalTo;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,10 +46,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,17 +55,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(VerificationPortalController.class)
 @TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
 @ContextConfiguration(classes = VerificationPortalController.class)
-public class VerificationPortalControllerTest extends ServletUnitTestingSupport
-{
+public class VerificationPortalControllerTest extends ServletUnitTestingSupport {
 
-  public static final String TELETAN_NAME = "teletan";  
+  public static final String TELETAN_NAME = "teletan";
   public static final String TELETAN_VALUE = "TeleTAN";
+  private static final String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
+
+  private HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository;
+  private CsrfToken csrfToken;
 
   @MockBean
   TeleTanService teleTanService;
-  
+
   @Autowired
   private MockMvc mockMvc;
+
+  @Before
+  public void setup() {
+    httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
+    csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());
+  }
 
   /**
    * Test of index method, of class VerificationPortalController.
@@ -73,11 +86,11 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
   public void testIndex() throws Exception {
     log.info("process testIndex()");
     mockMvc.perform(get("/cwa"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("index"));
+      .andExpect(status().isOk())
+      .andExpect(view().name("index"));
     mockMvc.perform(get("/"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("index"));
+      .andExpect(status().isOk())
+      .andExpect(view().name("index"));
   }
 
   /**
@@ -90,24 +103,22 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
   public void testStart() throws Exception {
     log.info("process testStart() RequestMethod.GET");
     mockMvc.perform(get("/cwa/start"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("start"))
-            .andExpect(model().attribute("userName", equalTo("tester")))
-            .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
-    
+      .andExpect(status().isOk())
+      .andExpect(view().name("start"))
+      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+
     String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
-    HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    CsrfToken csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());    
-    
+
     log.info("process testStart() RequestMethod.POST");
     mockMvc.perform(post("/cwa/start")
-            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-            .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))        
-            .andExpect(status().isOk())
-            .andExpect(view().name("start"))
-            .andExpect(model().attribute("userName", equalTo("tester")))
-            .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));    
-  }    
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isOk())
+      .andExpect(view().name("start"))
+      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+  }
 
   /**
    * Test of start method, of class VerificationPortalController.
@@ -119,59 +130,73 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport
   public void testStartNotFound() throws Exception {
     log.info("process testStartNotFound()");
     mockMvc.perform(get("/corona/start"))
-            .andExpect(status().isNotFound());
+      .andExpect(status().isNotFound());
   }
 
   /**
    * Test of teletan method, of class VerificationPortalController.
-   * 
+   *
    * @throws Exception if the test cannot be performed.
    */
   @Test
   @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
   public void testTeletan() throws Exception {
     log.info("process testTeletan()");
-    
-    String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
-    HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    CsrfToken csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());
 
     when(teleTanService.createTeleTan(any(String.class))).thenReturn(new TeleTan("123454321"));
-    
+
     mockMvc.perform(post("/cwa/teletan")
-            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-            .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(view().name(TELETAN_NAME))
-            .andExpect(model().attribute("userName", equalTo("tester")))
-            .andExpect(model().attribute("teleTAN", equalTo("123454321")))
-            .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
-    
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isOk())
+      .andExpect(view().name(TELETAN_NAME))
+      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(model().attribute("teleTAN", equalTo("123454321")))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-            .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
-            .andExpect(status().isTooManyRequests());    
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isTooManyRequests());
   }
 
   /**
    * Test of logout method, of class VerificationPortalController.
-   * 
+   *
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth("Role_Test")  
+  @WithMockKeycloakAuth("Role_Test")
   public void testLogout() throws Exception {
     log.info("process testLogout()");
-    
-    String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
-    HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    CsrfToken csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());    
-    
+
     mockMvc.perform(post("/cwa/logout")
-            .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken()))
-            .andExpect(redirectedUrl("start"))
-            .andExpect(status().isFound());
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken()))
+      .andExpect(redirectedUrl("start"))
+      .andExpect(status().isFound());
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester2", value = "Role_Test")
+  public void testIfRateLimitExceptionIsHandledCorrectly() throws Exception {
+    Request dummyRequest = Request.create(Request.HttpMethod.GET, "url", Collections.emptyMap(), null, null, null);
+    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null)).when(teleTanService).createTeleTan(any(String.class));
+
+    mockMvc.perform(post("/cwa/teletan")
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isTooManyRequests());
+  }
+
+  @Test(expected = Exception.class)
+  @WithMockKeycloakAuth(name = "tester2", value = "Role_Test")
+  public void testIfAnyOtherExceptionIsJustForwared() throws Exception {
+    Mockito.doThrow(new Exception("Dummy Exception")).when(teleTanService).createTeleTan(any(String.class));
+
+    mockMvc.perform(post("/cwa/teletan")
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE));
   }
 
 }
