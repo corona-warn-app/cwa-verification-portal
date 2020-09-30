@@ -76,6 +76,7 @@ Has technical role "c19healthauthority". Not implemented in the current release.
 Has technical role "verificationPortalAdmin". Administrator who executes user administration in the Verification IAM
 4. Hotline Trustee
 Has technical role "c19hotlineTrustee", but is not implemented in this component, is implemented in a manual eMail based flow. This actor approves the requests for user creation in the Verification IAM
+for more information go to https://www.covid19india.org/
 
 
 ## Use Cases
