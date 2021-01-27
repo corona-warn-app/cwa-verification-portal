@@ -67,7 +67,7 @@ You can then open a terminal pointing to the root directory of the verification 
     mvn package
     java -jar target/cwa-verification-portal-0.0.1-SNAPSHOT.jar  
 
-The verificationportal will start up and run locally on your machine available on port 8080.
+The verificationportal will start up and run locally on your machine available on port 8081.
 Please keep in mind, that you need another component [cwa-verification-iam] the get this running in a sensable manner.
 
 #### Docker based build  
@@ -79,15 +79,15 @@ is installed on your machine.
 On the command line do the following:
 ```bash
 docker build -f|--file <path to dockerfile>  -t <imagename>  <path-to-verificationportalserver-root>
-docker run -p 127.0.0.1:8080:8080/tcp -it <imagename>
+docker run -p 127.0.0.1:8081:8081/tcp -it <imagename>
 ```
 or simply  
 ```bash
 docker build --pull --rm -f "Dockerfile" -t cwa-verificationportal "."
-docker run -p 127.0.0.1:8080:8080/tcp -it cwa-verificationportal
+docker run -p 127.0.0.1:8081:8081/tcp -it cwa-verificationportal
 ```
 if you are in the root of the checked out repository.  
-The docker image will then run on your local machine on port 8080 assuming you configured docker for shared network mode.
+The docker image will then run on your local machine on port 8081 assuming you configured docker for shared network mode.
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
@@ -122,18 +122,24 @@ The German government has asked SAP AG and Deutsche Telekom AG to develop the Co
 
 ## Repositories
 
-The following public repositories are currently available for the Corona-Warn-App:
-
 | Repository          | Description                                                           |
 | ------------------- | --------------------------------------------------------------------- |
-| [cwa-documentation] | Project overview, general documentation, and white papers             |
-| [cwa-server]        | Backend implementation for the Apple/Google exposure notification API |
-| [cwa-verification-server] | Backend implementation of the verification process|
-| [cwa-verification-portal] | The portal to interact with the verification server |
-| [cwa-verification-iam] | The identy and access management to interact with the verification server |
-| [cwa-testresult-server] | receives the test results from connected laboratories |
+| [cwa-documentation] | Project overview, general documentation, and white papers.            |
+| [cwa-app-ios]       | Native iOS app using the Apple/Google exposure notification API.      |
+| [cwa-app-android]   | Native Android app using the Apple/Google exposure notification API.  |
+| [cwa-wishlist]      | Community feature requests.                                           |
+| [cwa-website]       | The official website for the Corona-Warn-App                          |
+| [cwa-server]        | Backend implementation for the Apple/Google exposure notification API.|
+| [cwa-verification-server] | Backend implementation of the verification process.             |
+| [cwa-verification-portal] | The portal to interact with the verification server             |
+| [cwa-verification-iam]    | The identity and access management to interact with the verification server |
+| [cwa-testresult-server]   | Receives the test results from connected laboratories           |
 
 [cwa-documentation]: https://github.com/corona-warn-app/cwa-documentation
+[cwa-app-ios]: https://github.com/corona-warn-app/cwa-app-ios
+[cwa-app-android]: https://github.com/corona-warn-app/cwa-app-android
+[cwa-wishlist]: https://github.com/corona-warn-app/cwa-wishlist
+[cwa-website]: https://github.com/corona-warn-app/cwa-website
 [cwa-server]: https://github.com/corona-warn-app/cwa-server
 [cwa-verification-server]: https://github.com/corona-warn-app/cwa-verification-server
 [cwa-verification-portal]: https://github.com/corona-warn-app/cwa-verification-portal
