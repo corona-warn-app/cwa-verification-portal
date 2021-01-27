@@ -67,7 +67,7 @@ You can then open a terminal pointing to the root directory of the verification 
     mvn package
     java -jar target/cwa-verification-portal-0.0.1-SNAPSHOT.jar  
 
-The verificationportal will start up and run locally on your machine available on port 8080.
+The verificationportal will start up and run locally on your machine available on port 8081.
 Please keep in mind, that you need another component [cwa-verification-iam] the get this running in a sensable manner.
 
 #### Docker based build  
@@ -79,15 +79,15 @@ is installed on your machine.
 On the command line do the following:
 ```bash
 docker build -f|--file <path to dockerfile>  -t <imagename>  <path-to-verificationportalserver-root>
-docker run -p 127.0.0.1:8080:8080/tcp -it <imagename>
+docker run -p 127.0.0.1:8081:8081/tcp -it <imagename>
 ```
 or simply  
 ```bash
 docker build --pull --rm -f "Dockerfile" -t cwa-verificationportal "."
-docker run -p 127.0.0.1:8080:8080/tcp -it cwa-verificationportal
+docker run -p 127.0.0.1:8081:8081/tcp -it cwa-verificationportal
 ```
 if you are in the root of the checked out repository.  
-The docker image will then run on your local machine on port 8080 assuming you configured docker for shared network mode.
+The docker image will then run on your local machine on port 8081 assuming you configured docker for shared network mode.
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
