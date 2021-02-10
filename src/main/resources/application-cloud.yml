@@ -1,0 +1,7 @@
+cwa-verification-server:
+  ssl:
+    hostname-verify: false
+    key-store: ${SSL_VERIFICATION_KEYSTORE_PATH}
+    key-store-password: ${SSL_VERIFICATION_KEYSTORE_PASSWORD}
+    trust-store:  ${SSL_VERIFICATION_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_VERIFICATION_TRUSTSTORE_PASSWORD}
