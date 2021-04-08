@@ -1,0 +1,7 @@
+cwa-verification-server:
+  ssl:
+    hostname-verify: false
+    key-store: ${SSL_PORTAL_KEYSTORE_PATH}
+    key-store-password: ${SSL_PORTAL_KEYSTORE_PASSWORD}
+    trust-store:  ${SSL_PORTAL_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_PORTAL_TRUSTSTORE_PASSWORD}

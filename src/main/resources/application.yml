@@ -1,7 +1,9 @@
 spring:
   application:
     name: cwa-verification-portal
-
+  cloud:
+    vault:
+      enabled: false
 feign:
   client:
     config:
