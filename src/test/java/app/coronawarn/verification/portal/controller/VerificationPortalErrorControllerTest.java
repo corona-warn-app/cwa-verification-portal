@@ -1,21 +1,23 @@
 package app.coronawarn.verification.portal.controller;
 
+import app.coronawarn.verification.portal.VerificationPortalApplication;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
 import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.Matchers.equalTo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,7 +26,8 @@ import org.springframework.http.HttpStatus;
 import javax.servlet.RequestDispatcher;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+//@SpringBootTest
+@AutoConfigureMockMvc
 @WebMvcTest(VerificationPortalController.class)
 @TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
 @ContextConfiguration(classes = VerificationPortalErrorController.class)
@@ -50,7 +53,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   @Autowired
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setup() {
     httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
     csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());

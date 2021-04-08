@@ -30,11 +30,14 @@ import feign.Request;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.Matchers.equalTo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,14 +47,13 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @Slf4j
-@RunWith(SpringRunner.class)
 @WebMvcTest(VerificationPortalController.class)
 @TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
 @ContextConfiguration(classes = VerificationPortalController.class)
@@ -70,7 +72,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   @Autowired
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setup() {
     httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
     csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());
@@ -189,14 +191,15 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
       .andExpect(status().isTooManyRequests());
   }
 
-  @Test(expected = Exception.class)
+  @Test
   @WithMockKeycloakAuth(name = "tester2", value = "Role_Test")
   public void testIfAnyOtherExceptionIsJustForwared() throws Exception {
-    Mockito.doThrow(new Exception("Dummy Exception")).when(teleTanService).createTeleTan(any(String.class));
-
-    mockMvc.perform(post("/cwa/teletan")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE));
+    given(teleTanService.createTeleTan(any(String.class))).willAnswer( invocation -> { throw new Exception("Dummy Exception"); });
+    Assertions.assertThrows(Exception.class, () -> {
+      mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE));
+    });
   }
 
 }
