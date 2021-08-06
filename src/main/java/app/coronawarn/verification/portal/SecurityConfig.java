@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
@@ -57,20 +58,24 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
-class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+@RequiredArgsConstructor
+public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-  private static final String ROLE_C19HOTLINE = "c19hotline";
+  public static final String ROLE_C19HOTLINE = "c19hotline";
+  public static final String ROLE_C19HOTLINE_EVENT = "c19hotline_event";
   private static final String ACTUATOR_ROUTE = "/actuator/**";
 
   private static final String SAMESITE_LAX = "Lax";
   private static final String OAUTH_TOKEN_REQUEST_STATE_COOKIE = "OAuth_Token_Request_State";
   private static final String SESSION_COOKIE = "SESSION";
 
-  @Autowired
-  private VerificationPortalHttpFilter verificationPortalHttpFilter;
+  private final VerificationPortalHttpFilter verificationPortalHttpFilter;
 
+  /**
+   * Configures Keycloak.
+   */
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configureGlobal(AuthenticationManagerBuilder auth) {
     KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
     keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
     auth.authenticationProvider(keycloakAuthenticationProvider);
@@ -97,10 +102,13 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
       .authorizeRequests()
       .mvcMatchers(HttpMethod.GET, ACTUATOR_ROUTE).permitAll()
       .antMatchers(VerificationPortalController.ROUTE_TELETAN)
-      .hasRole(ROLE_C19HOTLINE)
+      .hasAnyRole(ROLE_C19HOTLINE, ROLE_C19HOTLINE_EVENT)
       .anyRequest().authenticated();
   }
 
+  /**
+   * Configures Cookie Serializer.
+   */
   @Bean
   public CookieSerializer defaultCookieSerializer() {
     DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();

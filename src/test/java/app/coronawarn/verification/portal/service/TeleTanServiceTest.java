@@ -21,19 +21,16 @@
 
 package app.coronawarn.verification.portal.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.client.VerificationServerClient;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Slf4j
 @SpringBootTest
@@ -41,18 +38,13 @@ public class TeleTanServiceTest
 {
   public static final String TEST_TELE_TAN = "FE9A5MAK6C";
   public static final String TEST_TOKEN = "0815";
+  public static final String TEST_TELE_TAN_TYPE = "TEST";
   
   @Autowired
-  @InjectMocks
   private TeleTanService teleTanService;
 
-  @Mock
+  @MockBean
   private VerificationServerClient clientMock;
-  
-  @BeforeEach
-  public void setUp() {
-    MockitoAnnotations.initMocks(this);
-  }  
   
   /**
    * Test of createTeleTan method, of class TeleTanService.
@@ -60,7 +52,11 @@ public class TeleTanServiceTest
   @Test
   public void testCreateTeleTan() {
     log.info("process testCreateTeleTan()");
-    Mockito.doReturn(new TeleTan(TEST_TELE_TAN)).when(clientMock).createTeleTan(TeleTanService.TOKEN_PREFIX + TEST_TOKEN);
-    assertThat(teleTanService.createTeleTan(TEST_TOKEN).equals(new TeleTan(TEST_TELE_TAN)));
+
+    Mockito.when(clientMock.createTeleTan(TeleTanService.TOKEN_PREFIX + TEST_TOKEN, TEST_TELE_TAN_TYPE))
+        .thenReturn(new TeleTan(TEST_TELE_TAN));
+
+
+    assertThat(teleTanService.createTeleTan(TEST_TOKEN, TEST_TELE_TAN_TYPE)).isEqualTo(new TeleTan(TEST_TELE_TAN));
   }
 }
