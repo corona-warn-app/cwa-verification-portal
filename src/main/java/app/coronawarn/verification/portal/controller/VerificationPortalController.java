@@ -180,6 +180,8 @@ public class VerificationPortalController {
       .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
 
+    String teleTanType = "";
+
     // initially the TEMPLATE_INDEX is used (without showing the teleTAN)
     String template = TEMPLATE_START;
     HttpSession session = request.getSession();
@@ -195,8 +197,10 @@ public class VerificationPortalController {
         try {
           if (!eventButton.isEmpty()) {
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_EVENT);
+            teleTanType = TELETAN_TYPE_EVENT;
           } else if (!testButton.isEmpty()) {
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_TEST);
+            teleTanType = TELETAN_TYPE_TEST;
           }
         } catch (FeignException e) {
           if (e.status() == HttpStatus.TOO_MANY_REQUESTS.value()) {
@@ -206,7 +210,7 @@ public class VerificationPortalController {
           }
         }
 
-        log.info("TeleTan successfully retrieved for user: {}", user);
+        log.info("TeleTan Type {} successfully retrieved for user: {}", teleTanType,user);
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
