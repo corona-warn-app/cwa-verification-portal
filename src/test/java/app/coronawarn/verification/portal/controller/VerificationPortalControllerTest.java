@@ -21,6 +21,19 @@
 
 package app.coronawarn.verification.portal.controller;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
@@ -29,16 +42,10 @@ import feign.FeignException;
 import feign.Request;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,9 +55,6 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @Slf4j
@@ -101,24 +105,65 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(name = "tester1", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testStart() throws Exception {
     log.info("process testStart() RequestMethod.GET");
     mockMvc.perform(get("/cwa/start"))
       .andExpect(status().isOk())
       .andExpect(view().name("start"))
-      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(model().attribute("userName", equalTo("tester1")))
+      .andExpect(model().attribute("role_test", equalTo(true)))
+      .andExpect(model().attribute("role_event", equalTo(true)))
       .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
 
     String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
 
     log.info("process testStart() RequestMethod.POST");
     mockMvc.perform(post("/cwa/start")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isOk())
       .andExpect(view().name("start"))
-      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(model().attribute("userName", equalTo("tester1")))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester2", authorities = {"ROLE_c19hotline"})
+  public void testStartOnlyTestRole() throws Exception {
+    log.info("process testStartOnlyTestRole()");
+    mockMvc.perform(get("/cwa/start"))
+      .andExpect(status().isOk())
+      .andExpect(view().name("start"))
+      .andExpect(model().attribute("userName", equalTo("tester2")))
+      .andExpect(model().attribute("role_test", equalTo(true)))
+      .andExpect(model().attribute("role_event", equalTo(false)))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester3", authorities = {"ROLE_c19hotline_event"})
+  public void testStartOnlyEventRole() throws Exception {
+    log.info("process testStartOnlyEventRole()");
+    mockMvc.perform(get("/cwa/start"))
+      .andExpect(status().isOk())
+      .andExpect(view().name("start"))
+      .andExpect(model().attribute("userName", equalTo("tester3")))
+      .andExpect(model().attribute("role_test", equalTo(false)))
+      .andExpect(model().attribute("role_event", equalTo(true)))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester4", authorities = {})
+  public void testStartNoRole() throws Exception {
+    log.info("process testStartNoRole()");
+    mockMvc.perform(get("/cwa/start"))
+      .andExpect(status().isOk())
+      .andExpect(view().name("start"))
+      .andExpect(model().attribute("userName", equalTo("tester4")))
+      .andExpect(model().attribute("role_test", equalTo(false)))
+      .andExpect(model().attribute("role_event", equalTo(false)))
       .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
   }
 
@@ -128,7 +173,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(name = "tester5", value = "Role_Test")
   public void testStartNotFound() throws Exception {
     log.info("process testStartNotFound()");
     mockMvc.perform(get("/corona/start"))
@@ -141,25 +186,110 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
-  public void testTeletan() throws Exception {
-    log.info("process testTeletan()");
+  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  public void testTeletanEvent() throws Exception {
+    log.info("process testTeletanEvent()");
 
-    when(teleTanService.createTeleTan(any(String.class))).thenReturn(new TeleTan("123454321"));
+    when(teleTanService.createTeleTan(any(String.class), eq("EVENT"))).thenReturn(new TeleTan("123454321"));
 
     mockMvc.perform(post("/cwa/teletan")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("EVENT", "Event Button Clicked")
+        .param("TEST", ""))
       .andExpect(status().isOk())
       .andExpect(view().name(TELETAN_NAME))
-      .andExpect(model().attribute("userName", equalTo("tester")))
+      .andExpect(model().attribute("userName", equalTo("tester6")))
       .andExpect(model().attribute("teleTAN", equalTo("123454321")))
+      .andExpect(model().attribute("role_test", equalTo(true)))
+      .andExpect(model().attribute("role_event", equalTo(true)))
       .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
 
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isTooManyRequests());
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester7", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  public void testTeletanTest() throws Exception {
+    log.info("process testTeletanTest()");
+
+    when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
+
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("EVENT", "")
+        .param("TEST", "TEST Button clicked"))
+      .andExpect(status().isOk())
+      .andExpect(view().name(TELETAN_NAME))
+      .andExpect(model().attribute("userName", equalTo("tester7")))
+      .andExpect(model().attribute("teleTAN", equalTo("123454321")))
+      .andExpect(model().attribute("role_test", equalTo(true)))
+      .andExpect(model().attribute("role_event", equalTo(true)))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+
+    // check rate limiting
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isTooManyRequests());
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester8", authorities = {"ROLE_c19hotline"})
+  public void testRoleMappingOnlyHotline() throws Exception {
+    log.info("process testRoleMappingOnlyHotline()");
+
+    when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
+
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("EVENT", "")
+        .param("TEST", "TEST Button clicked"))
+      .andExpect(status().isOk())
+      .andExpect(view().name(TELETAN_NAME))
+      .andExpect(model().attribute("userName", equalTo("tester8")))
+      .andExpect(model().attribute("teleTAN", equalTo("123454321")))
+      .andExpect(model().attribute("role_test", equalTo(true)))
+      .andExpect(model().attribute("role_event", equalTo(false)))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+
+    // check rate limiting
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+      .andExpect(status().isTooManyRequests());
+  }
+
+  @Test
+  @WithMockKeycloakAuth(name = "tester9", authorities = {"ROLE_c19hotline_event"})
+  public void testRoleMappingOnlyEvent() throws Exception {
+    log.info("process testRoleMappingOnlyEvent()");
+
+    when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
+
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("EVENT", "")
+        .param("TEST", "TEST Button clicked"))
+      .andExpect(status().isOk())
+      .andExpect(view().name(TELETAN_NAME))
+      .andExpect(model().attribute("userName", equalTo("tester9")))
+      .andExpect(model().attribute("teleTAN", equalTo("123454321")))
+      .andExpect(model().attribute("role_test", equalTo(false)))
+      .andExpect(model().attribute("role_event", equalTo(true)))
+      .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
+
+    // check rate limiting
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
 
@@ -174,32 +304,36 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
     log.info("process testLogout()");
 
     mockMvc.perform(post("/cwa/logout")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken()))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken()))
       .andExpect(redirectedUrl("start"))
       .andExpect(status().isFound());
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester2", value = "Role_Test")
+  @WithMockKeycloakAuth(name = "tester10", value = "ROLE_c19hotline")
   public void testIfRateLimitExceptionIsHandledCorrectly() throws Exception {
     Request dummyRequest = Request.create(Request.HttpMethod.GET, "url", Collections.emptyMap(), null, null, null);
-    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null)).when(teleTanService).createTeleTan(any(String.class));
+    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null)).when(teleTanService).createTeleTan(any(String.class), any(String.class));
 
     mockMvc.perform(post("/cwa/teletan")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+        .param("EVENT", "")
+        .param("TEST", "TEST Button clicked")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester2", value = "Role_Test")
-  public void testIfAnyOtherExceptionIsJustForwared() throws Exception {
-    given(teleTanService.createTeleTan(any(String.class))).willAnswer( invocation -> { throw new Exception("Dummy Exception"); });
-    Assertions.assertThrows(Exception.class, () -> {
-      mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE));
+  @WithMockKeycloakAuth(name = "tester11", value = "Role_Test")
+  public void testIfAnyOtherExceptionIsJustForwared() {
+    given(teleTanService.createTeleTan(any(String.class), any(String.class))).willAnswer(invocation -> {
+      throw new Exception("Dummy Exception");
     });
+    Assertions.assertThrows(Exception.class, () -> mockMvc.perform(post("/cwa/teletan")
+      .param("EVENT", "")
+      .param("TEST", "TEST Button clicked")
+      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)));
   }
 
 }

@@ -31,7 +31,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
   configuration = VerificationServerClientConfig.class)
 public interface VerificationServerClient {
   
-  public static final String HEADER_NAME_AUTHORIZATION  = "Authorization";
+  String HEADER_NAME_AUTHORIZATION  = "Authorization";
+  String HEADER_NAME_TELETAN_TYPE  = "X-CWA-TELETAN-TYPE";
 
   /**
    * Call the verification service to get teletan from token.
@@ -43,6 +44,8 @@ public interface VerificationServerClient {
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE
   )
-  TeleTan createTeleTan(@RequestHeader(HEADER_NAME_AUTHORIZATION) String token);
+  TeleTan createTeleTan(
+    @RequestHeader(HEADER_NAME_AUTHORIZATION) String token,
+    @RequestHeader(HEADER_NAME_TELETAN_TYPE) String teleTanType);
 
 }

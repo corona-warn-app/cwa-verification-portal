@@ -21,6 +21,7 @@
 
 package app.coronawarn.verification.portal.controller;
 
+import app.coronawarn.verification.portal.SecurityConfig;
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import feign.FeignException;
@@ -38,6 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,6 +94,11 @@ public class VerificationPortalController {
   private static final String ATTR_TELETAN = "teleTAN";
   private static final String ATTR_USER = "userName";
   private static final String ATTR_PW_RESET_URL = "pwResetUrl";
+  private static final String ATTR_ROLE_TEST = "role_test";
+  private static final String ATTR_ROLE_EVENT = "role_event";
+
+  private static final String TELETAN_TYPE_TEST = "TEST";
+  private static final String TELETAN_TYPE_EVENT = "EVENT";
 
   /**
    * The Keycloak password reset URL.
@@ -99,7 +106,7 @@ public class VerificationPortalController {
   @Value("${keycloak-pw.reset-url}")
   private String pwResetUrl;
 
-  private static final Map<String, LocalDateTime> rateLimitingUserMap = new ConcurrentHashMap<String, LocalDateTime>();
+  private static final Map<String, LocalDateTime> rateLimitingUserMap = new ConcurrentHashMap<>();
 
   @Value("${rateLimiting.enabled}")
   private boolean rateLimitingEnabled;
@@ -142,6 +149,7 @@ public class VerificationPortalController {
     if (model != null) {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
+      setRoleDependentAttributes(model, principal);
     }
 
     HttpSession session = request.getSession();
@@ -161,11 +169,18 @@ public class VerificationPortalController {
    * @return the name of the Thymeleaf template to be used for the HTML page
    */
   @PostMapping(value = ROUTE_TELETAN)
-  public String teletan(HttpServletRequest request, Model model) {
+  public String teletan(
+    HttpServletRequest request,
+    Model model,
+    @ModelAttribute("EVENT") String eventButton,
+    @ModelAttribute("TEST") String testButton) {
+
     TeleTan teleTan = new TeleTan("123456789");
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
       .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
+
+    String teleTanType = "";
 
     // initially the TEMPLATE_INDEX is used (without showing the teleTAN)
     String template = TEMPLATE_START;
@@ -180,7 +195,13 @@ public class VerificationPortalController {
         }
 
         try {
-          teleTan = teleTanService.createTeleTan(token);
+          if (!eventButton.isEmpty()) {
+            teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_EVENT);
+            teleTanType = TELETAN_TYPE_EVENT;
+          } else if (!testButton.isEmpty()) {
+            teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_TEST);
+            teleTanType = TELETAN_TYPE_TEST;
+          }
         } catch (FeignException e) {
           if (e.status() == HttpStatus.TOO_MANY_REQUESTS.value()) {
             throw new ServerRateLimitationException("Too many requests. Please wait a moment.");
@@ -189,7 +210,7 @@ public class VerificationPortalController {
           }
         }
 
-        log.info("TeleTan successfully retrieved for user: {}", user);
+        log.info("TeleTan Type {} successfully retrieved for user: {}", teleTanType,user);
         template = TEMPLATE_TELETAN;
       }
       session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
@@ -198,6 +219,7 @@ public class VerificationPortalController {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
+      setRoleDependentAttributes(model, principal);
     }
     return template;
   }
@@ -229,5 +251,14 @@ public class VerificationPortalController {
       log.error("Logout failed", e);
     }
     return "redirect:" + TEMPLATE_START;
+  }
+
+  private void setRoleDependentAttributes(Model model, KeycloakAuthenticationToken token) {
+    model.addAttribute(ATTR_ROLE_TEST, token.getAuthorities().stream()
+      .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + SecurityConfig.ROLE_C19HOTLINE)));
+
+    model.addAttribute(ATTR_ROLE_EVENT, token.getAuthorities().stream()
+      .anyMatch(grantedAuthority ->
+        grantedAuthority.getAuthority().equals("ROLE_" + SecurityConfig.ROLE_C19HOTLINE_EVENT)));
   }
 }
