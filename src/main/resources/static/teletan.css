@@ -131,12 +131,32 @@
 	border-color: #E20074;
 }
 
+.button[disabled] {
+  color: gray;
+  background: lightgray;
+  border-color: transparent;
+}
+
+.dropdown {
+  position: fixed;
+  left: 50%;
+  width: 500px;
+  height: 40px;
+  margin-left: -250px;
+  font-family: "Telegrotesk Next Regular";
+  font-size: 18px;
+  color: #262626;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: #dddddd;
+}
+
 .input {
 	position: fixed;
 	left: 50%;
 	width: 485px;
-	height: 45px;
-	line-height: 45px;
+	height: 35px;
+	line-height: 17px;
 	margin-left: -250px;
 	padding-left: 10px;
 	font-family: "Telegrotesk Next Regular";

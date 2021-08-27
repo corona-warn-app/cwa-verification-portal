@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" type="text/css" href="/teletan.css"/>
   <meta http-equiv="refresh" content="600; URL=/cwa/start">
-  <title>TeleTAN Portal</title>
+  <title>CWA TAN Portal</title>
   <link rel="icon" href="/c-19_logo.png"/>
   <script src="/logout.js"></script>
 </head>
@@ -24,19 +24,17 @@
 <table class="c19-logo">
   <tr>
     <td style="width: 1px;"><img src="/c-19_logo.png"/></td>
-    <td>TeleTAN Portal</td>
+    <td>CWA TAN Portal</td>
   </tr>
 </table>
 
 <!-- BEGIN page specific content  -->
 
-<div class="text-big" style="top: 210px;">Anzeige der TeleTAN</div>
-<div class="text" style="top: 300px;">Die neue TeleTAN lautet</div>
-<div class="text-bold" style="top: 340px;" th:text="${teleTAN}"/>
-<form action="/cwa/teletan" method="post">
-  <input th:if="${role_test}" class="button" style="top: 410px;" type="submit" th:name="${'TEST'}" value="Eine weitere TeleTAN (positiver PCR Test) erzeugen" />
-  <input th:if="${role_event}" class="button" style="top: 490px;" type="submit" th:name="${'EVENT'}" value="Eine weitere TeleTAN (Positiver bei Event) erzeugen" />
-  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<div class="text-big" style="top: 210px;">Anzeige der <span th:text="${teleTANType}"></span></div>
+<div class="text" style="top: 300px;">Die neue <span th:text="${teleTANType}"></span> lautet</div>
+<div class="text-bold" style="top: 340px;" th:text="${teleTAN}"></div>
+<form action="/cwa/start" method="get">
+  <input class="button" style="top: 410px;" type="submit" value="Zurück zum Start" />
 </form>
 
 <!-- Current user and logout popup -->

@@ -9,3 +9,7 @@ server:
   ssl:
     key-store: ${SSL_PORTAL_KEYSTORE_PATH}
     key-store-password: ${SSL_PORTAL_KEYSTORE_PASSWORD}
+
+cwa:
+  verification-portal:
+    health-authorities-list: ${CWA_VERIFICATION_PORTAL_HEALTH_AUTHORITIES:'[]'}
