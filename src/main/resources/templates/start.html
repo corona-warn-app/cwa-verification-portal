@@ -5,9 +5,16 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' style-src 'unsafe-inline'">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" type="text/css" href="/teletan.css"/>
-  <title>TeleTAN Portal</title>
+  <title>CWA TAN Portal</title>
   <link rel="icon" href="/c-19_logo.png"/>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let healthAuthorityRawData = /*[[${healthAuthorityRawData}]]*/ '[]';
+    /*]]>*/
+  </script>
   <script src="/logout.js"></script>
+  <script src="/jquery.min.js"></script>
+  <script src="/tan.js"></script>
 </head>
 <body>
 <div class="header">
@@ -23,18 +30,37 @@
 <table class="c19-logo">
   <tr>
     <td style="width: 1px;"><img src="/c-19_logo.png"/></td>
-    <td>TeleTAN Portal</td>
+    <td>CWA TAN Portal</td>
   </tr>
 </table>
 
 <!-- BEGIN page specific content  -->
-<div class="text-big" style="top: 210px;">TeleTAN erzeugen</div>
-<div class="text" style="top: 300px;">Erzeugen Sie eine neue TeleTAN für einen Patienten.</div>
-<div th:if="${!role_test && !role_event}" class="text-error" style="top: 360px">Sie besitzen nicht die benötigten Berechtigungen zum Erzeugen von TeleTAN.</div>
+<div class="text-big" style="top: 210px;">TAN erzeugen</div>
+<div th:if="${!role_test && !role_event}" class="text-error" style="top: 360px">Sie besitzen nicht die benötigten Berechtigungen zum Erzeugen von TAN.</div>
 <form action="/cwa/teletan" method="post">
-  <input th:if="${role_test}" class="button" style="top: 360px;" type="submit" th:name="${'TEST'}" value="Eine TeleTAN (positiver PCR Test) erzeugen" />
-  <input th:if="${role_event}" class="button" style="top: 420px;" type="submit" th:name="${'EVENT'}" value="Eine TeleTAN (Positiver bei Event) erzeugen" />
+  <div th:if="${role_test}" class="box" style="border: 1px solid gray; border-radius: 3px; top: 350px; height: 110px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
+    <div class="box-title" style="font-family: 'Telegrotesk Next Regular'; font-size: 18px; color: #262626; display: inline; position: relative; top: -10px; left: 20px; background-color: white; padding: 0 5px">
+      TeleTan (Positiver PCR-Test)
+    </div>
+    <div class="text" style="top: 370px;">Erzeugen Sie eine neue TeleTAN für einen Patienten.</div>
+
+    <input class="button" style="top: 400px;" type="submit" th:name="${'TEST'}" value="Eine TeleTan erzeugen" />
+  </div>
+
+  <div th:if="${role_event}" class="box" style="border: 1px solid gray; border-radius: 3px; top: 480px; height: 200px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
+    <div class="box-title" style="font-family: 'Telegrotesk Next Regular'; font-size: 18px; color: #262626; display: inline; position: relative; top: -10px; left: 20px; background-color: white; padding: 0 5px">
+      PIW Tan (Positiver bei Event)
+    </div>
+    <div class="text" style="top: 510px;">
+      Erzeugen Sie eine neue PIW Tan zur Warnung der Teilnehmer eines Events.<br />
+      Wählen Sie zunächst das anfordernde Gesundheitsamt aus.
+    </div>
+    <input id="health-authority" type="text" class="input" style="top: 570px" list="health-authorities" />
+    <datalist id="health-authorities"><!-- Populated by Script --></datalist>
+    <input id="piw-tan-button" class="button" style="top: 620px;" type="submit" th:name="${'EVENT'}" value="Eine PIW Tan erzeugen" />
+  </div>
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+  <input id="health-authority-id" type="hidden" th:name="${'HAID'}" />
 </form>
 
 <!-- Current user and logout popup -->
@@ -45,7 +71,7 @@
   </tr>
 </table>
 <form action="/cwa/logout" method="post">
-	<button class="button-menu button-logout" id="logout">Abmelden</button>
+  <button class="button-menu button-logout" id="logout">Abmelden</button>
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </form>
 <a th:href="${pwResetUrl}" target="_blank"><button class="button-menu button-pw-reset" id="password_reset">Passwort Ändern</button></a>

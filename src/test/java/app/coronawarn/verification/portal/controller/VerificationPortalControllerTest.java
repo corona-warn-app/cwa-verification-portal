@@ -25,6 +25,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import app.coronawarn.verification.portal.client.TeleTan;
+import app.coronawarn.verification.portal.config.VerificationPortalConfigurationProperties;
+import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
@@ -49,6 +53,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -59,8 +64,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @Slf4j
 @WebMvcTest(VerificationPortalController.class)
-@TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
+@TestPropertySource(properties = {
+  "rateLimiting.enabled=true",
+  "rateLimiting.seconds=30",
+  "cwa.verification-portal.health-authorities-list=[{\"name\": \"Demo HA\", \"nr\": \"1337\"}]"})
 @ContextConfiguration(classes = VerificationPortalController.class)
+@Import({VerificationPortalConfigurationProperties.class, HealthAuthorityService.class})
 public class VerificationPortalControllerTest extends ServletUnitTestingSupport {
 
   public static final String TELETAN_NAME = "teletan";
@@ -195,6 +204,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
     mockMvc.perform(post("/cwa/teletan")
         .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("HAID", "1337")
         .param("EVENT", "Event Button Clicked")
         .param("TEST", ""))
       .andExpect(status().isOk())
@@ -210,6 +220,47 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
         .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
+  }
+
+  /**
+   * Test of teletan method, of class VerificationPortalController.
+   *
+   * @throws Exception if the test cannot be performed.
+   */
+  @Test
+  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  public void testTeletanEvent_InvalidHaId() throws Exception {
+    log.info("process testTeletanEvent()");
+
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("HAID", "1338")
+        .param("EVENT", "Event Button Clicked")
+        .param("TEST", ""))
+      .andExpect(status().isBadRequest());
+
+    verify(teleTanService, never()).createTeleTan(any(String.class), eq("EVENT"));
+  }
+
+  /**
+   * Test of teletan method, of class VerificationPortalController.
+   *
+   * @throws Exception if the test cannot be performed.
+   */
+  @Test
+  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  public void testTeletanEvent_MissingHaId() throws Exception {
+    log.info("process testTeletanEvent()");
+
+    mockMvc.perform(post("/cwa/teletan")
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
+        .param("EVENT", "Event Button Clicked")
+        .param("TEST", ""))
+      .andExpect(status().isBadRequest());
+
+    verify(teleTanService, never()).createTeleTan(any(String.class), eq("EVENT"));
   }
 
   @Test

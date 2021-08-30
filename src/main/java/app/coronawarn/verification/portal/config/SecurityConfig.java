@@ -19,8 +19,9 @@
  * under the License.
  */
 
-package app.coronawarn.verification.portal;
+package app.coronawarn.verification.portal.config;
 
+import app.coronawarn.verification.portal.VerificationPortalHttpFilter;
 import app.coronawarn.verification.portal.controller.VerificationPortalController;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;

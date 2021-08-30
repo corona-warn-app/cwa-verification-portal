@@ -22,6 +22,10 @@ keycloak:
 keycloak-pw:
   reset-url: http://localhost:8080/auth/realms/cwa/account/password
 
+cwa:
+  verification-portal:
+    health-authorities-list: '[]'
+
 server:
   error:
     whitelabel:

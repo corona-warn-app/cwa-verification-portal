@@ -21,8 +21,10 @@
 
 package app.coronawarn.verification.portal.controller;
 
-import app.coronawarn.verification.portal.SecurityConfig;
 import app.coronawarn.verification.portal.client.TeleTan;
+import app.coronawarn.verification.portal.config.SecurityConfig;
+import app.coronawarn.verification.portal.config.VerificationPortalConfigurationProperties;
+import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import feign.FeignException;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -43,6 +46,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * This class represents the WEB UI controller for the verification portal. It implements a very
@@ -50,6 +54,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class VerificationPortalController {
 
   /**
@@ -92,10 +97,12 @@ public class VerificationPortalController {
    * The Thymeleaf attributes used for displaying the teletan and the current user.
    */
   private static final String ATTR_TELETAN = "teleTAN";
+  private static final String ATTR_TELETAN_TYPE = "teleTANType";
   private static final String ATTR_USER = "userName";
   private static final String ATTR_PW_RESET_URL = "pwResetUrl";
   private static final String ATTR_ROLE_TEST = "role_test";
   private static final String ATTR_ROLE_EVENT = "role_event";
+  private static final String ATTR_HA_RAW_DATA = "healthAuthorityRawData";
 
   private static final String TELETAN_TYPE_TEST = "TEST";
   private static final String TELETAN_TYPE_EVENT = "EVENT";
@@ -119,9 +126,9 @@ public class VerificationPortalController {
    */
   private final TeleTanService teleTanService;
 
-  public VerificationPortalController(TeleTanService teleTanService) {
-    this.teleTanService = teleTanService;
-  }
+  private final VerificationPortalConfigurationProperties configurationProperties;
+
+  private final HealthAuthorityService healthAuthorityService;
 
   /**
    * The Web GUI page request showing the index.html web page
@@ -149,6 +156,7 @@ public class VerificationPortalController {
     if (model != null) {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
+      model.addAttribute(ATTR_HA_RAW_DATA, configurationProperties.getHealthAuthoritiesList());
       setRoleDependentAttributes(model, principal);
     }
 
@@ -173,14 +181,13 @@ public class VerificationPortalController {
     HttpServletRequest request,
     Model model,
     @ModelAttribute("EVENT") String eventButton,
-    @ModelAttribute("TEST") String testButton) {
+    @ModelAttribute("TEST") String testButton,
+    @ModelAttribute("HAID") String healthAuthroityId) {
 
     TeleTan teleTan = new TeleTan("123456789");
     KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
       .getUserPrincipal();
     String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
-
-    String teleTanType = "";
 
     // initially the TEMPLATE_INDEX is used (without showing the teleTAN)
     String template = TEMPLATE_START;
@@ -196,11 +203,21 @@ public class VerificationPortalController {
 
         try {
           if (!eventButton.isEmpty()) {
+            model.addAttribute(ATTR_TELETAN_TYPE, "PIW Tan");
+
+            String healthAuthorityName = healthAuthorityService.checkHealthAuthority(healthAuthroityId);
+
+            if (healthAuthorityName == null) {
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Health Authority ID");
+            }
+
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_EVENT);
-            teleTanType = TELETAN_TYPE_EVENT;
+            log.info("PIW Tan successfully retrieved for user: {}, health authority: {}",
+              user, healthAuthorityName);
           } else if (!testButton.isEmpty()) {
+            model.addAttribute(ATTR_TELETAN_TYPE, "TeleTAN");
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_TEST);
-            teleTanType = TELETAN_TYPE_TEST;
+            log.info("TeleTan successfully retrieved for user: {}", user);
           }
         } catch (FeignException e) {
           if (e.status() == HttpStatus.TOO_MANY_REQUESTS.value()) {
@@ -209,11 +226,8 @@ public class VerificationPortalController {
             throw e;
           }
         }
-
-        log.info("TeleTan Type {} successfully retrieved for user: {}", teleTanType,user);
         template = TEMPLATE_TELETAN;
       }
-      session.setAttribute(SESSION_ATTR_TELETAN, "TeleTAN");
     }
     if (model != null) {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
