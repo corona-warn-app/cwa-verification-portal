@@ -24,6 +24,7 @@ package app.coronawarn.verification.portal.controller;
 import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.config.SecurityConfig;
 import app.coronawarn.verification.portal.config.VerificationPortalConfigurationProperties;
+import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import feign.FeignException;
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * This class represents the WEB UI controller for the verification portal. It implements a very
@@ -126,6 +128,8 @@ public class VerificationPortalController {
 
   private final VerificationPortalConfigurationProperties configurationProperties;
 
+  private final HealthAuthorityService healthAuthorityService;
+
   /**
    * The Web GUI page request showing the index.html web page
    *
@@ -200,9 +204,16 @@ public class VerificationPortalController {
         try {
           if (!eventButton.isEmpty()) {
             model.addAttribute(ATTR_TELETAN_TYPE, "PIW Tan");
+
+            String healthAuthorityName = healthAuthorityService.checkHealthAuthority(healthAuthroityId);
+
+            if (healthAuthorityName == null) {
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Health Authority ID");
+            }
+
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_EVENT);
             log.info("PIW Tan successfully retrieved for user: {}, health authority: {}",
-              user, healthAuthroityId);
+              user, healthAuthorityName);
           } else if (!testButton.isEmpty()) {
             model.addAttribute(ATTR_TELETAN_TYPE, "TeleTAN");
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_TEST);
