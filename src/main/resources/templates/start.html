@@ -47,7 +47,7 @@
     <input class="button" style="top: 400px;" type="submit" th:name="${'TEST'}" value="Eine TeleTan erzeugen" />
   </div>
 
-  <div class="box" style="border: 1px solid gray; border-radius: 3px; top: 480px; height: 240px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
+  <div th:if="${role_event}" class="box" style="border: 1px solid gray; border-radius: 3px; top: 480px; height: 240px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
     <div class="box-title" style="font-family: 'Telegrotesk Next Regular'; font-size: 18px; color: #262626; display: inline; position: relative; top: -10px; left: 20px; background-color: white; padding: 0 5px">
       PIW Tan (Positiver bei Event)
     </div>
