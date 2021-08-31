@@ -2,6 +2,7 @@
   $(document).ready(() => {
     const healthAuthorityInput = $("#health-authority");
     const healthAuthorityIdInput = $("#health-authority-id");
+    const healthAuthorityIdDisplay = $("#health-authority-id-display");
     const healthAuthorityDataList = $("#health-authorities");
     const piwTanButton = $("#piw-tan-button");
 
@@ -16,6 +17,7 @@
       if (foundId) {
         piwTanButton.prop("disabled", false);
         healthAuthorityIdInput.val(foundId.nr);
+        healthAuthorityIdDisplay.text(foundId.nr);
       } else {
         piwTanButton.prop("disabled", true);
       }
