@@ -47,7 +47,7 @@
     <input class="button" style="top: 400px;" type="submit" th:name="${'TEST'}" value="Eine TeleTan erzeugen" />
   </div>
 
-  <div th:if="${role_event}" class="box" style="border: 1px solid gray; border-radius: 3px; top: 480px; height: 200px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
+  <div class="box" style="border: 1px solid gray; border-radius: 3px; top: 480px; height: 240px; width: 600px; left: 50%; margin-left: -300px; position: fixed">
     <div class="box-title" style="font-family: 'Telegrotesk Next Regular'; font-size: 18px; color: #262626; display: inline; position: relative; top: -10px; left: 20px; background-color: white; padding: 0 5px">
       PIW Tan (Positiver bei Event)
     </div>
@@ -57,7 +57,10 @@
     </div>
     <input id="health-authority" type="text" class="input" style="top: 570px" list="health-authorities" />
     <datalist id="health-authorities"><!-- Populated by Script --></datalist>
-    <input id="piw-tan-button" class="button" style="top: 620px;" type="submit" th:name="${'EVENT'}" value="Eine PIW Tan erzeugen" />
+    <div class="text" style="top: 620px;">
+      Kopfnummer: <i id="health-authority-id-display">Wählen Sie das anfordernde Gesundheitsamt aus</i>
+    </div>
+    <input id="piw-tan-button" class="button" style="top: 650px;" type="submit" th:name="${'EVENT'}" value="Eine PIW Tan erzeugen" />
   </div>
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
   <input id="health-authority-id" type="hidden" th:name="${'HAID'}" />
