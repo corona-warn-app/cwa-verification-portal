@@ -110,7 +110,6 @@ public class VerificationPortalErrorController implements ErrorController {
    *
    * @return the custom error path
    */
-  @Override
   public String getErrorPath() {
     return ROUTE_ERROR;
   }
