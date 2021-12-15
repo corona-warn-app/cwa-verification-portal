@@ -45,7 +45,8 @@
       **/VerificationPortalApplication.java,  
       **/SecurityConfig.java,
       **/client/*
-    </sonar.coverage.exclusions>     
+    </sonar.coverage.exclusions>
+    <log4j2.version>2.16.0</log4j2.version>
   </properties>
 
   <dependencyManagement>
