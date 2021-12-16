@@ -195,7 +195,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(name = "tester6.1", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent() throws Exception {
     log.info("process testTeletanEvent()");
 
@@ -209,7 +209,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
         .param("TEST", ""))
       .andExpect(status().isOk())
       .andExpect(view().name(TELETAN_NAME))
-      .andExpect(model().attribute("userName", equalTo("tester6")))
+      .andExpect(model().attribute("userName", equalTo("tester6.1")))
       .andExpect(model().attribute("teleTAN", equalTo("123454321")))
       .andExpect(model().attribute("role_test", equalTo(true)))
       .andExpect(model().attribute("role_event", equalTo(true)))
@@ -249,7 +249,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(name = "tester6.2", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent_MissingHaId() throws Exception {
     log.info("process testTeletanEvent()");
 

@@ -1,32 +1,30 @@
 package app.coronawarn.verification.portal.controller;
 
-import app.coronawarn.verification.portal.VerificationPortalApplication;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
+import javax.servlet.RequestDispatcher;
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.Matchers.equalTo;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.springframework.http.HttpStatus;
-import javax.servlet.RequestDispatcher;
 
 @Slf4j
-//@SpringBootTest
 @AutoConfigureMockMvc
 @WebMvcTest(VerificationPortalController.class)
 @TestPropertySource(properties = {"rateLimiting.enabled=true", "rateLimiting.seconds=30"})
@@ -64,8 +62,8 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   public void handleErrorHandlesNotFoundCorrectly() throws Exception {
     log.info("process handleErrorHandlesNotFoundCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.NOT_FOUND.value()))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.NOT_FOUND.value()))
       .andExpect(status().isOk())
       .andExpect(view().name("error"))
       .andExpect(model().attribute(ATTR_ERROR_MSG, equalTo(EXPECTED_ERROR_404_MESSAGE)));
@@ -76,8 +74,8 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   public void handleErrorHandlesForbiddenCorrectly() throws Exception {
     log.info("process handleErrorHandlesForbiddenCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.FORBIDDEN.value()))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.FORBIDDEN.value()))
       .andExpect(status().isOk())
       .andExpect(view().name("error"))
       .andExpect(model().attribute(ATTR_ERROR_MSG, equalTo(EXPECTED_ERROR_403_MESSAGE)));
@@ -88,9 +86,9 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   public void handleErrorHandlesTooManyRequestsWithRateLimitCorrectly() throws Exception {
     log.info("process handleErrorHandlesTooManyRequestsWithRateLimitCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.TOO_MANY_REQUESTS.value())
-      .requestAttr(RequestDispatcher.ERROR_MESSAGE, SERVER_RATE_LIMIT_ERROR_REASON))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.TOO_MANY_REQUESTS.value())
+        .requestAttr(RequestDispatcher.ERROR_MESSAGE, SERVER_RATE_LIMIT_ERROR_REASON))
       .andExpect(status().isOk())
       .andExpect(view().name("error"))
       .andExpect(model().attribute(ATTR_ERROR_MSG, equalTo(EXPECTED_ERROR_429_MESSAGE + EXPECTED_RATE_LIMIT_SERVER_TEXT_MESSAGE)));
@@ -101,9 +99,9 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   public void handleErrorHandlesTooManyRequestsCorrectly() throws Exception {
     log.info("process handleErrorHandlesTooManyRequestsCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.TOO_MANY_REQUESTS.value())
-      .requestAttr(RequestDispatcher.ERROR_MESSAGE, ""))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.TOO_MANY_REQUESTS.value())
+        .requestAttr(RequestDispatcher.ERROR_MESSAGE, ""))
       .andExpect(status().isOk())
       .andExpect(view().name("error"))
       .andExpect(model().attribute(ATTR_ERROR_MSG, equalTo(EXPECTED_ERROR_429_MESSAGE + rateLimitingSeconds + EXPECTED_SECONDS_MESSAGE)));
@@ -114,8 +112,8 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   public void handleErrorHandlesDefaultCorrectly() throws Exception {
     log.info("process handleErrorHandlesDefaultCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-      .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.I_AM_A_TEAPOT.value()))
+        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, HttpStatus.I_AM_A_TEAPOT.value()))
       .andExpect(status().isOk())
       .andExpect(view().name("error"))
       .andExpect(model().attribute(ATTR_ERROR_MSG, equalTo(EXPECTED_ERROR_MESSAGE)));

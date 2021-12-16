@@ -31,21 +31,23 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- dependencies -->
-    <spring.boot.version>2.5.4</spring.boot.version>
+    <spring.boot.version>2.5.7</spring.boot.version>
     <spring.cloud.version>2020.0.4</spring.cloud.version>
     <keycloak.version>10.0.1</keycloak.version>
     <lombok.version>1.18.12</lombok.version>
     <springdoc.version>1.3.9</springdoc.version>
+    <log4j.version>2.16.0</log4j.version>
     <!-- plugins -->
     <plugin.checkstyle.version>3.1.1</plugin.checkstyle.version>
     <plugin.sonar.version>3.6.1.1688</plugin.sonar.version>
     <plugin.jacoco.version>0.8.5</plugin.jacoco.version>
     <guava.version>30.0-jre</guava.version>
+    <surefire.version>3.0.0-M5</surefire.version>
     <sonar.coverage.exclusions>
       **/VerificationPortalApplication.java,  
       **/SecurityConfig.java,
       **/client/*
-    </sonar.coverage.exclusions>     
+    </sonar.coverage.exclusions>
   </properties>
 
   <dependencyManagement>
@@ -77,6 +79,7 @@
         <version>${springdoc.version}</version>
       </dependency>
     </dependencies>
+
   </dependencyManagement>
 
   <distributionManagement>
@@ -177,11 +180,6 @@
       <artifactId>spring-session-core</artifactId>
       <version>2.3.0.RELEASE</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -196,6 +194,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${plugin.checkstyle.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
         </plugin>
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
