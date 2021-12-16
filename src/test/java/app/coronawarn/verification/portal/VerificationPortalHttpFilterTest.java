@@ -21,8 +21,12 @@
 package app.coronawarn.verification.portal;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,15 +36,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = VerificationPortalHttpFilter.class)
 @TestPropertySource(properties = {"host-header.whitelist=localhost,localhost:8081", "pod.ip=127.0.0.1", "pod.port=8081"})
 @EnableConfigurationProperties
