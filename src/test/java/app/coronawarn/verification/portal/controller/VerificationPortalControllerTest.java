@@ -40,6 +40,7 @@ import app.coronawarn.verification.portal.client.TeleTan;
 import app.coronawarn.verification.portal.config.VerificationPortalConfigurationProperties;
 import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
+import com.c4_soft.springaddons.security.oauth2.test.annotations.OpenIdClaims;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
 import feign.FeignException;
@@ -114,7 +115,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester1", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester1"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testStart() throws Exception {
     log.info("process testStart() RequestMethod.GET");
     mockMvc.perform(get("/cwa/start"))
@@ -138,7 +139,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester2", authorities = {"ROLE_c19hotline"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester2"), authorities = {"ROLE_c19hotline"})
   public void testStartOnlyTestRole() throws Exception {
     log.info("process testStartOnlyTestRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -151,7 +152,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester3", authorities = {"ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester3"), authorities = {"ROLE_c19hotline_event"})
   public void testStartOnlyEventRole() throws Exception {
     log.info("process testStartOnlyEventRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -164,7 +165,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester4", authorities = {})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester4"), authorities = {})
   public void testStartNoRole() throws Exception {
     log.info("process testStartNoRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -182,7 +183,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester5", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester5"), value = "Role_Test")
   public void testStartNotFound() throws Exception {
     log.info("process testStartNotFound()");
     mockMvc.perform(get("/corona/start"))
@@ -195,7 +196,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester6.1", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester6.1"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent() throws Exception {
     log.info("process testTeletanEvent()");
 
@@ -228,7 +229,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester6", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester6"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent_InvalidHaId() throws Exception {
     log.info("process testTeletanEvent()");
 
@@ -249,7 +250,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(name = "tester6.2", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent_MissingHaId() throws Exception {
     log.info("process testTeletanEvent()");
 
@@ -264,7 +265,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester7", authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester7"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanTest() throws Exception {
     log.info("process testTeletanTest()");
 
@@ -291,7 +292,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester8", authorities = {"ROLE_c19hotline"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester8"), authorities = {"ROLE_c19hotline"})
   public void testRoleMappingOnlyHotline() throws Exception {
     log.info("process testRoleMappingOnlyHotline()");
 
@@ -318,7 +319,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester9", authorities = {"ROLE_c19hotline_event"})
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester9"), authorities = {"ROLE_c19hotline_event"})
   public void testRoleMappingOnlyEvent() throws Exception {
     log.info("process testRoleMappingOnlyEvent()");
 
@@ -361,10 +362,10 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester10", value = "ROLE_c19hotline")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester10"), value = "ROLE_c19hotline")
   public void testIfRateLimitExceptionIsHandledCorrectly() throws Exception {
     Request dummyRequest = Request.create(Request.HttpMethod.GET, "url", Collections.emptyMap(), null, null, null);
-    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null)).when(teleTanService).createTeleTan(any(String.class), any(String.class));
+    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null, Collections.emptyMap())).when(teleTanService).createTeleTan(any(String.class), any(String.class));
 
     mockMvc.perform(post("/cwa/teletan")
         .param("EVENT", "")
@@ -375,7 +376,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester11", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester11"), value = "Role_Test")
   public void testIfAnyOtherExceptionIsJustForwared() {
     given(teleTanService.createTeleTan(any(String.class), any(String.class))).willAnswer(invocation -> {
       throw new Exception("Dummy Exception");
