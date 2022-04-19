@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import com.c4_soft.springaddons.security.oauth2.test.annotations.OpenIdClaims;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
 import javax.servlet.RequestDispatcher;
@@ -58,7 +59,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester"), value = "Role_Test")
   public void handleErrorHandlesNotFoundCorrectly() throws Exception {
     log.info("process handleErrorHandlesNotFoundCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
@@ -70,7 +71,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester"), value = "Role_Test")
   public void handleErrorHandlesForbiddenCorrectly() throws Exception {
     log.info("process handleErrorHandlesForbiddenCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
@@ -82,7 +83,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester"), value = "Role_Test")
   public void handleErrorHandlesTooManyRequestsWithRateLimitCorrectly() throws Exception {
     log.info("process handleErrorHandlesTooManyRequestsWithRateLimitCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
@@ -95,7 +96,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester"), value = "Role_Test")
   public void handleErrorHandlesTooManyRequestsCorrectly() throws Exception {
     log.info("process handleErrorHandlesTooManyRequestsCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")
@@ -108,7 +109,7 @@ public class VerificationPortalErrorControllerTest extends ServletUnitTestingSup
   }
 
   @Test
-  @WithMockKeycloakAuth(name = "tester", value = "Role_Test")
+  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester"), value = "Role_Test")
   public void handleErrorHandlesDefaultCorrectly() throws Exception {
     log.info("process handleErrorHandlesDefaultCorrectly() RequestMethod.POST");
     mockMvc.perform(post("/error")

@@ -83,11 +83,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
-    return new KeycloakSpringBootConfigResolver();
-  }
-
-  @Bean
   @Override
   protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
     return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
