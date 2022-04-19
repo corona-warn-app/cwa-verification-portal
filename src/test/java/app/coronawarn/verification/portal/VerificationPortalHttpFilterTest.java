@@ -1,7 +1,7 @@
 /*
  * Corona-Warn-App / cwa-verification-portal
  *
- * (C) 2021, T-Systems International GmbH
+ * (C) 2020 - 2022, T-Systems International GmbH
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -18,6 +18,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package app.coronawarn.verification.portal;
 
 
