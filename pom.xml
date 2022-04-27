@@ -38,11 +38,11 @@
     <keycloak.version>15.1.1</keycloak.version>
     <lombok.version>1.18.24</lombok.version>
     <springdoc.version>1.6.7</springdoc.version>
+    <commons-io.version>2.11.0</commons-io.version>
     <!-- plugins -->
     <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
     <plugin.sonar.version>3.9.1.2184</plugin.sonar.version>
     <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
-    <guava.version>31.1-jre</guava.version>
     <surefire.version>3.0.0-M5</surefire.version>
     <sonar.coverage.exclusions>
       **/VerificationPortalApplication.java,
@@ -124,19 +124,19 @@
       <artifactId>spring-cloud-starter-openfeign</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-httpclient</artifactId>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-httpclient</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
