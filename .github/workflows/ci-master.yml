@@ -58,7 +58,7 @@ jobs:
         docker build \
         --tag docker.pkg.github.com/${GITHUB_REPOSITORY}/${ARTIFACT_ID}:${VERSION} \
         --tag ${TRUSTED_URL}/${TRUSTED_REPOSITORY}/${ARTIFACT_ID}:${VERSION} \
-        --tag ${MTR_REPOSITORY}/cwa-verification-portal:${VERSION} \        
+        --tag ${MTR_REPOSITORY}/cwa-verification-portal:${VERSION} \
         .
       env:
         TRUSTED_URL: ${{ secrets.TRUSTED_URL }}
