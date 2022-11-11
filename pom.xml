@@ -66,6 +66,12 @@
       <version>${project.parent.version}</version>
       <type>pom</type>
     </dependency>
+    <dependency>
+      <groupId>app.coronawarn</groupId>
+      <artifactId>cwa-parent-validation</artifactId>
+      <version>${project.parent.version}</version>
+      <type>pom</type>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
