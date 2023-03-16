@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: test
   application:
     name: cwa-verification-portal
   cloud:
@@ -6,22 +8,6 @@ spring:
       enabled: false
     compatibility-verifier:
       enabled: false
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: verification-portal
-            authorization-grant-type: authorization_code
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/cwa
-            user-name-attribute: preferred_username
-        resourceserver:
-          jwt:
-            issuer-uri: http://localhost:8080/realms/cwa
-
 feign:
   client:
     config:
@@ -86,7 +72,7 @@ cwa-verification-server:
     key-store-password: changeit
     trust-store: classpath:truststore.jks
     trust-store-password: changeit
-    
+
 rateLimiting:
   enabled: true
   seconds: 30

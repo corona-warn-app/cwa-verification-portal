@@ -22,23 +22,25 @@
 package app.coronawarn.verification.portal.controller;
 
 import app.coronawarn.verification.portal.client.TeleTan;
-import app.coronawarn.verification.portal.config.SecurityConfig;
+import app.coronawarn.verification.portal.config.OAuth2SecurityConfig;
 import app.coronawarn.verification.portal.config.VerificationPortalConfigurationProperties;
 import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import feign.FeignException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -149,15 +151,16 @@ public class VerificationPortalController {
    */
   @RequestMapping(value = ROUTE_START, method = {RequestMethod.GET, RequestMethod.POST})
   public String start(HttpServletRequest request, Model model) {
-    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
-      .getUserPrincipal();
-    String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
+
+    String user = request.getUserPrincipal().getName();
 
     if (model != null) {
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
       model.addAttribute(ATTR_HA_RAW_DATA, configurationProperties.getHealthAuthoritiesList());
-      setRoleDependentAttributes(model, principal);
+      Collection<GrantedAuthority> authorities =
+        (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+      setRoleDependentAttributes(model, authorities);
     }
 
     HttpSession session = request.getSession();
@@ -180,14 +183,14 @@ public class VerificationPortalController {
   public String teletan(
     HttpServletRequest request,
     Model model,
+    JwtAuthenticationToken authentication,
     @ModelAttribute("EVENT") String eventButton,
     @ModelAttribute("TEST") String testButton,
     @ModelAttribute("HAID") String healthAuthroityId) {
 
     TeleTan teleTan = new TeleTan("123456789");
-    KeycloakAuthenticationToken principal = (KeycloakAuthenticationToken) request
-      .getUserPrincipal();
-    String user = ((KeycloakPrincipal) principal.getPrincipal()).getName();
+    String user = request
+      .getUserPrincipal().getName();
 
     // initially the TEMPLATE_INDEX is used (without showing the teleTAN)
     String template = TEMPLATE_START;
@@ -195,12 +198,10 @@ public class VerificationPortalController {
     if (session != null) {
       if (session.getAttribute(SESSION_ATTR_TELETAN) != null) {
         // get a new teleTan and switch to the TEMPLATE_TELETAN
-        String token = principal.getAccount().getKeycloakSecurityContext()
-          .getTokenString();
         if (rateLimitingEnabled) {
           checkRateLimitation(user);
         }
-
+        String token = authentication.getToken().getTokenValue();
         try {
           if (!eventButton.isEmpty()) {
             model.addAttribute(ATTR_TELETAN_TYPE, "PIW Tan");
@@ -210,7 +211,6 @@ public class VerificationPortalController {
             if (healthAuthorityName == null) {
               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Health Authority ID");
             }
-
             teleTan = teleTanService.createTeleTan(token, TELETAN_TYPE_EVENT);
             log.info("PIW Tan successfully retrieved for user: {}, health authority: {}",
               user, healthAuthorityName);
@@ -233,7 +233,9 @@ public class VerificationPortalController {
       model.addAttribute(ATTR_TELETAN, teleTan.getValue().replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_USER, user.replace("<", "").replace(">", ""));
       model.addAttribute(ATTR_PW_RESET_URL, pwResetUrl);
-      setRoleDependentAttributes(model, principal);
+      Collection<GrantedAuthority> authorities =
+        (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+      setRoleDependentAttributes(model, authorities);
     }
     return template;
   }
@@ -267,12 +269,13 @@ public class VerificationPortalController {
     return "redirect:" + TEMPLATE_START;
   }
 
-  private void setRoleDependentAttributes(Model model, KeycloakAuthenticationToken token) {
-    model.addAttribute(ATTR_ROLE_TEST, token.getAuthorities().stream()
-      .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + SecurityConfig.ROLE_C19HOTLINE)));
+  private void setRoleDependentAttributes(Model model, Collection<GrantedAuthority> authorities) {
+    model.addAttribute(ATTR_ROLE_TEST, authorities.stream()
+      .anyMatch(
+        grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + OAuth2SecurityConfig.ROLE_C19HOTLINE)));
 
-    model.addAttribute(ATTR_ROLE_EVENT, token.getAuthorities().stream()
+    model.addAttribute(ATTR_ROLE_EVENT, authorities.stream()
       .anyMatch(grantedAuthority ->
-        grantedAuthority.getAuthority().equals("ROLE_" + SecurityConfig.ROLE_C19HOTLINE_EVENT)));
+        grantedAuthority.getAuthority().equals("ROLE_" + OAuth2SecurityConfig.ROLE_C19HOTLINE_EVENT)));
   }
 }

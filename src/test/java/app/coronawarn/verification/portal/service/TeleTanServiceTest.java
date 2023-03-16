@@ -34,18 +34,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @Slf4j
 @SpringBootTest
-public class TeleTanServiceTest
-{
+public class TeleTanServiceTest {
   public static final String TEST_TELE_TAN = "FE9A5MAK6C";
   public static final String TEST_TOKEN = "0815";
   public static final String TEST_TELE_TAN_TYPE = "TEST";
-  
+
   @Autowired
   private TeleTanService teleTanService;
 
   @MockBean
   private VerificationServerClient clientMock;
-  
+
   /**
    * Test of createTeleTan method, of class TeleTanService.
    */
@@ -54,7 +53,7 @@ public class TeleTanServiceTest
     log.info("process testCreateTeleTan()");
 
     Mockito.when(clientMock.createTeleTan(TeleTanService.TOKEN_PREFIX + TEST_TOKEN, TEST_TELE_TAN_TYPE))
-        .thenReturn(new TeleTan(TEST_TELE_TAN));
+      .thenReturn(new TeleTan(TEST_TELE_TAN));
 
 
     assertThat(teleTanService.createTeleTan(TEST_TOKEN, TEST_TELE_TAN_TYPE)).isEqualTo(new TeleTan(TEST_TELE_TAN));
