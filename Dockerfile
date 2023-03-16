@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/ava17-debian11:latest
+FROM gcr.io/distroless/java17-debian11:latest
 COPY target/*.jar app.jar
 COPY scripts/Dpkg.java Dpkg.java
 RUN ["java", "Dpkg.java"]
