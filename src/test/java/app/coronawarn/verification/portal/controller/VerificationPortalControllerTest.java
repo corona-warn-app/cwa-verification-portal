@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -41,23 +42,18 @@ import app.coronawarn.verification.portal.config.VerificationPortalConfiguration
 import app.coronawarn.verification.portal.service.HealthAuthorityService;
 import app.coronawarn.verification.portal.service.TeleTanService;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.OpenIdClaims;
-import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
-import com.c4_soft.springaddons.security.oauth2.test.mockmvc.ServletUnitTestingSupport;
+import com.c4_soft.springaddons.security.oauth2.test.annotations.WithMockJwtAuth;
 import feign.FeignException;
 import feign.Request;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -71,26 +67,15 @@ import org.springframework.test.web.servlet.MockMvc;
   "cwa.verification-portal.health-authorities-list=[{\"name\": \"Demo HA\", \"nr\": \"1337\"}]"})
 @ContextConfiguration(classes = VerificationPortalController.class)
 @Import({VerificationPortalConfigurationProperties.class, HealthAuthorityService.class})
-public class VerificationPortalControllerTest extends ServletUnitTestingSupport {
+public class VerificationPortalControllerTest {
 
   public static final String TELETAN_NAME = "teletan";
   public static final String TELETAN_VALUE = "TeleTAN";
-  private static final String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
-
-  private HttpSessionCsrfTokenRepository httpSessionCsrfTokenRepository;
-  private CsrfToken csrfToken;
 
   @MockBean
   TeleTanService teleTanService;
-
   @Autowired
   private MockMvc mockMvc;
-
-  @BeforeEach
-  public void setup() {
-    httpSessionCsrfTokenRepository = new HttpSessionCsrfTokenRepository();
-    csrfToken = httpSessionCsrfTokenRepository.generateToken(new MockHttpServletRequest());
-  }
 
   /**
    * Test of index method, of class VerificationPortalController.
@@ -98,7 +83,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth("Role_Test")
+  @WithMockJwtAuth("Role_Test")
   public void testIndex() throws Exception {
     log.info("process testIndex()");
     mockMvc.perform(get("/cwa"))
@@ -115,7 +100,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester1"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester1"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testStart() throws Exception {
     log.info("process testStart() RequestMethod.GET");
     mockMvc.perform(get("/cwa/start"))
@@ -126,12 +111,9 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
       .andExpect(model().attribute("role_event", equalTo(true)))
       .andExpect(request().sessionAttribute(TELETAN_NAME, equalTo(TELETAN_VALUE)));
 
-    String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
-
     log.info("process testStart() RequestMethod.POST");
     mockMvc.perform(post("/cwa/start")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
-        .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
+        .with(csrf().asHeader()))
       .andExpect(status().isOk())
       .andExpect(view().name("start"))
       .andExpect(model().attribute("userName", equalTo("tester1")))
@@ -139,7 +121,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester2"), authorities = {"ROLE_c19hotline"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester2"), authorities = {"ROLE_c19hotline"})
   public void testStartOnlyTestRole() throws Exception {
     log.info("process testStartOnlyTestRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -152,7 +134,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester3"), authorities = {"ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester3"), authorities = {"ROLE_c19hotline_event"})
   public void testStartOnlyEventRole() throws Exception {
     log.info("process testStartOnlyEventRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -165,7 +147,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester4"), authorities = {})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester4"))
   public void testStartNoRole() throws Exception {
     log.info("process testStartNoRole()");
     mockMvc.perform(get("/cwa/start"))
@@ -183,7 +165,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester5"), value = "Role_Test")
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester5"), value = "Role_Test")
   public void testStartNotFound() throws Exception {
     log.info("process testStartNotFound()");
     mockMvc.perform(get("/corona/start"))
@@ -196,14 +178,15 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester6.1"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester6.1"), authorities = {"ROLE_c19hotline",
+    "ROLE_c19hotline_event"})
   public void testTeletanEvent() throws Exception {
     log.info("process testTeletanEvent()");
 
-    when(teleTanService.createTeleTan(any(String.class), eq("EVENT"))).thenReturn(new TeleTan("123454321"));
+    when(teleTanService.createTeleTan(any(), eq("EVENT"))).thenReturn(new TeleTan("123454321"));
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("HAID", "1337")
         .param("EVENT", "Event Button Clicked")
@@ -218,7 +201,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
 
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
@@ -229,12 +212,12 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester6"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester6"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent_InvalidHaId() throws Exception {
     log.info("process testTeletanEvent()");
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("HAID", "1338")
         .param("EVENT", "Event Button Clicked")
@@ -250,12 +233,12 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth(authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockJwtAuth(authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanEvent_MissingHaId() throws Exception {
     log.info("process testTeletanEvent()");
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("EVENT", "Event Button Clicked")
         .param("TEST", ""))
@@ -265,14 +248,14 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester7"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester7"), authorities = {"ROLE_c19hotline", "ROLE_c19hotline_event"})
   public void testTeletanTest() throws Exception {
     log.info("process testTeletanTest()");
 
     when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("EVENT", "")
         .param("TEST", "TEST Button clicked"))
@@ -286,20 +269,20 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
 
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester8"), authorities = {"ROLE_c19hotline"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester8"), authorities = {"ROLE_c19hotline"})
   public void testRoleMappingOnlyHotline() throws Exception {
     log.info("process testRoleMappingOnlyHotline()");
 
     when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("EVENT", "")
         .param("TEST", "TEST Button clicked"))
@@ -313,20 +296,20 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
 
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester9"), authorities = {"ROLE_c19hotline_event"})
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester9"), authorities = {"ROLE_c19hotline_event"})
   public void testRoleMappingOnlyEvent() throws Exception {
     log.info("process testRoleMappingOnlyEvent()");
 
     when(teleTanService.createTeleTan(any(String.class), eq("TEST"))).thenReturn(new TeleTan("123454321"));
 
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)
         .param("EVENT", "")
         .param("TEST", "TEST Button clicked"))
@@ -340,7 +323,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
 
     // check rate limiting
     mockMvc.perform(post("/cwa/teletan")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
@@ -351,32 +334,33 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
    * @throws Exception if the test cannot be performed.
    */
   @Test
-  @WithMockKeycloakAuth("Role_Test")
+  @WithMockJwtAuth("Role_Test")
   public void testLogout() throws Exception {
     log.info("process testLogout()");
 
     mockMvc.perform(post("/cwa/logout")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken()))
+        .with(csrf().asHeader()))
       .andExpect(redirectedUrl("start"))
       .andExpect(status().isFound());
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester10"), value = "ROLE_c19hotline")
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester10"), value = "ROLE_c19hotline")
   public void testIfRateLimitExceptionIsHandledCorrectly() throws Exception {
     Request dummyRequest = Request.create(Request.HttpMethod.GET, "url", Collections.emptyMap(), null, null, null);
-    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null, Collections.emptyMap())).when(teleTanService).createTeleTan(any(String.class), any(String.class));
+    Mockito.doThrow(new FeignException.TooManyRequests("", dummyRequest, null, Collections.emptyMap()))
+      .when(teleTanService).createTeleTan(any(String.class), any(String.class));
 
     mockMvc.perform(post("/cwa/teletan")
         .param("EVENT", "")
         .param("TEST", "TEST Button clicked")
-        .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+        .with(csrf().asHeader())
         .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE))
       .andExpect(status().isTooManyRequests());
   }
 
   @Test
-  @WithMockKeycloakAuth(claims = @OpenIdClaims(preferredUsername = "tester11"), value = "Role_Test")
+  @WithMockJwtAuth(claims = @OpenIdClaims(sub = "tester11"), value = "Role_Test")
   public void testIfAnyOtherExceptionIsJustForwared() {
     given(teleTanService.createTeleTan(any(String.class), any(String.class))).willAnswer(invocation -> {
       throw new Exception("Dummy Exception");
@@ -384,7 +368,7 @@ public class VerificationPortalControllerTest extends ServletUnitTestingSupport 
     Assertions.assertThrows(Exception.class, () -> mockMvc.perform(post("/cwa/teletan")
       .param("EVENT", "")
       .param("TEST", "TEST Button clicked")
-      .sessionAttr(TOKEN_ATTR_NAME, csrfToken).param(csrfToken.getParameterName(), csrfToken.getToken())
+      .with(csrf().asHeader())
       .sessionAttr(TELETAN_NAME, TELETAN_VALUE).param(TELETAN_NAME, TELETAN_VALUE)));
   }
 

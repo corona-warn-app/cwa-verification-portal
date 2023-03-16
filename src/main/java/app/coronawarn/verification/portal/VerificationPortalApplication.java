@@ -21,15 +21,10 @@
 
 package app.coronawarn.verification.portal;
 
-import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.Bean;
 
 /**
  * The Spring Boot application class.
@@ -43,11 +38,11 @@ public class VerificationPortalApplication {
     SpringApplication.run(VerificationPortalApplication.class, args);
   }
 
-  /**
+  /*
    * Enable the cipher suites from server to be preferred.
    *
    * @return the WebServerFactoryCustomizer with cipher suites configuration
-   */
+   *
   @Bean
   @ConditionalOnProperty(value = "server.ssl.cipher.suites.order", havingValue = "true")
   public WebServerFactoryCustomizer<TomcatServletWebServerFactory> webServerFactoryCustomizer() {
@@ -56,6 +51,6 @@ public class VerificationPortalApplication {
         ((AbstractHttp11Protocol<?>) connector.getProtocolHandler())
           .setUseServerCipherSuitesOrder(true)
       );
-  }
+  }*/
 
 }

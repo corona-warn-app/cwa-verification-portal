@@ -1,7 +1,7 @@
 /*
- * Corona-Warn-App / cwa-verification-portal
+ * Corona-Warn-App / cwa-log-upload
  *
- * (C) 2020 - 2022, T-Systems International GmbH
+ * (C) 2021 - 2022, T-Systems International GmbH
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -23,83 +23,85 @@ package app.coronawarn.verification.portal.config;
 
 import app.coronawarn.verification.portal.VerificationPortalHttpFilter;
 import app.coronawarn.verification.portal.controller.VerificationPortalController;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.SessionRepository;
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 
 @Slf4j
-@EnableSpringHttpSession
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 @RequiredArgsConstructor
-public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+@Profile("!test")
+public class OAuth2SecurityConfig {
 
   public static final String ROLE_C19HOTLINE = "c19hotline";
   public static final String ROLE_C19HOTLINE_EVENT = "c19hotline_event";
   private static final String ACTUATOR_ROUTE = "/actuator/**";
-
+  private static final String REALM_ACCESS_CLAIM = "realm_access";
+  private static final String ROLES_CLAIM = "roles";
   private static final String SAMESITE_LAX = "Lax";
   private static final String OAUTH_TOKEN_REQUEST_STATE_COOKIE = "OAuth_Token_Request_State";
   private static final String SESSION_COOKIE = "SESSION";
 
   private final VerificationPortalHttpFilter verificationPortalHttpFilter;
 
-  /**
-   * Configures Keycloak.
-   */
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) {
-    KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-    keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-    auth.authenticationProvider(keycloakAuthenticationProvider);
-  }
+  private final KeycloakLogoutHandler keycloakLogoutHandler;
 
   @Bean
-  @Override
   protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
     return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    super.configure(http);
+  /**
+   * filter Chain.
+   */
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-      .addFilterBefore(verificationPortalHttpFilter, KeycloakAuthenticationProcessingFilter.class)
+      .addFilterBefore(verificationPortalHttpFilter, BasicAuthenticationFilter.class)
       .headers().addHeaderWriter(this::addSameSiteToOAuthCookie)
       .and()
-      .authorizeRequests()
-      .mvcMatchers(HttpMethod.GET, ACTUATOR_ROUTE).permitAll()
-      .antMatchers(VerificationPortalController.ROUTE_TELETAN)
-      .hasAnyRole(ROLE_C19HOTLINE, ROLE_C19HOTLINE_EVENT)
+      .authorizeHttpRequests()
+      .requestMatchers(HttpMethod.GET, ACTUATOR_ROUTE).permitAll()
+      .requestMatchers(VerificationPortalController.ROUTE_TELETAN).hasAnyRole(ROLE_C19HOTLINE, ROLE_C19HOTLINE_EVENT)
       .anyRequest().authenticated();
+
+    http.oauth2Login()
+      .and()
+      .logout()
+      .addLogoutHandler(keycloakLogoutHandler)
+      .logoutSuccessUrl("/");
+
+    return http.build();
   }
 
   /**
@@ -132,4 +134,41 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     return setCookie + "; SameSite=" + SAMESITE_LAX;
   }
 
+  /**
+   * GrantedAuthoritiesMapper.
+   */
+  @Bean
+  @SuppressWarnings("unchecked")
+  public GrantedAuthoritiesMapper userAuthoritiesMapperForKeycloak() {
+    return authorities -> {
+      Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+      var authority = authorities.iterator().next();
+      boolean isOidc = authority instanceof OidcUserAuthority;
+
+      if (isOidc) {
+        var oidcUserAuthority = (OidcUserAuthority) authority;
+        var userInfo = oidcUserAuthority.getUserInfo();
+
+        if (userInfo.hasClaim(REALM_ACCESS_CLAIM)) {
+          var realmAccess = userInfo.getClaimAsMap(REALM_ACCESS_CLAIM);
+          var roles = (Collection<String>) realmAccess.get(ROLES_CLAIM);
+          mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
+        }
+      } else {
+        var oauth2UserAuthority = (OAuth2UserAuthority) authority;
+        Map<String, Object> userAttributes = oauth2UserAuthority.getAttributes();
+
+        if (userAttributes.containsKey(REALM_ACCESS_CLAIM)) {
+          var realmAccess = (Map<String, Object>) userAttributes.get(REALM_ACCESS_CLAIM);
+          var roles = (Collection<String>) realmAccess.get(ROLES_CLAIM);
+          mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
+        }
+      }
+      return mappedAuthorities;
+    };
+  }
+
+  Collection<GrantedAuthority> generateAuthoritiesFromClaim(Collection<String> roles) {
+    return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toList());
+  }
 }
